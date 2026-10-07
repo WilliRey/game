@@ -190,6 +190,22 @@ export const BALANCE = {
     craftXp: 5,
   },
   crafting: {
+    /** Default materials per repair when an item doesn't list its own. */
+    repairCost: {
+      melee: [
+        { itemId: 'scrap_metal', qty: 1 },
+        { itemId: 'duct_tape', qty: 1 },
+      ],
+      firearm: [
+        { itemId: 'scrap_metal', qty: 2 },
+        { itemId: 'spring', qty: 1 },
+      ],
+      armor: [
+        { itemId: 'cloth', qty: 2 },
+        { itemId: 'duct_tape', qty: 1 },
+      ],
+      tool: [{ itemId: 'scrap_metal', qty: 1 }],
+    } as Record<'melee' | 'firearm' | 'armor' | 'tool', { itemId: string; qty: number }[]>,
     repairMaxDurabilityLoss: 0.08,
     dismantleReturnRate: 0.5,
     qualityPerBenchTier: 0.08,

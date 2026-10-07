@@ -9,6 +9,7 @@ import type { GameContext, GameStore } from '@/core/store';
 import { startTime } from '@/core/time';
 import type { GameState, TraderState } from '@/core/types';
 import { SKILL_IDS } from '@/core/types';
+import { installBaseListeners } from './base';
 import { addItem, equip } from './inventory';
 import { installQuestListeners, startQuest } from './quests';
 import { showHint } from './story';
@@ -105,6 +106,7 @@ export function setupNewGame(ctx: GameContext): void {
 /** Install the per-session listeners. */
 export function installSession(store: GameStore): void {
   store.addSessionDisposer(installQuestListeners(store.ctx));
+  store.addSessionDisposer(installBaseListeners(store.ctx));
   for (const install of sessionInstallers) {
     const off = install(store);
     if (off) store.addSessionDisposer(off);

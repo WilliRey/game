@@ -989,3 +989,152 @@ input[type='range'] {
 .footer-hint {
   flex: 1;
 }
+
+/* ---------- crafting / workbench / stash / skills ---------- */
+.craft-panel {
+  width: 1000px;
+  height: 620px;
+}
+.craft-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  min-height: 0;
+}
+.craft-list,
+.craft-detail {
+  overflow: auto;
+  padding: 10px 12px;
+  min-height: 0;
+}
+.craft-list {
+  border-right: 1px solid var(--line);
+}
+.craft-detail {
+  background: rgba(255, 255, 255, 0.02);
+}
+.item-row.locked .item-row-name,
+.item-row.missing .item-row-name,
+.item-row.tier .item-row-name {
+  opacity: 0.6;
+}
+.badge {
+  font-size: 0.72em;
+  padding: 1px 6px;
+  border-radius: 8px;
+  border: 1px solid var(--line-2);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.badge-ready {
+  color: #b8e4b0;
+  border-color: var(--good);
+}
+.badge-locked {
+  color: #9a8ec8;
+}
+.inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.92em;
+}
+.input-row.good .num {
+  color: var(--good);
+}
+.input-row.bad .num,
+.input-row.bad .item-row-name {
+  color: #e39a8c;
+}
+.craft-meta {
+  margin: 10px 0 8px;
+}
+.craft-btn {
+  width: 100%;
+  margin-top: 6px;
+}
+.mods-body {
+  grid-template-columns: 340px 1fr;
+}
+.mod-slot {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 6px 8px;
+  margin-bottom: 6px;
+}
+.mod-slot-head {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  text-transform: capitalize;
+}
+.mod-slot-head > span:nth-child(2) {
+  flex: 1;
+}
+.mod-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 5px;
+}
+.repair-list {
+  flex: 1;
+  overflow: auto;
+  padding: 10px 14px;
+}
+.repair-row {
+  display: grid;
+  grid-template-columns: 40px 220px 1fr auto auto;
+  gap: 10px;
+  align-items: center;
+  padding: 6px 4px;
+  border-bottom: 1px solid var(--line);
+}
+.repair-list .repair-row:has(> .repair-name:first-child) {
+  grid-template-columns: 300px 1fr auto;
+}
+.repair-note {
+  margin-top: 10px;
+}
+.level-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.level-num {
+  font-size: 1.3em;
+  font-weight: 700;
+  color: var(--accent);
+}
+.xp-bar {
+  max-width: 260px;
+}
+.skill-row {
+  display: grid;
+  grid-template-columns: 220px 110px 1fr 40px;
+  gap: 12px;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+.pips {
+  display: flex;
+  gap: 4px;
+}
+.pip {
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--line-2);
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.04);
+}
+.pip.on {
+  background: var(--accent);
+  border-color: var(--accent);
+}

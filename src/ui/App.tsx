@@ -4,6 +4,7 @@ import { useStore, useStoreVersion } from './context';
 import { DebugPanel } from './hud/DebugPanel';
 import { Hud } from './hud/Hud';
 import { Console } from './screens/Console';
+import { Crafting } from './screens/Crafting';
 import { Death } from './screens/Death';
 import { Inventory } from './screens/Inventory';
 import { Loot } from './screens/Loot';
@@ -11,6 +12,10 @@ import { MainMenu } from './screens/MainMenu';
 import { NewGame } from './screens/NewGame';
 import { Pause } from './screens/Pause';
 import { Settings } from './screens/Settings';
+import { Skills } from './screens/Skills';
+import { Sleep } from './screens/Sleep';
+import { Stash } from './screens/Stash';
+import { Workbench } from './screens/Workbench';
 import { TextCard } from './screens/TextCard';
 
 type ScreenComponent = (props: { entry: ScreenEntry }) => JSX.Element | null;
@@ -26,6 +31,11 @@ export const SCREENS: Partial<Record<ScreenId, ScreenComponent>> = {
   console: Console,
   inventory: Inventory,
   loot: Loot,
+  crafting: Crafting,
+  workbench: Workbench,
+  stash: Stash,
+  sleep: Sleep,
+  skills: Skills,
 };
 
 export function App() {

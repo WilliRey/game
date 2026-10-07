@@ -159,12 +159,39 @@ export function parseZone(content: Content, def: ZoneDef): ZoneLayout {
     return t === 'wall' || t === 'window' || t === 'void';
   };
 
+  /** Marker chars (start, spawn, exit, lamp) take the ground of their surroundings. */
+  const isMarker = (le: LegendEntryT | undefined) =>
+    !!le && (le.start || le.spawn || le.exit || le.light) && !le.container && !le.station;
+  const groundAround = (x: number, y: number, fallback: LegendEntryT['tile']): LegendEntryT['tile'] => {
+    const counts = new Map<LegendEntryT['tile'], number>();
+    for (const [dx, dy] of [
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
+    ] as const) {
+      const le = legend[map[y + dy]?.[x + dx] ?? '#'];
+      if (!le || isMarker(le) || le.container || le.station) continue;
+      if (
+        ['wall', 'void', 'window', 'door', 'lockedDoor', 'fence', 'tree', 'counter', 'water'].includes(
+          le.tile,
+        )
+      )
+        continue;
+      counts.set(le.tile, (counts.get(le.tile) ?? 0) + 1);
+    }
+    let best = fallback;
+    let n = 0;
+    for (const [k, c] of counts) if (c > n) [best, n] = [k, c];
+    return best;
+  };
+
   for (let y = 0; y < h; y++) {
     const row = map[y]!;
     for (let x = 0; x < w; x++) {
       const le = legend[row[x]!];
       if (!le) continue;
-      tiles[y * w + x] = TILE_CODE[le.tile];
+      tiles[y * w + x] = TILE_CODE[isMarker(le) ? groundAround(x, y, le.tile) : le.tile];
       if (le.tile === 'door' || le.tile === 'lockedDoor') {
         doors.push({
           id: `d_${x}_${y}`,

@@ -5,10 +5,10 @@ Anything stubbed or faked is listed under **Stubs** at the bottom.
 
 ## STATUS
 
-**Session 2 (current):** M0–M3 complete. New Game drops Sam into a real Maple Court map with movement,
+**Session 2 (current):** M0–M4 complete. New Game drops Sam into a real Maple Court map with movement,
 FOV, day/night, HUD and dev tools; zombies see, hear, path, bash doors and attack; melee, guns, shove and
-throwables work with FX and positional synthesized sound. Inventory, loot window, survival effects done.
-Working through M4 (crafting, mods, repair, safehouse) next.
+throwables work with FX and positional synthesized sound. Inventory, loot, survival, crafting, mods,
+repair and the safehouse done. Working through M5 (NPCs, dialogue, quests, trading) next.
 
 ## M0 — Scaffold & CI (boots to a menu)
 - [x] package.json with pinned Phaser 4.2.1, Vite, Vitest, Playwright, ESLint, Prettier, zod, Preact
@@ -60,13 +60,18 @@ Working through M4 (crafting, mods, repair, safehouse) next.
 - [x] locks: lockpick (quiet, slow, uses picks) / crowbar (fast, loud, breaks the door) / key / note codes
 - [x] needs drain (×1.5 exertion, ×0.5 asleep), low-need stamina debuff, HP loss at zero, status effects
       (bleeding, infection over days + antibiotics, food poisoning, encumbered, well-fed regen)
-- [ ] cooking/boiling at stove or campfire; rain collector → done with the crafting screen in M4
+- [x] cooking/boiling at stove or campfire (fire barrels count); rain collector (done with M4's screens)
 
 ## M4 — Crafting, blueprints, mods, durability, base stations
-- [ ] recipes with stations (inventory, workbench tiers, stove, reloading bench) + blueprints
-- [ ] weapon building, mod slots, before/after preview, quality from tier + skill
-- [ ] repair (lowers max durability) and dismantle
-- [ ] safehouse stations: stash, bed (sleep/wait/save/heal), workbench upgrades, stove, rain collector
+- [x] 29 recipes across stations (by hand, workbench tiers 1–3, stove, reloading bench) + blueprint items,
+      notes and quest rewards that unlock recipes; crafting screen with have/need, tools, time, XP
+- [x] weapon building from blueprints, mod slots (muzzle/sight/magazine/stock, head/grip), 7 mods, before/
+      after stat preview, crafted quality from bench tier + Crafting skill
+- [x] repair (costs materials, lowers max durability, Crafting skill softens it) and dismantle (half the
+      parts back, plus mods)
+- [x] safehouse: stash (no weight limit; crafting at home can use it), bunk (sleep heals + saves / wait),
+      workbench tier 2–3 and stove tier 2 upgrades, reloading bench build, rain collector (fills over time);
+      Firehouse 9 hub map with all stations; skills screen (spend points)
 
 ## M5 — NPCs, dialogue, quests, trading, reputation
 - [ ] dialogue graphs with conditions/effects; dialogue screen
