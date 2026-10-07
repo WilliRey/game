@@ -128,6 +128,7 @@ export class GameStore {
   }
   endSession(): void {
     for (const d of this.sessionDisposers.splice(0)) d();
+    this.ctx.bus.emit('session:reset', {});
   }
 
   setPhase(phase: Phase): void {

@@ -3,6 +3,8 @@ import type Phaser from 'phaser';
 import type { GameStore } from '@/core/store';
 import { App } from './App';
 import { StoreContext } from './context';
+import { installUiKeys } from './keys';
+import { installUiBridge } from './uiState';
 
 const VIEW_W = 1280;
 
@@ -25,6 +27,8 @@ export function mountUI(store: GameStore, el: HTMLElement, game: Phaser.Game): v
   game.events.once('ready', fit);
   const poll = setInterval(fit, 500);
   window.addEventListener('beforeunload', () => clearInterval(poll));
+  installUiBridge(store);
+  installUiKeys(store);
   render(
     <StoreContext.Provider value={store}>
       <App />

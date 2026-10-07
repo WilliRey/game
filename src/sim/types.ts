@@ -240,5 +240,7 @@ export interface ZoneState {
   enteredAtMinutes: number;
   safe: boolean;
   danger: number;
+  /** Ambient (non-nest) zombie count when first populated; regeneration is capped by it. */
+  ambientPopulation: number;
   nextId: number;
 }

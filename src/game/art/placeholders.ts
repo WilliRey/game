@@ -105,16 +105,16 @@ export function drawTile(g: Ctx, kind: TileKind, variant: number): void {
   if (under && under !== 'wall') drawTile(g, under, variant);
   switch (kind) {
     case 'void':
-      rect(g, 0, 0, S, S, '#050506');
+      rect(g, 0, 0, S, S, '#0a0a0b');
       break;
     case 'wall':
-      rect(g, 0, 0, S, S, '#3e4247');
-      speckle(g, S, S, r, ['#4a4f55', '#33373b'], 26);
+      rect(g, 0, 0, S, S, '#50555b');
+      speckle(g, S, S, r, ['#5e646c', '#42474c'], 26);
       g.fillStyle = 'rgba(255,255,255,0.04)';
       g.fillRect(0, 0, S, 2);
       break;
     case 'floor': {
-      rect(g, 0, 0, S, S, '#3a332c');
+      rect(g, 0, 0, S, S, '#4b423a');
       g.strokeStyle = 'rgba(0,0,0,0.35)';
       g.lineWidth = 1;
       for (let y = 0; y < S; y += 8) {
@@ -128,17 +128,17 @@ export function drawTile(g: Ctx, kind: TileKind, variant: number): void {
         g.lineTo(off + 0.5, y + 8);
         g.stroke();
       }
-      speckle(g, S, S, r, ['#463e35', '#2e2822'], 18);
+      speckle(g, S, S, r, ['#595045', '#3c352d'], 18);
       break;
     }
     case 'tile':
-      rect(g, 0, 0, S, S, '#45484a');
+      rect(g, 0, 0, S, S, '#585c5e');
       g.strokeStyle = 'rgba(20,20,20,0.5)';
       g.strokeRect(0.5, 0.5, 15, 15);
       g.strokeRect(16.5, 0.5, 15, 15);
       g.strokeRect(0.5, 16.5, 15, 15);
       g.strokeRect(16.5, 16.5, 15, 15);
-      speckle(g, S, S, r, ['#55585a', '#3a3c3e'], 10);
+      speckle(g, S, S, r, ['#6c6f72', '#4b4d50'], 10);
       if (variant === 3) {
         g.fillStyle = 'rgba(70,20,20,0.35)';
         g.beginPath();
@@ -147,12 +147,12 @@ export function drawTile(g: Ctx, kind: TileKind, variant: number): void {
       }
       break;
     case 'carpet':
-      rect(g, 0, 0, S, S, '#3a3340');
-      speckle(g, S, S, r, ['#453c4c', '#2d2832'], 60, 1);
+      rect(g, 0, 0, S, S, '#4b4252');
+      speckle(g, S, S, r, ['#584d61', '#3b3541'], 60, 1);
       break;
     case 'concrete':
-      rect(g, 0, 0, S, S, '#3b3c3c');
-      speckle(g, S, S, r, ['#474848', '#2f3030'], 30);
+      rect(g, 0, 0, S, S, '#4c4d4d');
+      speckle(g, S, S, r, ['#5b5c5c', '#3d3f3f'], 30);
       if (variant % 2 === 0) {
         g.strokeStyle = 'rgba(20,20,20,0.45)';
         g.beginPath();
@@ -166,15 +166,15 @@ export function drawTile(g: Ctx, kind: TileKind, variant: number): void {
       }
       break;
     case 'road':
-      rect(g, 0, 0, S, S, '#2a2b2d');
-      speckle(g, S, S, r, ['#353638', '#202123', '#3b3a36'], 40, 1.2);
+      rect(g, 0, 0, S, S, '#37383b');
+      speckle(g, S, S, r, ['#454648', '#2b2c2f', '#4c4b46'], 40, 1.2);
       if (variant === 2) {
         g.fillStyle = 'rgba(160,140,70,0.35)';
         g.fillRect(14, 4, 4, 24);
       }
       break;
     case 'grass':
-      rect(g, 0, 0, S, S, '#2c3627');
+      rect(g, 0, 0, S, S, '#3a4634');
       g.strokeStyle = 'rgba(70,90,55,0.55)';
       for (let i = 0; i < 18; i++) {
         const x = r() * S;
@@ -186,8 +186,8 @@ export function drawTile(g: Ctx, kind: TileKind, variant: number): void {
       }
       break;
     case 'dirt':
-      rect(g, 0, 0, S, S, '#3a3128');
-      speckle(g, S, S, r, ['#46392d', '#2b241d'], 34, 2);
+      rect(g, 0, 0, S, S, '#4b4035');
+      speckle(g, S, S, r, ['#594a3b', '#383027'], 34, 2);
       break;
     case 'glass':
       drawTile(g, 'floor', variant);
@@ -206,12 +206,12 @@ export function drawTile(g: Ctx, kind: TileKind, variant: number): void {
     case 'rubble':
       drawTile(g, 'concrete', variant);
       for (let i = 0; i < 6; i++) {
-        g.fillStyle = ['#55524c', '#4a4640', '#36332f'][i % 3] ?? '#444';
+        g.fillStyle = ['#6c6861', '#5e5952', '#46423d'][i % 3] ?? '#444';
         g.fillRect(r() * 26, r() * 26, 3 + r() * 6, 3 + r() * 5);
       }
       break;
     case 'water':
-      rect(g, 0, 0, S, S, '#1b2730');
+      rect(g, 0, 0, S, S, '#25343f');
       g.strokeStyle = 'rgba(120,150,170,0.18)';
       for (let i = 0; i < 4; i++) {
         const y = 4 + i * 8 + r() * 3;
@@ -222,8 +222,8 @@ export function drawTile(g: Ctx, kind: TileKind, variant: number): void {
       }
       break;
     case 'window':
-      rect(g, 0, 0, S, S, '#3e4247');
-      rect(g, 3, 11, S - 6, 10, 'rgba(110,140,160,0.55)', '#2c2f33', 2);
+      rect(g, 0, 0, S, S, '#50555b');
+      rect(g, 3, 11, S - 6, 10, 'rgba(110,140,160,0.55)', '#3a3d42', 2);
       g.strokeStyle = 'rgba(220,230,240,0.25)';
       g.beginPath();
       g.moveTo(7, 19);
@@ -231,7 +231,7 @@ export function drawTile(g: Ctx, kind: TileKind, variant: number): void {
       g.stroke();
       break;
     case 'counter':
-      rect(g, 2, 2, S - 4, S - 4, '#4f4234', '#2b231b', 2);
+      rect(g, 2, 2, S - 4, S - 4, '#645543', '#382f25', 2);
       g.fillStyle = 'rgba(255,255,255,0.05)';
       g.fillRect(4, 4, S - 8, 3);
       break;
@@ -250,17 +250,17 @@ export function drawTile(g: Ctx, kind: TileKind, variant: number): void {
       }
       break;
     case 'tree':
-      circle(g, 16, 17, 14, '#1f281b');
-      circle(g, 13, 14, 10, '#263221');
-      circle(g, 19, 12, 7, '#2d3a27');
+      circle(g, 16, 17, 14, '#2a3525');
+      circle(g, 13, 14, 10, '#32412c');
+      circle(g, 19, 12, 7, '#3b4b34');
       break;
     case 'bush':
-      circle(g, 11, 18, 9, '#26321f');
-      circle(g, 21, 15, 9, '#2b3824');
-      circle(g, 16, 22, 8, '#223019');
+      circle(g, 11, 18, 9, '#32412a');
+      circle(g, 21, 15, 9, '#384830');
+      circle(g, 16, 22, 8, '#2d3f22');
       break;
     case 'stairs':
-      rect(g, 0, 0, S, S, '#3b3c3c');
+      rect(g, 0, 0, S, S, '#4c4d4d');
       for (let y = 2; y < S; y += 6) {
         g.fillStyle = `rgba(0,0,0,${0.15 + y / 80})`;
         g.fillRect(2, y, S - 4, 3);
@@ -340,7 +340,11 @@ function corpse(g: Ctx, s: number, type: string) {
 
 // ---------------------------------------------------------------- containers & stations
 
-const CONTAINER_SIZE: Record<string, [number, number]> = { car_trunk: [64, 96], dumpster: [64, 32] };
+const CONTAINER_SIZE: Record<string, [number, number]> = {
+  car_trunk: [64, 96],
+  dumpster: [64, 32],
+  bus: [96, 320],
+};
 
 function container(g: Ctx, w: number, h: number, type: string) {
   const r = rand(type.length * 977);
@@ -394,6 +398,17 @@ function container(g: Ctx, w: number, h: number, type: string) {
       g.fillStyle = 'rgba(160,190,210,0.2)';
       g.fillRect(12, 18, 8, 4);
       g.restore();
+      break;
+    }
+    case 'bus': {
+      rect(g, 3, 3, w - 6, h - 6, '#6e6a4e', '#3a382a', 3);
+      rect(g, 10, 12, w - 20, 26, '#1c2328');
+      g.fillStyle = 'rgba(0,0,0,0.25)';
+      for (let y = 50; y < h - 20; y += 34) g.fillRect(8, y, w - 16, 3);
+      for (let i = 0; i < 14; i++) {
+        g.fillStyle = `rgba(110,60,30,${0.25 + r() * 0.3})`;
+        g.fillRect(6 + r() * (w - 16), 6 + r() * (h - 16), 4 + r() * 8, 3 + r() * 6);
+      }
       break;
     }
     case 'dumpster':

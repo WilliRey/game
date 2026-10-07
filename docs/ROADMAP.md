@@ -5,8 +5,9 @@ Anything stubbed or faked is listed under **Stubs** at the bottom.
 
 ## STATUS
 
-**Session 2 (current):** M0 complete — the game builds, boots to the main menu, and all checks pass
-(`npm run check`, `npm run build`, `npm run test:e2e`). Working through M1 next.
+**Session 2 (current):** M0 and M1 complete. New Game drops Sam into a real Maple Court map with
+movement, collision, shadowcast FOV, day/night, flashlight, HUD, debug overlay (F3) and console (`).
+Working through M2 (combat, zombie AI, noise, stealth) next.
 
 ## M0 — Scaffold & CI (boots to a menu)
 - [x] package.json with pinned Phaser 4.2.1, Vite, Vitest, Playwright, ESLint, Prettier, zod, Preact
@@ -19,13 +20,18 @@ Anything stubbed or faked is listed under **Stubs** at the bottom.
 ## M1 — Zone, movement, camera, FOV, day/night, HUD shell, debug overlay
 - [x] GameState types, EventBus, RNG, store
 - [x] zod schemas + content loader + data files + validate:content
-- [ ] ASCII zone loader → ZoneState (walls, floors, glass, doors, containers, spawns, start, exit)
-- [ ] placeholder texture generation + asset manifest
-- [ ] player movement (walk/sprint/crouch/aim speeds), tile collision, camera look-ahead
-- [ ] shadowcasting FOV with 140° cone + rear radius; explored/remembered tiles
-- [ ] day/night clock, night vision shrink, flashlight cone
-- [ ] HUD shell (needs, clock, weapon, quick slots, objective, prompt, noise meter)
-- [ ] debug overlay (FPS, entity counts, AI states, noise radii, paths, FOV toggle)
+- [x] ASCII zone loader → ZoneLayout/ZoneState (walls, floors, glass, doors, containers, spawns, start, exits,
+      objects; multi-tile props merge), remembered zone state (doors, containers, items, explored RLE)
+- [x] placeholder texture generation + asset manifest; chunked map renderer with wall faces and contact shadows
+- [x] player movement (walk/sprint/crouch/aim speeds, encumbrance), stamina, footstep noise, tile collision with
+      sliding, camera look-ahead (further when aiming)
+- [x] shadowcasting FOV with 140° cone + rear radius, occluded lamp light; explored/remembered tiles; soft fog
+- [x] day/night clock (1 s = 1 min), night vision shrink + tint, indoor darkness, flashlight cone (F)
+- [x] HUD shell (needs as icon+bar+number, effects, clock/day, weapon/ammo/durability, slots, quick slots,
+      tracked objective, noise meter, weight), toasts, hints, story text cards
+- [x] interaction framework: doors, pickups, exits, stations, lock picking/forcing, timed hold actions + prompts
+- [x] debug overlay (FPS, entity counts, AI summary, noise radii, paths, FOV toggle) + console (give, heal, god,
+      noclip, time, timescale, tp, spawn, kill, quest, rep, xp, skill, flag, fuel, reveal, fov)
 
 ## M2 — Combat, zombies, noise & stealth
 - [ ] noise events with radii, directional ping for unseen loud noise

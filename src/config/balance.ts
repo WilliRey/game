@@ -80,6 +80,10 @@ export const BALANCE = {
     screamer: 2.5,
     nightZombieSpeedMultiplier: 1.2,
   },
+  doors: {
+    hp: 60,
+    lockedHp: 110,
+  },
   zombies: {
     hitDamageMin: 8,
     hitDamageMax: 12,
@@ -94,6 +98,7 @@ export const BALANCE = {
     nightRunnerShare: 0.5,
     dayRunnerShare: 0.15,
     regenPerDay: 0.35,
+    nightTrickleSeconds: 60,
     doorBashDamage: 10,
     doorBashInterval: 1.5,
     separationRadius: 0.8,
@@ -134,6 +139,15 @@ export const BALANCE = {
     molotov: 10,
     footstepIntervalSeconds: 0.4,
   },
+  interact: {
+    reach: 1.25,
+    lockpickSeconds: 4,
+    forceSeconds: 1.4,
+    cutSeconds: 2.5,
+    siphonSeconds: 4,
+    siphonLitersPerCan: 5,
+    alarmChance: 0.35,
+  },
   search: {
     small: 2,
     medium: 3.5,
@@ -155,6 +169,7 @@ export const BALANCE = {
     conditionFloor: 0.3,
   },
   travel: {
+    vehicleTankLiters: 40,
     footTilesPerMinute: 1,
     footMinutesPerKm: 15,
     vehicleMinutesPerKm: 2,

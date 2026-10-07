@@ -1,3 +1,4 @@
+import type { ScreenId } from './store';
 import type { ItemStack } from './types';
 
 /** Every event that crosses a system boundary. Payload types are the contract. */
@@ -58,6 +59,16 @@ export interface GameEvents {
   'ui:toast': { text: string; kind?: 'info' | 'warn' | 'good' };
   'ui:textCard': { title: string; body: string; durationMs?: number };
   'ui:refresh': Record<string, never>;
+  'ui:open': { screen: ScreenId; props?: Record<string, unknown> };
+  'base:changed': Record<string, never>;
+  'sim:spawn': { enemyType: string; count: number; near?: string };
+  'session:started': { loaded: boolean };
+  'session:ended': Record<string, never>;
+  'session:reset': Record<string, never>;
+  'zone:loaded': { zoneId: string };
+  'travel:zone': { zoneId: string; entry?: string };
+  'base:collectWater': Record<string, never>;
+  'ui:loadLatest': Record<string, never>;
   // fx consumed by the Phaser scene
   'fx:shake': { intensity: number; durationMs: number };
   'fx:damageNumber': { x: number; y: number; amount: number; crit: boolean };

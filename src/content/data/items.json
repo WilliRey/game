@@ -1471,5 +1471,148 @@
     "weight": 0.05,
     "value": 12,
     "stack": 10
+  },
+  {
+    "id": "note_phone_log",
+    "name": "Phone: last message from Jo",
+    "description": "A note. Read it again from the inventory.",
+    "category": "note",
+    "weight": 0,
+    "value": 0,
+    "note": {
+      "noteId": "note_phone_log"
+    }
+  },
+  {
+    "id": "note_neighbor",
+    "name": "Note taped to 2B's door",
+    "description": "A note. Read it again from the inventory.",
+    "category": "note",
+    "weight": 0,
+    "value": 0,
+    "note": {
+      "noteId": "note_neighbor"
+    }
+  },
+  {
+    "id": "note_depot_doodle",
+    "name": "Break-room doodle",
+    "description": "A note. Read it again from the inventory.",
+    "category": "note",
+    "weight": 0,
+    "value": 0,
+    "note": {
+      "noteId": "note_depot_doodle"
+    }
+  },
+  {
+    "id": "note_kessler_invoice",
+    "name": "Kessler Auto invoice",
+    "description": "A note. Read it again from the inventory.",
+    "category": "note",
+    "weight": 0,
+    "value": 0,
+    "note": {
+      "noteId": "note_kessler_invoice"
+    }
+  },
+  {
+    "id": "note_trucker_log",
+    "name": "Trucker's log",
+    "description": "A note. Read it again from the inventory.",
+    "category": "note",
+    "weight": 0,
+    "value": 0,
+    "note": {
+      "noteId": "note_trucker_log"
+    }
+  },
+  {
+    "id": "note_pharmacist",
+    "name": "Pharmacist's note",
+    "description": "A note. Read it again from the inventory.",
+    "category": "note",
+    "weight": 0,
+    "value": 0,
+    "note": {
+      "noteId": "note_pharmacist"
+    }
+  },
+  {
+    "id": "note_elm_stash",
+    "name": "Scrawled stash code",
+    "description": "A note. Read it again from the inventory.",
+    "category": "note",
+    "weight": 0,
+    "value": 0,
+    "note": {
+      "noteId": "note_elm_stash"
+    }
+  },
+  {
+    "id": "note_hunter_journal",
+    "name": "Hunter's journal",
+    "description": "A note. Read it again from the inventory.",
+    "category": "note",
+    "weight": 0,
+    "value": 0,
+    "note": {
+      "noteId": "note_hunter_journal"
+    }
+  },
+  {
+    "id": "note_quarantine_memo",
+    "name": "St. Agnes memo: quarantine protocol",
+    "description": "A note. Read it again from the inventory.",
+    "category": "note",
+    "weight": 0,
+    "value": 0,
+    "note": {
+      "noteId": "note_quarantine_memo"
+    }
+  },
+  {
+    "id": "note_tollmen_flyer",
+    "name": "Spray-painted flyer",
+    "description": "A note. Read it again from the inventory.",
+    "category": "note",
+    "weight": 0,
+    "value": 0,
+    "note": {
+      "noteId": "note_tollmen_flyer"
+    }
+  },
+  {
+    "id": "note_west_flyer",
+    "name": "Westside grand re-opening flyer",
+    "description": "A note. Read it again from the inventory.",
+    "category": "note",
+    "weight": 0,
+    "value": 0,
+    "note": {
+      "noteId": "note_west_flyer"
+    }
+  },
+  {
+    "id": "note_camp_roster",
+    "name": "Firehouse 9 duty roster",
+    "description": "A note. Read it again from the inventory.",
+    "category": "note",
+    "weight": 0,
+    "value": 0,
+    "note": {
+      "noteId": "note_camp_roster"
+    }
+  },
+  {
+    "id": "note_train_transcript",
+    "name": "Radio transcript, scribbled",
+    "description": "A note. Read it again from the inventory.",
+    "category": "note",
+    "weight": 0,
+    "value": 0,
+    "note": {
+      "noteId": "note_train_transcript"
+    }
   }
 ]

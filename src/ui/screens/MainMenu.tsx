@@ -10,13 +10,13 @@ export function MainMenu() {
         <div class="tagline">Day 23. The food ran out this morning.</div>
       </div>
       <nav class="menu-buttons">
-        <button class="btn btn-primary" disabled title="Arrives in milestone M1">
+        <button class="btn btn-primary" data-action="new-game" onClick={() => store.open('newGame')}>
           New Game
         </button>
-        <button class="btn" disabled>
+        <button class="btn" data-action="load-game" onClick={() => store.open('saves', { mode: 'load' })}>
           Load Game
         </button>
-        <button class="btn" disabled>
+        <button class="btn" onClick={() => store.open('settings')}>
           Settings
         </button>
       </nav>

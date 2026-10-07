@@ -603,6 +603,9 @@ export const ZoneObject = z
     alarm: z.boolean().optional(),
     radius: z.number().optional(),
     color: z.string().optional(),
+    flicker: z.boolean().optional(),
+    /** interact/siphon: blocks movement (e.g. the ambulance). */
+    solid: z.boolean().optional(),
     /** Noise radius made when this interaction completes (forcing, cutting chains). */
     noise: z.number().optional(),
   })

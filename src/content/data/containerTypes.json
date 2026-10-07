@@ -1,9 +1,35 @@
 [
-  { "id": "fridge", "name": "Fridge", "size": "medium", "lootTable": "fridge", "blocksSight": true },
-  { "id": "cabinet", "name": "Kitchen Cabinet", "size": "small", "lootTable": "cabinet" },
-  { "id": "medicine_cabinet", "name": "Medicine Cabinet", "size": "small", "lootTable": "medicine_cabinet" },
-  { "id": "toolbox", "name": "Toolbox", "size": "small", "lootTable": "toolbox" },
-  { "id": "desk", "name": "Desk", "size": "medium", "lootTable": "desk" },
+  {
+    "id": "fridge",
+    "name": "Fridge",
+    "size": "medium",
+    "lootTable": "fridge",
+    "blocksSight": true
+  },
+  {
+    "id": "cabinet",
+    "name": "Kitchen Cabinet",
+    "size": "small",
+    "lootTable": "cabinet"
+  },
+  {
+    "id": "medicine_cabinet",
+    "name": "Medicine Cabinet",
+    "size": "small",
+    "lootTable": "medicine_cabinet"
+  },
+  {
+    "id": "toolbox",
+    "name": "Toolbox",
+    "size": "small",
+    "lootTable": "toolbox"
+  },
+  {
+    "id": "desk",
+    "name": "Desk",
+    "size": "medium",
+    "lootTable": "desk"
+  },
   {
     "id": "locker",
     "name": "Locker",
@@ -48,7 +74,13 @@
     "lootTable": "crate",
     "lockChanceByTier": [0.05, 0.15, 0.25, 0.35]
   },
-  { "id": "wardrobe", "name": "Wardrobe", "size": "medium", "lootTable": "wardrobe", "blocksSight": true },
+  {
+    "id": "wardrobe",
+    "name": "Wardrobe",
+    "size": "medium",
+    "lootTable": "wardrobe",
+    "blocksSight": true
+  },
   {
     "id": "register",
     "name": "Cash Register",
@@ -77,5 +109,13 @@
     "size": "small",
     "lootTable": "hospital_cart",
     "lockChanceByTier": [0, 0, 0, 0]
+  },
+  {
+    "id": "bus",
+    "name": "Bus",
+    "size": "large",
+    "lootTable": "car_trunk",
+    "lockChanceByTier": [0, 0, 0.05, 0.1],
+    "blocksSight": true
   }
 ]

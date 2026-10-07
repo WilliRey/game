@@ -57,6 +57,7 @@ export const CONTAINER_TYPES = [
   'pharmacy_shelf',
   'gun_locker',
   'hospital_cart',
+  'bus',
 ];
 export const STATION_KINDS = [
   'workbench',

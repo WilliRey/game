@@ -87,6 +87,8 @@ export interface PlayerState {
   lastCombatAt: number;
   godMode: boolean;
   noclip: boolean;
+  /** Set when the player dies; the death screen reloads the last save. */
+  dead?: boolean;
 }
 
 // ---------- time ----------
