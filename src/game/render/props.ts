@@ -110,6 +110,13 @@ export class PropsLayer {
         this.objects.set(o.id, parts);
       } else if (o.type === 'siphon') {
         this.objects.set(o.id, [scene.add.image(cx, cy, ART.siphon).setDepth(depths.props + 1)]);
+      } else if (o.type === 'vehicle') {
+        this.objects.set(o.id, [
+          scene.add
+            .image(cx, cy, ART.vehicle)
+            .setDisplaySize(o.w * S, o.h * S)
+            .setDepth(depths.props),
+        ]);
       } else if (o.type === 'interact') {
         const key = o.label?.toLowerCase().includes('ambulance') ? ART.vehicle : ART.interact;
         const img = scene.add.image(cx, cy, key).setDepth(depths.props);

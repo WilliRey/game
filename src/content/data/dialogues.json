@@ -1,1 +1,914 @@
-[]
+[
+  {
+    "id": "ruth",
+    "start": [
+      {
+        "node": "deal",
+        "if": [
+          {
+            "type": "quest",
+            "questId": "act1",
+            "stage": 1
+          }
+        ]
+      },
+      {
+        "node": "jo_news",
+        "if": [
+          {
+            "type": "quest",
+            "questId": "act1",
+            "stage": 8
+          }
+        ]
+      },
+      {
+        "node": "hub"
+      }
+    ],
+    "nodes": {
+      "deal": {
+        "text": "So you're the one who walked in from Depot Street. I'm Ruth. I run this place, which mostly means I decide who eats.\n\nYou're a mechanic? Then I have a deal for you. There's an ambulance in the bay with a dead battery and a dry tank. Get it running and it's yours to use. St. Agnes is too far to walk, and I hear you have someone there.",
+        "choices": [
+          {
+            "text": "My sister. Jo. She's an ER nurse at St. Agnes.",
+            "next": "deal2"
+          },
+          {
+            "text": "What do you need?",
+            "next": "deal2"
+          }
+        ]
+      },
+      "deal2": {
+        "text": "Then you know why the ambulance matters. Two things: a battery and fuel.\n\nKessler Auto on Elm Street had batteries, but someone chained the garage shut. Gus might have bolt cutters, or Vera can sell you the blueprint.\n\nFuel is easier and uglier. The Route 17 overpass is a parking lot of wrecks with gas still in them. Here, this is how you make a siphon hose.",
+        "choices": [
+          {
+            "text": "I'll get it done.",
+            "effects": [
+              {
+                "type": "setFlag",
+                "key": "act1_deal",
+                "value": true
+              }
+            ],
+            "next": null
+          },
+          {
+            "text": "One more thing.",
+            "effects": [
+              {
+                "type": "setFlag",
+                "key": "act1_deal",
+                "value": true
+              }
+            ],
+            "next": "hub"
+          }
+        ]
+      },
+      "hub": {
+        "text": "Ruth looks up from a clipboard. \"What is it, {sam_short}?\"",
+        "choices": [
+          {
+            "text": "About the battery and the fuel...",
+            "if": [
+              {
+                "type": "quest",
+                "questId": "act1",
+                "stage": 2
+              }
+            ],
+            "next": "remind_parts"
+          },
+          {
+            "text": "The parts. Where do they go again?",
+            "if": [
+              {
+                "type": "quest",
+                "questId": "act1",
+                "stage": 3
+              }
+            ],
+            "next": "remind_repair"
+          },
+          {
+            "text": "About St. Agnes...",
+            "if": [
+              {
+                "type": "quest",
+                "questId": "act1",
+                "minStage": 4,
+                "status": "active"
+              }
+            ],
+            "next": "remind_agnes"
+          },
+          {
+            "text": "Who's who around here?",
+            "next": "people"
+          },
+          {
+            "text": "What's the deal with the train?",
+            "if": [
+              {
+                "type": "flag",
+                "key": "heard_train"
+              }
+            ],
+            "next": "train"
+          },
+          {
+            "text": "I'm out of food. Anything you can spare?",
+            "if": [
+              {
+                "type": "cooldown",
+                "key": "ration",
+                "minutes": 1440
+              }
+            ],
+            "next": "ration"
+          },
+          {
+            "text": "Nothing. See you.",
+            "next": null
+          }
+        ]
+      },
+      "remind_parts": {
+        "text": "Battery from Kessler Auto on Elm Street. The garage is chained, so bring cutters. Fuel from the wrecks on the Route 17 overpass, two cans' worth. Then bring both to the ambulance in the bay.",
+        "next": "hub"
+      },
+      "remind_repair": {
+        "text": "Then what are you doing talking to me? The ambulance is in the bay. Battery in, fuel in, and pray.",
+        "next": "hub"
+      },
+      "remind_agnes": {
+        "text": "St. Agnes is northeast, past the rail cut. It went dark on day four. Doc worked there. Talk to her before you go down into that place.",
+        "next": "hub"
+      },
+      "people": {
+        "text": "Gus trades general goods: water, food, and junk he swears isn't junk. Vera handles weapons and keeps the night watch. Doc Ama patches people up. Pike is our scout, when he comes back. There's a bounty board by the mess tables. Nobody eats if nobody brings food in.",
+        "next": "hub"
+      },
+      "ration": {
+        "text": "Ruth hands you a can and a bottle without a word. Then: \"Once a day, {sam_short}. And bring something back for the kitchen when you can.\"",
+        "effects": [
+          {
+            "type": "giveItem",
+            "itemId": "canned_beans",
+            "qty": 1
+          },
+          {
+            "type": "giveItem",
+            "itemId": "water_bottle",
+            "qty": 1
+          },
+          {
+            "type": "stamp",
+            "key": "ration"
+          },
+          {
+            "type": "reputation",
+            "delta": -1
+          }
+        ],
+        "next": "hub"
+      },
+      "train": {
+        "text": "Northgate. Everyone's heard the broadcast. One train, across the river, and the only bridge is held by a crew who call themselves the Tollmen. We'll talk about the bridge when you have wheels.",
+        "next": "hub"
+      },
+      "jo_news": {
+        "text": "Ruth listens to the whole recording without blinking. When it ends she sets the recorder down very gently.\n\n\"She made it out. Northgate. Of course she did.\"\n\n\"The bridge is the Tollmen's. They'll want a fortune, or a fight, or a fool who knows the storm drains. We'll plan it. Rest first, {sam_short}. You look like hell.\"",
+        "choices": [
+          {
+            "text": "We'll plan it.",
+            "effects": [
+              {
+                "type": "completeQuest",
+                "questId": "act1",
+                "outcome": "default"
+              }
+            ],
+            "next": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "gus",
+    "start": [
+      {
+        "node": "rain_done",
+        "if": [
+          {
+            "type": "quest",
+            "questId": "rain_check",
+            "status": "completed"
+          },
+          {
+            "type": "not",
+            "cond": {
+              "type": "flag",
+              "key": "gus_thanked"
+            }
+          }
+        ]
+      },
+      {
+        "node": "hub"
+      }
+    ],
+    "nodes": {
+      "hub": {
+        "text": "Gus wipes his hands on a rag that makes them dirtier. \"Sam! Buying, selling, or just admiring?\"",
+        "choices": [
+          {
+            "text": "Let's trade.",
+            "effects": [
+              {
+                "type": "openTrade",
+                "traderId": "gus"
+              }
+            ],
+            "next": null
+          },
+          {
+            "text": "You look like a man with a project.",
+            "if": [
+              {
+                "type": "quest",
+                "questId": "rain_check",
+                "status": "notStarted"
+              }
+            ],
+            "next": "rain_offer"
+          },
+          {
+            "text": "About that rain collector...",
+            "if": [
+              {
+                "type": "quest",
+                "questId": "rain_check",
+                "status": "active"
+              }
+            ],
+            "next": "rain_remind"
+          },
+          {
+            "text": "Heard anything useful?",
+            "next": "rumors"
+          },
+          {
+            "text": "Later, Gus.",
+            "next": null
+          }
+        ]
+      },
+      "rain_offer": {
+        "text": "Water, Sam. Everyone's out looking for food, but water's what kills you. I drew up a rain collector: tarp, gutter, barrel. My hands shake too much to build it now. You build it, and I'll make sure there's one by your bunk too.",
+        "choices": [
+          {
+            "text": "Show me the plans.",
+            "effects": [
+              {
+                "type": "startQuest",
+                "questId": "rain_check"
+              }
+            ],
+            "next": "rain_given"
+          },
+          {
+            "text": "Not right now.",
+            "next": "hub"
+          }
+        ]
+      },
+      "rain_given": {
+        "text": "Workbench job. Three planks, two scrap, some rubber tubing, one roll of tape. Bring me the finished kit.",
+        "next": "hub"
+      },
+      "rain_remind": {
+        "text": "Planks, scrap, tubing, tape. Workbench. Kit. Me. You've got this.",
+        "next": "hub"
+      },
+      "rain_done": {
+        "text": "Gus is already elbow-deep in the barrel. \"Look at that! I put a second one by your bunk, like I said. Free water every time it rains. Boil it first, unless you like being sick.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "key": "gus_thanked",
+            "value": true
+          }
+        ],
+        "next": "hub"
+      },
+      "rumors": {
+        "text": "The Westside Strip Mall pharmacy had a back room, locked tight. Doc's been asking about it. And somebody saw men in orange vests near the river. Toll men, they call themselves. Steer clear.",
+        "effects": [
+          {
+            "type": "unlockNode",
+            "nodeId": "westside_mall"
+          }
+        ],
+        "next": "hub"
+      }
+    }
+  },
+  {
+    "id": "vera",
+    "start": [
+      {
+        "node": "report_saved",
+        "if": [
+          {
+            "type": "quest",
+            "questId": "missing_scout",
+            "stage": 1
+          },
+          {
+            "type": "flag",
+            "key": "pike_fate",
+            "value": "saved"
+          }
+        ]
+      },
+      {
+        "node": "report_abandoned",
+        "if": [
+          {
+            "type": "quest",
+            "questId": "missing_scout",
+            "stage": 1
+          },
+          {
+            "type": "flag",
+            "key": "pike_fate",
+            "value": "abandoned"
+          }
+        ]
+      },
+      {
+        "node": "hub"
+      }
+    ],
+    "nodes": {
+      "hub": {
+        "text": "Vera doesn't look up from the rifle she's cleaning. \"Ammo, iron, parts. What do you need?\"",
+        "choices": [
+          {
+            "text": "Show me what you've got.",
+            "effects": [
+              {
+                "type": "openTrade",
+                "traderId": "vera"
+              }
+            ],
+            "next": null
+          },
+          {
+            "text": "You look worried.",
+            "if": [
+              {
+                "type": "quest",
+                "questId": "missing_scout",
+                "status": "notStarted"
+              },
+              {
+                "type": "quest",
+                "questId": "act1",
+                "status": "started"
+              }
+            ],
+            "next": "scout_offer"
+          },
+          {
+            "text": "About Pike...",
+            "if": [
+              {
+                "type": "quest",
+                "questId": "missing_scout",
+                "stage": 0
+              }
+            ],
+            "next": "scout_remind"
+          },
+          {
+            "text": "How do you keep this place safe?",
+            "next": "safety"
+          },
+          {
+            "text": "Never mind.",
+            "next": null
+          }
+        ]
+      },
+      "scout_offer": {
+        "text": "Pike went to scout the Gas-N-Go under the Route 17 overpass three days ago. He's never been gone more than one night. I can't leave the watch, and you're headed that way anyway.",
+        "choices": [
+          {
+            "text": "I'll look for him.",
+            "effects": [
+              {
+                "type": "startQuest",
+                "questId": "missing_scout"
+              }
+            ],
+            "next": "scout_thanks"
+          },
+          {
+            "text": "Not my problem.",
+            "next": null
+          }
+        ]
+      },
+      "scout_thanks": {
+        "text": "Check the station office. If he's... not himself anymore, put him down. I'd want someone to do that for me.",
+        "next": "hub"
+      },
+      "scout_remind": {
+        "text": "Gas-N-Go, under the overpass. Bring him back if you can.",
+        "next": "hub"
+      },
+      "report_saved": {
+        "text": "\"You found him? He's walking back on his own? Bitten, and walking.\" She exhales for what looks like the first time in three days. \"I owe you. I'll open the good shelf for you.\"",
+        "choices": [
+          {
+            "text": "He'd have done the same.",
+            "effects": [
+              {
+                "type": "completeQuest",
+                "questId": "missing_scout",
+                "outcome": "saved"
+              }
+            ],
+            "next": null
+          }
+        ]
+      },
+      "report_abandoned": {
+        "text": "\"And?\" You hold out his dog tags. She takes them and is quiet for a long time. \"He asked you to take the rifle. That sounds like him.\" She doesn't look at you again.",
+        "choices": [
+          {
+            "text": "I'm sorry, Vera.",
+            "effects": [
+              {
+                "type": "completeQuest",
+                "questId": "missing_scout",
+                "outcome": "abandoned"
+              },
+              {
+                "type": "takeItem",
+                "itemId": "pike_tags",
+                "qty": 1
+              }
+            ],
+            "next": null
+          }
+        ]
+      },
+      "safety": {
+        "text": "Noise. Every gunshot brings the street. Use a blade when you can and the gun when you must. Close doors behind you; they buy time. And never fight in the dark if you can wait for morning.",
+        "next": "hub"
+      }
+    }
+  },
+  {
+    "id": "doc",
+    "start": [
+      {
+        "node": "med_done",
+        "if": [
+          {
+            "type": "quest",
+            "questId": "medicine_run",
+            "status": "completed"
+          },
+          {
+            "type": "not",
+            "cond": {
+              "type": "flag",
+              "key": "doc_thanked"
+            }
+          }
+        ]
+      },
+      {
+        "node": "hub"
+      }
+    ],
+    "nodes": {
+      "hub": {
+        "text": "Doc Ama looks like she hasn't slept since the outbreak. \"Are you hurt, or are you here to talk?\"",
+        "choices": [
+          {
+            "text": "I need supplies.",
+            "if": [
+              {
+                "type": "quest",
+                "questId": "medicine_run",
+                "status": "completed"
+              }
+            ],
+            "effects": [
+              {
+                "type": "openTrade",
+                "traderId": "doc"
+              }
+            ],
+            "next": null
+          },
+          {
+            "text": "What do you need most?",
+            "if": [
+              {
+                "type": "quest",
+                "questId": "medicine_run",
+                "status": "notStarted"
+              }
+            ],
+            "next": "med_offer"
+          },
+          {
+            "text": "About the antibiotics...",
+            "if": [
+              {
+                "type": "quest",
+                "questId": "medicine_run",
+                "status": "active"
+              }
+            ],
+            "next": "med_remind"
+          },
+          {
+            "text": "You worked at St. Agnes?",
+            "if": [
+              {
+                "type": "quest",
+                "questId": "act1",
+                "status": "started"
+              }
+            ],
+            "next": "agnes"
+          },
+          {
+            "text": "Can you patch me up?",
+            "if": [
+              {
+                "type": "cooldown",
+                "key": "doc_heal",
+                "minutes": 720
+              }
+            ],
+            "next": "heal"
+          },
+          {
+            "text": "Nothing, Doc.",
+            "next": null
+          }
+        ]
+      },
+      "med_offer": {
+        "text": "Antibiotics. I have two people with bites that are turning and nothing to give them. The pharmacy at the Westside Strip Mall locked its controlled stock in a back room. If nobody's broken in yet, it's still full.",
+        "choices": [
+          {
+            "text": "I'll get them.",
+            "effects": [
+              {
+                "type": "startQuest",
+                "questId": "medicine_run"
+              }
+            ],
+            "next": "med_given"
+          },
+          {
+            "text": "Maybe later.",
+            "next": "hub"
+          }
+        ]
+      },
+      "med_given": {
+        "text": "Thank you. Be careful in there. Pharmacies drew crowds in the first week, and crowds don't leave.",
+        "next": "hub"
+      },
+      "med_remind": {
+        "text": "The Westside pharmacy's back room. Pharmacists always hid a key somewhere close.",
+        "next": "hub"
+      },
+      "med_done": {
+        "text": "\"You brought them.\" She holds the box like it might evaporate. \"From now on, come to me for medical supplies. And let me show you how to put together a proper first-aid kit.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "key": "doc_thanked",
+            "value": true
+          }
+        ],
+        "next": "hub"
+      },
+      "agnes": {
+        "text": "I worked the ER there. With Jo. Yes, I know who you are; you have her jaw. On the last day they moved the bitten down to the basement isolation ward. Staff only, keycard doors. If Jo was anywhere, she was down there with them. Look for a staff keycard upstairs.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "key": "know_keycard",
+            "value": true
+          }
+        ],
+        "next": "hub"
+      },
+      "heal": {
+        "text": "\"Sit.\" She cleans and dresses what she can without wasting a word.",
+        "effects": [
+          {
+            "type": "heal",
+            "hp": 25,
+            "cureBleeding": true
+          },
+          {
+            "type": "stamp",
+            "key": "doc_heal"
+          }
+        ],
+        "next": "hub"
+      }
+    }
+  },
+  {
+    "id": "pike",
+    "start": [
+      {
+        "node": "found",
+        "if": [
+          {
+            "type": "quest",
+            "questId": "missing_scout",
+            "stage": 0
+          }
+        ]
+      },
+      {
+        "node": "after",
+        "if": [
+          {
+            "type": "quest",
+            "questId": "missing_scout",
+            "status": "active"
+          }
+        ]
+      },
+      {
+        "node": "hub"
+      }
+    ],
+    "nodes": {
+      "found": {
+        "text": "Pike is slumped behind the counter with a shotgun across his knees, his forearm wrapped in a filthy shirt. \"Vera sent you. Course she did.\" He lifts the arm. The bite is black at the edges. \"Day two. I can feel it in my teeth.\"",
+        "choices": [
+          {
+            "text": "I have antibiotics. Take them.",
+            "if": [
+              {
+                "type": "hasItem",
+                "itemId": "antibiotics",
+                "qty": 1
+              }
+            ],
+            "effects": [
+              {
+                "type": "takeItem",
+                "itemId": "antibiotics",
+                "qty": 1
+              },
+              {
+                "type": "setFlag",
+                "key": "pike_fate",
+                "value": "saved"
+              },
+              {
+                "type": "setFlag",
+                "key": "pike_fate_decided",
+                "value": true
+              },
+              {
+                "type": "xp",
+                "amount": 50
+              }
+            ],
+            "next": "saved"
+          },
+          {
+            "text": "I don't have anything for that.",
+            "next": "no_meds"
+          }
+        ]
+      },
+      "no_meds": {
+        "text": "\"Then do me a favor.\" He pushes a hunting rifle across the floor with his boot. \"Take it. Take my tags to Vera. Don't let me walk around wearing my own face.\"",
+        "choices": [
+          {
+            "text": "Hold on. I'll come back with medicine.",
+            "next": null
+          },
+          {
+            "text": "...Alright, Pike.",
+            "effects": [
+              {
+                "type": "giveItem",
+                "itemId": "hunting_rifle",
+                "qty": 1
+              },
+              {
+                "type": "giveItem",
+                "itemId": "ammo_rifle",
+                "qty": 8
+              },
+              {
+                "type": "giveItem",
+                "itemId": "pike_tags",
+                "qty": 1
+              },
+              {
+                "type": "setFlag",
+                "key": "pike_fate",
+                "value": "abandoned"
+              },
+              {
+                "type": "setFlag",
+                "key": "pike_fate_decided",
+                "value": true
+              }
+            ],
+            "next": "abandoned"
+          }
+        ]
+      },
+      "saved": {
+        "text": "He dry-swallows two pills and laughs, short and ugly. \"If I don't turn by morning, I'm buying you a drink. Go tell Vera I'm coming. Walking slow.\""
+      },
+      "abandoned": {
+        "text": "He nods once and turns his face to the wall. You leave him the shotgun and close the door behind you. Halfway down the block you hear one shot."
+      },
+      "after": {
+        "text": "\"Go on. Vera's waiting.\""
+      },
+      "hub": {
+        "text": "Pike is alive and insufferable about it. \"My favorite mechanic. Want to see what I picked up out there?\"",
+        "choices": [
+          {
+            "text": "Let's trade.",
+            "effects": [
+              {
+                "type": "openTrade",
+                "traderId": "pike"
+              }
+            ],
+            "next": null
+          },
+          {
+            "text": "How's the arm?",
+            "next": "arm"
+          },
+          {
+            "text": "Later.",
+            "next": null
+          }
+        ]
+      },
+      "arm": {
+        "text": "\"Ugly. Itches. Still attached. Thanks to you.\" He taps the scar. \"I owe you more than a drink, so I scout for you now. Ask me about anywhere.\"",
+        "next": "hub"
+      }
+    }
+  },
+  {
+    "id": "board",
+    "start": [
+      {
+        "node": "board"
+      }
+    ],
+    "nodes": {
+      "board": {
+        "text": "Pinned notes, a duty roster, and a sheet headed KITCHEN DUTY: \"The camp needs 3 food or 3 drinks every day. Leave them in the crate. — R.O.\"",
+        "speaker": "Bounty board",
+        "choices": [
+          {
+            "text": "Sign up for kitchen duty.",
+            "if": [
+              {
+                "type": "not",
+                "cond": {
+                  "type": "quest",
+                  "questId": "kitchen_duty",
+                  "status": "active"
+                }
+              },
+              {
+                "type": "cooldown",
+                "key": "kitchen_last",
+                "minutes": 1440
+              }
+            ],
+            "effects": [
+              {
+                "type": "startQuest",
+                "questId": "kitchen_duty"
+              }
+            ],
+            "next": "signed"
+          },
+          {
+            "text": "Leave 3 food.",
+            "if": [
+              {
+                "type": "quest",
+                "questId": "kitchen_duty",
+                "status": "active"
+              },
+              {
+                "type": "hasItem",
+                "itemId": "cat:food",
+                "qty": 3
+              }
+            ],
+            "effects": [
+              {
+                "type": "takeItem",
+                "itemId": "cat:food",
+                "qty": 3
+              },
+              {
+                "type": "completeQuest",
+                "questId": "kitchen_duty",
+                "outcome": "food"
+              },
+              {
+                "type": "stamp",
+                "key": "kitchen_last"
+              }
+            ],
+            "next": "thanks"
+          },
+          {
+            "text": "Leave 3 drinks.",
+            "if": [
+              {
+                "type": "quest",
+                "questId": "kitchen_duty",
+                "status": "active"
+              },
+              {
+                "type": "hasItem",
+                "itemId": "cat:drink",
+                "qty": 3
+              }
+            ],
+            "effects": [
+              {
+                "type": "takeItem",
+                "itemId": "cat:drink",
+                "qty": 3
+              },
+              {
+                "type": "completeQuest",
+                "questId": "kitchen_duty",
+                "outcome": "water"
+              },
+              {
+                "type": "stamp",
+                "key": "kitchen_last"
+              }
+            ],
+            "next": "thanks"
+          },
+          {
+            "text": "Read the duty roster.",
+            "effects": [
+              {
+                "type": "note",
+                "noteId": "note_camp_roster"
+              }
+            ],
+            "next": "board"
+          },
+          {
+            "text": "Leave it.",
+            "next": null
+          }
+        ]
+      },
+      "signed": {
+        "text": "You add your name under a dozen others. The crate is by the mess tables.",
+        "speaker": "Bounty board",
+        "next": "board"
+      },
+      "thanks": {
+        "text": "Somebody eats tonight because of you.",
+        "speaker": "Bounty board"
+      }
+    }
+  }
+]

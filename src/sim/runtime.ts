@@ -120,7 +120,7 @@ export function rebuildGrids(rt: ZoneRuntime, content: Content): void {
         rt.solid[i] = 1;
         rt.opaque[i] = 1;
       });
-    } else if ((o.type === 'interact' || o.type === 'siphon') && o.solid) {
+    } else if (((o.type === 'interact' || o.type === 'siphon') && o.solid) || o.type === 'vehicle') {
       forRect(o, w, (i) => {
         rt.objectAt.set(i, o.id);
         rt.solid[i] = 1;

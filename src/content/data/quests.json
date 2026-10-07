@@ -3,30 +3,575 @@
     "id": "prologue",
     "name": "Empty Cupboards",
     "type": "main",
-    "description": "The food ran out this morning. Find some, then find other people.",
+    "description": "Day 23. The food ran out this morning. Find something to eat, find a weapon, and find other people.",
     "stages": [
       {
-        "id": "reach_firehouse",
-        "text": "Make it to Firehouse 9.",
+        "id": "kitchen",
+        "text": "The cupboards are bare. Check them anyway.",
         "objectives": [
-          { "id": "reach", "type": "reach", "target": "firehouse9", "text": "Reach Firehouse 9" }
+          {
+            "id": "search",
+            "type": "interact",
+            "target": "mc_sam_cabinet",
+            "text": "Search your kitchen cupboards"
+          }
+        ],
+        "onEnter": [
+          {
+            "type": "textCard",
+            "title": "Day 23",
+            "body": "{city}. The power went out on day nine and the phones before that. You've been barricaded in the apartment above the transit depot for two weeks.\n\nThis morning you ate the last can of peaches.\n\nYour sister {jo_short} was working at St. Agnes Hospital when the city fell. You haven't heard from her since day one.\n\nTime to go out."
+          }
+        ]
+      },
+      {
+        "id": "eat",
+        "text": "Teodor across the hall left in a hurry. He might have left food behind.",
+        "objectives": [
+          {
+            "id": "eat",
+            "type": "use",
+            "target": "cat:food",
+            "text": "Find food and eat something (Tab)"
+          }
+        ],
+        "onEnter": [
+          {
+            "type": "hint",
+            "hintId": "search"
+          }
+        ]
+      },
+      {
+        "id": "leave",
+        "text": "Get out of the building. Something is moving in the stairwell.",
+        "objectives": [
+          {
+            "id": "kill",
+            "type": "kill",
+            "target": "walker",
+            "text": "Deal with the walker in the stairwell",
+            "zoneId": "maple_court"
+          },
+          {
+            "id": "street",
+            "type": "reach",
+            "target": "maple_court:mc_street",
+            "text": "Get out onto Depot Street"
+          }
+        ]
+      },
+      {
+        "id": "depot",
+        "text": "The transit depot across Depot Street has a workbench. Get there without drawing the whole street.",
+        "objectives": [
+          {
+            "id": "depot",
+            "type": "reach",
+            "target": "maple_court:mc_depot",
+            "text": "Reach the transit depot garage"
+          }
+        ],
+        "onEnter": [
+          {
+            "type": "hint",
+            "hintId": "bottle"
+          }
+        ]
+      },
+      {
+        "id": "weapon",
+        "text": "Marco's break-room doodle showed a nail bat. Build one at the depot workbench.",
+        "objectives": [
+          {
+            "id": "craft",
+            "type": "collect",
+            "target": "nail_bat",
+            "text": "Build a nail bat (depot office workbench)"
+          }
+        ],
+        "onEnter": [
+          {
+            "type": "hint",
+            "hintId": "craft"
+          }
+        ]
+      },
+      {
+        "id": "firehouse",
+        "text": "Teodor said Firehouse 9 on Alder Street has water and a fence. Leave by the east end of Depot Street.",
+        "objectives": [
+          {
+            "id": "reach",
+            "type": "reach",
+            "target": "firehouse9",
+            "text": "Reach Firehouse 9"
+          }
+        ],
+        "onEnter": [
+          {
+            "type": "unlockNode",
+            "nodeId": "firehouse9"
+          },
+          {
+            "type": "hint",
+            "hintId": "worldmap"
+          }
         ]
       }
     ],
-    "outcomes": {}
+    "outcomes": {},
+    "rewards": [
+      {
+        "type": "xp",
+        "amount": 100
+      },
+      {
+        "type": "startQuest",
+        "questId": "act1"
+      }
+    ]
   },
   {
     "id": "act1",
     "name": "Firehouse 9",
     "type": "main",
-    "description": "Ruth's deal: get the ambulance running and it's yours.",
+    "giver": "ruth",
+    "description": "Ruth's deal: get the dead ambulance running and you can use it. St. Agnes, and maybe Jo, is too far to walk.",
     "stages": [
       {
-        "id": "placeholder",
-        "text": "Placeholder until M5.",
-        "objectives": [{ "id": "flag", "type": "flag", "target": "act1_placeholder", "text": "Placeholder" }]
+        "id": "talk_ruth",
+        "text": "Find whoever runs this camp.",
+        "objectives": [
+          {
+            "id": "talk",
+            "type": "talk",
+            "target": "ruth",
+            "text": "Talk to Ruth"
+          }
+        ]
+      },
+      {
+        "id": "deal",
+        "text": "Hear Ruth out.",
+        "objectives": [
+          {
+            "id": "deal",
+            "type": "flag",
+            "target": "act1_deal",
+            "text": "Hear Ruth's deal"
+          }
+        ]
+      },
+      {
+        "id": "parts",
+        "text": "The ambulance needs a battery and fuel.",
+        "objectives": [
+          {
+            "id": "battery",
+            "type": "collect",
+            "target": "car_battery",
+            "text": "Get a car battery from Kessler Auto (the garage is chained)"
+          },
+          {
+            "id": "fuel",
+            "type": "collect",
+            "target": "fuel_can",
+            "text": "Siphon fuel on the Route 17 overpass (2 cans)",
+            "count": 2
+          }
+        ],
+        "onEnter": [
+          {
+            "type": "unlockNode",
+            "nodeId": "kessler_auto"
+          },
+          {
+            "type": "unlockNode",
+            "nodeId": "route17"
+          },
+          {
+            "type": "unlockRecipe",
+            "recipeId": "siphon_hose"
+          },
+          {
+            "type": "hint",
+            "hintId": "worldmap"
+          }
+        ]
+      },
+      {
+        "id": "repair",
+        "text": "Bring the battery and fuel to the ambulance in the bay.",
+        "objectives": [
+          {
+            "id": "repair",
+            "type": "interact",
+            "target": "ambulance",
+            "text": "Repair the ambulance"
+          }
+        ]
+      },
+      {
+        "id": "drive",
+        "text": "St. Agnes is too far to walk, but not too far to drive.",
+        "objectives": [
+          {
+            "id": "reach",
+            "type": "reach",
+            "target": "st_agnes",
+            "text": "Drive to St. Agnes Hospital"
+          }
+        ],
+        "onEnter": [
+          {
+            "type": "unlockNode",
+            "nodeId": "st_agnes"
+          }
+        ]
+      },
+      {
+        "id": "basement",
+        "text": "Doc said the bitten were moved to the basement isolation ward. Staff keycards only.",
+        "objectives": [
+          {
+            "id": "down",
+            "type": "reach",
+            "target": "st_agnes_basement",
+            "text": "Get into the basement isolation ward"
+          }
+        ]
+      },
+      {
+        "id": "boss",
+        "text": "Something huge is down here with you.",
+        "objectives": [
+          {
+            "id": "boss",
+            "type": "kill",
+            "target": "bloater_boss",
+            "text": "Kill the thing in the isolation ward"
+          }
+        ]
+      },
+      {
+        "id": "message",
+        "text": "Search the isolation ward for any sign of Jo.",
+        "objectives": [
+          {
+            "id": "rec",
+            "type": "collect",
+            "target": "jo_recorder",
+            "text": "Find Jo's trace"
+          }
+        ]
+      },
+      {
+        "id": "return",
+        "text": "Tell Ruth what you found.",
+        "objectives": [
+          {
+            "id": "tell",
+            "type": "talk",
+            "target": "ruth",
+            "text": "Tell Ruth"
+          }
+        ],
+        "manualAdvance": true
       }
     ],
-    "outcomes": {}
+    "outcomes": {},
+    "rewards": [
+      {
+        "type": "xp",
+        "amount": 300
+      },
+      {
+        "type": "setFlag",
+        "key": "act1_done",
+        "value": true
+      },
+      {
+        "type": "unlockNode",
+        "nodeId": "northgate_bridge"
+      },
+      {
+        "type": "textCard",
+        "title": "To be continued",
+        "body": "Jo is alive, or was, and she is headed for the train at Northgate.\n\nBetween you and her: a river, a bridge, and the Tollmen.\n\nAct 2 — the crossing — is coming in a later version. Until then, Harrow City is yours to scavenge."
+      }
+    ]
+  },
+  {
+    "id": "medicine_run",
+    "name": "Medicine Run",
+    "type": "side",
+    "giver": "doc_ama",
+    "description": "Doc Ama needs antibiotics. The Westside pharmacy locked its controlled stock in a back room.",
+    "stages": [
+      {
+        "id": "fetch",
+        "text": "Get antibiotics from the locked back room of the Westside pharmacy.",
+        "objectives": [
+          {
+            "id": "get",
+            "type": "collect",
+            "target": "antibiotics",
+            "text": "Get antibiotics from the Westside pharmacy"
+          }
+        ],
+        "onEnter": [
+          {
+            "type": "unlockNode",
+            "nodeId": "westside_mall"
+          }
+        ]
+      },
+      {
+        "id": "deliver",
+        "text": "Bring them to Doc Ama.",
+        "objectives": [
+          {
+            "id": "give",
+            "type": "deliver",
+            "target": "antibiotics",
+            "text": "Bring the antibiotics to Doc Ama",
+            "npcId": "doc_ama",
+            "consume": true
+          }
+        ]
+      }
+    ],
+    "outcomes": {},
+    "rewards": [
+      {
+        "type": "unlockTrader",
+        "traderId": "doc"
+      },
+      {
+        "type": "unlockRecipe",
+        "recipeId": "first_aid_kit"
+      },
+      {
+        "type": "reputation",
+        "delta": 10
+      },
+      {
+        "type": "xp",
+        "amount": 120
+      },
+      {
+        "type": "giveItem",
+        "itemId": "first_aid_kit",
+        "qty": 1
+      }
+    ]
+  },
+  {
+    "id": "rain_check",
+    "name": "Rain Check",
+    "type": "side",
+    "giver": "gus",
+    "description": "Gus wants a rain collector for the camp, and he'll set one up by your bunk too.",
+    "stages": [
+      {
+        "id": "build",
+        "text": "Build a rain collector kit at a workbench.",
+        "objectives": [
+          {
+            "id": "kit",
+            "type": "collect",
+            "target": "rain_collector_kit",
+            "text": "Build a rain collector kit (workbench)"
+          }
+        ],
+        "onEnter": [
+          {
+            "type": "unlockRecipe",
+            "recipeId": "rain_collector_kit"
+          }
+        ]
+      },
+      {
+        "id": "deliver",
+        "text": "Give the kit to Gus.",
+        "objectives": [
+          {
+            "id": "give",
+            "type": "deliver",
+            "target": "rain_collector_kit",
+            "text": "Give the kit to Gus",
+            "npcId": "gus",
+            "consume": true
+          }
+        ]
+      }
+    ],
+    "outcomes": {},
+    "rewards": [
+      {
+        "type": "baseUpgrade",
+        "station": "rainCollector",
+        "tier": 1
+      },
+      {
+        "type": "setFlag",
+        "key": "rain_check_done",
+        "value": true
+      },
+      {
+        "type": "reputation",
+        "delta": 8
+      },
+      {
+        "type": "xp",
+        "amount": 100
+      }
+    ]
+  },
+  {
+    "id": "missing_scout",
+    "name": "The Missing Scout",
+    "type": "side",
+    "giver": "vera",
+    "description": "Pike went scouting at the Gas-N-Go under the Route 17 overpass and never came back.",
+    "stages": [
+      {
+        "id": "find",
+        "text": "Find Pike at the Gas-N-Go.",
+        "objectives": [
+          {
+            "id": "find",
+            "type": "flag",
+            "target": "pike_fate_decided",
+            "text": "Find Pike at the Gas-N-Go (Route 17)"
+          }
+        ],
+        "onEnter": [
+          {
+            "type": "unlockNode",
+            "nodeId": "route17"
+          }
+        ],
+        "marker": {
+          "zoneId": "route17",
+          "objectId": "r17_pike"
+        }
+      },
+      {
+        "id": "report",
+        "text": "Tell Vera what happened to Pike.",
+        "objectives": [
+          {
+            "id": "tell",
+            "type": "talk",
+            "target": "vera",
+            "text": "Tell Vera"
+          }
+        ],
+        "manualAdvance": true
+      }
+    ],
+    "outcomes": {
+      "saved": {
+        "text": "Pike lived. He'll trade with you at the camp, and Vera trusts you now.",
+        "rewards": [
+          {
+            "type": "reputation",
+            "delta": 12
+          },
+          {
+            "type": "xp",
+            "amount": 150
+          },
+          {
+            "type": "unlockTrader",
+            "traderId": "pike"
+          },
+          {
+            "type": "setFlag",
+            "key": "vera_trusts",
+            "value": true
+          }
+        ]
+      },
+      "abandoned": {
+        "text": "Pike is gone. You kept his rifle. The camp heard.",
+        "rewards": [
+          {
+            "type": "reputation",
+            "delta": -6
+          },
+          {
+            "type": "xp",
+            "amount": 80
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "kitchen_duty",
+    "name": "Kitchen Duty",
+    "type": "repeatable",
+    "description": "The camp eats what people bring in. Leave 3 food or 3 drinks at the bounty board, once a day.",
+    "cooldownMinutes": 1440,
+    "stages": [
+      {
+        "id": "drop",
+        "text": "Leave 3 food or 3 drinks at the bounty board.",
+        "objectives": [
+          {
+            "id": "drop",
+            "type": "flag",
+            "target": "kitchen_drop",
+            "text": "Leave 3 food or 3 drinks at the bounty board"
+          }
+        ],
+        "manualAdvance": true,
+        "marker": {
+          "zoneId": "firehouse9",
+          "objectId": "fh_board"
+        }
+      }
+    ],
+    "outcomes": {
+      "food": {
+        "text": "The kitchen is fed for another day.",
+        "rewards": [
+          {
+            "type": "reputation",
+            "delta": 4
+          },
+          {
+            "type": "xp",
+            "amount": 40
+          },
+          {
+            "type": "giveItem",
+            "itemId": "bandage",
+            "qty": 2
+          }
+        ]
+      },
+      "water": {
+        "text": "The kitchen has water for another day.",
+        "rewards": [
+          {
+            "type": "reputation",
+            "delta": 4
+          },
+          {
+            "type": "xp",
+            "amount": 40
+          },
+          {
+            "type": "giveItem",
+            "itemId": "painkillers",
+            "qty": 1
+          }
+        ]
+      }
+    }
   }
 ]

@@ -52,7 +52,8 @@ export function validateContent(content: Content): ValidationReport {
   const checkCond = (c: ConditionT, where: string): void => {
     switch (c.type) {
       case 'hasItem':
-        if (!has(content.items, c.itemId)) err(`${where}: condition hasItem unknown item '${c.itemId}'`);
+        if (matcherItems(content, c.itemId).length === 0)
+          err(`${where}: condition hasItem matches no item '${c.itemId}'`);
         break;
       case 'quest':
         if (!has(content.quests, c.questId)) err(`${where}: condition quest unknown quest '${c.questId}'`);
@@ -80,8 +81,10 @@ export function validateContent(content: Content): ValidationReport {
     };
     switch (e.type) {
       case 'giveItem':
-      case 'takeItem':
         need(has(content.items, e.itemId), `item '${e.itemId}'`);
+        break;
+      case 'takeItem':
+        need(matcherItems(content, e.itemId).length > 0, `item '${e.itemId}'`);
         break;
       case 'startQuest':
       case 'advanceQuest':

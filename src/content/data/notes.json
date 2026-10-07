@@ -8,13 +8,23 @@
     "id": "note_neighbor",
     "title": "Note taped to 2B's door",
     "body": "To whoever's still in this building: Mrs. Alvarez and I went to {firehouse9} on Alder Street. They have water and a fence. Head east past the depot. — Teodor, 2B",
-    "effects": [{ "type": "unlockNode", "nodeId": "firehouse9" }]
+    "effects": [
+      {
+        "type": "unlockNode",
+        "nodeId": "firehouse9"
+      }
+    ]
   },
   {
     "id": "note_depot_doodle",
     "title": "Break-room doodle",
     "body": "A sketch on the back of a shift roster, in Marco's handwriting: a baseball bat with nails hammered through the sweet spot. \"FOR THE RAIDERS GAME. or whatever comes.\"\n\nYou could build that at the depot workbench.",
-    "effects": [{ "type": "unlockRecipe", "recipeId": "nail_bat" }]
+    "effects": [
+      {
+        "type": "unlockRecipe",
+        "recipeId": "nail_bat"
+      }
+    ]
   },
   {
     "id": "note_kessler_invoice",
@@ -35,13 +45,24 @@
     "id": "note_elm_stash",
     "title": "Scrawled stash code",
     "body": "ELM ST CRATE behind #14 — combo 0-4-1-7. Water, ammo, meds. If you find this, I'm dead, so help yourself. — K",
-    "effects": [{ "type": "setFlag", "key": "key:elm_stash", "value": true }]
+    "effects": [
+      {
+        "type": "setFlag",
+        "key": "key:elm_stash",
+        "value": true
+      }
+    ]
   },
   {
     "id": "note_hunter_journal",
     "title": "Hunter's journal",
     "body": "Bows don't make noise. That's the whole lesson. Limbs from leaf springs, a stock from a fence post, a trigger from a mousetrap. Diagram on the next page.",
-    "effects": [{ "type": "unlockRecipe", "recipeId": "crossbow" }]
+    "effects": [
+      {
+        "type": "unlockRecipe",
+        "recipeId": "crossbow"
+      }
+    ]
   },
   {
     "id": "note_quarantine_memo",
@@ -57,7 +78,12 @@
     "id": "note_west_flyer",
     "title": "Westside grand re-opening flyer",
     "body": "WESTSIDE STRIP MALL — pharmacy, laundromat, Discount Den. Open late! Free parking!\n\nSomeone circled the pharmacy in red marker.",
-    "effects": [{ "type": "unlockNode", "nodeId": "westside_mall" }]
+    "effects": [
+      {
+        "type": "unlockNode",
+        "nodeId": "westside_mall"
+      }
+    ]
   },
   {
     "id": "note_camp_roster",
@@ -68,5 +94,10 @@
     "id": "note_train_transcript",
     "title": "Radio transcript, scribbled",
     "body": "\"...Northgate yard... one train... diesel's enough for one run... leaving when it's full or when the dead get through the fence, whichever comes first...\"\n\nSomeone underlined \"one run\" three times."
+  },
+  {
+    "id": "note_jo_message",
+    "title": "Jo's recorder",
+    "body": "Static, then her voice, thin and steady.\n\n\"Sam. If you're hearing this, you came looking, because you're an idiot and I love you.\n\nDay five. They sealed us down here with the bitten. Most of them turned. I didn't. I don't think I'm sick. I think I'm just lucky.\n\nThere's talk of a train out of Northgate. I'm going to try for it. The bridge is held by men with rifles who charge a toll. I'll find a way.\n\nDon't stay in this city. Follow me. Grease monkey.\"\n\nThe tape runs out."
   }
 ]

@@ -282,6 +282,8 @@ export const Condition: z.ZodType<ConditionT> = z.lazy(() =>
     z.object({ type: z.literal('recipeKnown'), recipeId: id }).strict(),
     z.object({ type: z.literal('vehicle'), owned: z.boolean() }).strict(),
     z.object({ type: z.literal('day'), min: z.number() }).strict(),
+    /** True if `stamp` hasn't set this key within the last `minutes` of game time. */
+    z.object({ type: z.literal('cooldown'), key: z.string(), minutes: z.number() }).strict(),
     z.object({ type: z.literal('not'), cond: Condition }).strict(),
     z.object({ type: z.literal('any'), conds: z.array(Condition) }).strict(),
   ]),
@@ -303,6 +305,7 @@ export type ConditionT =
   | { type: 'recipeKnown'; recipeId: string }
   | { type: 'vehicle'; owned: boolean }
   | { type: 'day'; min: number }
+  | { type: 'cooldown'; key: string; minutes: number }
   | { type: 'not'; cond: ConditionT }
   | { type: 'any'; conds: ConditionT[] };
 
@@ -362,6 +365,8 @@ export const Effect = z.discriminatedUnion('type', [
     })
     .strict(),
   z.object({ type: z.literal('note'), noteId: id }).strict(),
+  /** Record the current game time under a flag key (pairs with the `cooldown` condition). */
+  z.object({ type: z.literal('stamp'), key: z.string() }).strict(),
   z.object({ type: z.literal('broadcast'), broadcastId: id }).strict(),
   z.object({ type: z.literal('dialogue'), dialogueId: id }).strict(),
   z.object({ type: z.literal('end') }).strict(),
@@ -562,6 +567,7 @@ export const ZoneObject = z
       'blocker',
       'interact',
       'siphon',
+      'vehicle',
     ]),
     x: z.number().int(),
     y: z.number().int(),
@@ -593,6 +599,8 @@ export const ZoneObject = z
     if: z.array(Condition).default([]),
     label: z.string().optional(),
     hp: z.number().optional(),
+    /** door/container: only the key (`keyId`) opens it; no picking or forcing. */
+    keyOnly: z.boolean().optional(),
     /** blocker/interact: a tool flag the player must carry (lockpick, crowbar, hose, cutter). */
     requires: z.string().optional(),
     /** interact/blocker/siphon: seconds to hold E (0 = tap). */

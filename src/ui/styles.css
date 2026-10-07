@@ -1138,3 +1138,190 @@ input[type='range'] {
   background: var(--accent);
   border-color: var(--accent);
 }
+
+/* ---------- dialogue / trade / journal / zone map ---------- */
+.dialogue-screen {
+  align-items: flex-end;
+  padding-bottom: 40px;
+  background: linear-gradient(0deg, rgba(3, 3, 4, 0.85) 0%, rgba(3, 3, 4, 0.35) 55%, rgba(0, 0, 0, 0) 100%);
+}
+.dialogue-box {
+  width: 820px;
+  background: rgba(16, 15, 13, 0.97);
+  border: 1px solid #4a4030;
+  border-radius: 4px;
+  padding: 16px 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+}
+.dialogue-speaker {
+  font-weight: 700;
+  color: var(--accent-2);
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.speaker-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.dialogue-text {
+  font-size: 1.05em;
+  line-height: 1.55;
+  color: #ece4d2;
+  max-height: 260px;
+  overflow: auto;
+}
+.dialogue-text p {
+  margin: 0 0 8px;
+}
+.dialogue-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 10px;
+}
+.choice {
+  text-align: left;
+  font: inherit;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid transparent;
+  border-radius: 3px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+.choice:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: rgba(217, 164, 65, 0.1);
+}
+.choice:disabled {
+  color: var(--dim);
+  cursor: not-allowed;
+}
+.choice-num {
+  display: inline-block;
+  width: 22px;
+  color: var(--accent);
+  font-family: var(--mono);
+}
+.choice-req {
+  color: #b08a6a;
+  font-size: 0.85em;
+}
+.trade-panel {
+  width: 1160px;
+  height: 640px;
+}
+.trade-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr 290px;
+  min-height: 0;
+}
+.trade-price {
+  width: 36px;
+  text-align: right;
+  color: var(--accent-2);
+}
+.tag.good {
+  color: var(--good);
+  border-color: var(--good);
+}
+.trade-footer {
+  align-items: center;
+}
+.trade-totals {
+  flex: 1;
+  display: flex;
+  gap: 22px;
+  align-items: center;
+}
+.journal-tabs {
+  padding: 8px 14px 0;
+}
+.journal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.quest-card {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.02);
+}
+.quest-card.tracked {
+  border-color: var(--accent);
+}
+.quest-card.done {
+  opacity: 0.8;
+}
+.quest-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 3px;
+}
+.quest-name {
+  flex: 1;
+  font-weight: 700;
+}
+.quest-type {
+  font-size: 0.7em;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 1px 6px;
+  border-radius: 3px;
+  border: 1px solid var(--line-2);
+  color: var(--muted);
+}
+.qt-main {
+  color: var(--accent-2);
+  border-color: var(--accent);
+}
+.qt-repeatable {
+  color: var(--info);
+}
+.quest-stage {
+  margin: 4px 0;
+}
+.notes-split {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 14px;
+  min-height: 0;
+}
+.note-view {
+  line-height: 1.55;
+  color: #e6dcc6;
+}
+.note-view h3 {
+  margin-top: 0;
+  color: var(--accent-2);
+}
+.zone-map-wrap {
+  display: flex;
+  justify-content: center;
+  background: #050506;
+  padding: 8px;
+}
+.zone-map {
+  image-rendering: pixelated;
+  max-width: 100%;
+}
+.map-legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.map-legend i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 4px;
+  vertical-align: -1px;
+}

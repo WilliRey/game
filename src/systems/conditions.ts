@@ -44,6 +44,10 @@ export function checkCondition(ctx: GameContext, c: ConditionT): boolean {
       return s.vehicle.owned === c.owned;
     case 'day':
       return dayOf(s.time.minutes) >= c.min;
+    case 'cooldown': {
+      const t = s.flags[c.key];
+      return typeof t !== 'number' || s.time.minutes - t >= c.minutes;
+    }
     case 'not':
       return !checkCondition(ctx, c.cond);
     case 'any':
@@ -60,8 +64,12 @@ export function checkAll(ctx: GameContext, conds: readonly ConditionT[] | undefi
 /** Short human text for a failed condition (shown on disabled dialogue choices). */
 export function describeCondition(ctx: GameContext, c: ConditionT): string {
   switch (c.type) {
-    case 'hasItem':
-      return `Needs ${c.qty > 1 ? `${c.qty}× ` : ''}${ctx.content.items[c.itemId]?.name ?? c.itemId}`;
+    case 'hasItem': {
+      const name = c.itemId.startsWith('cat:')
+        ? c.itemId.slice(4)
+        : (ctx.content.items[c.itemId]?.name ?? c.itemId);
+      return `Needs ${c.qty > 1 ? `${c.qty}× ` : ''}${name}`;
+    }
     case 'skill':
       return `${ctx.content.skills[c.skill]?.name ?? c.skill} ${c.rank}`;
     case 'reputation':

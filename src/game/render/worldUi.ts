@@ -14,6 +14,9 @@ export class WorldUi {
   private ring: Phaser.GameObjects.Graphics;
   private pingLayer: Phaser.GameObjects.Container;
   private marker: Phaser.GameObjects.Image;
+  private edgeArrow: Phaser.GameObjects.Image;
+  private markerPos: { x: number; y: number } | null = null;
+  private bob = { v: 0 };
 
   constructor(
     private scene: Phaser.Scene,
@@ -40,9 +43,15 @@ export class WorldUi {
       .image(0, 0, ART.marker)
       .setDepth(depth + 1)
       .setVisible(false);
+    this.edgeArrow = scene.add
+      .image(0, 0, ART.ping)
+      .setScrollFactor(0)
+      .setDepth(depth + 4)
+      .setTint(0xf0c060)
+      .setVisible(false);
     scene.tweens.add({
-      targets: this.marker,
-      y: '-=6',
+      targets: this.bob,
+      v: -6,
       duration: 700,
       yoyo: true,
       repeat: -1,
@@ -53,6 +62,7 @@ export class WorldUi {
   update(zone: ZoneState, target: Interactable | null): void {
     const a = zone.player.action;
     this.ring.clear();
+    this.placeMarker();
     if (target) {
       let txt = target.disabled
         ? `${target.label} — ${target.disabled}`
@@ -82,13 +92,41 @@ export class WorldUi {
 
   /** Point to an objective location in this zone (tiles), or hide. */
   setMarker(pos: { x: number; y: number } | null): void {
+    this.markerPos = pos;
+    this.placeMarker();
+  }
+
+  /** Bobbing marker over the objective; when it's off screen, an arrow at the screen edge points to it. */
+  private placeMarker(): void {
+    const pos = this.markerPos;
     if (!pos) {
       this.marker.setVisible(false);
+      this.edgeArrow.setVisible(false);
       return;
     }
-    if (!this.marker.visible) this.marker.setPosition(pos.x * S, pos.y * S - 26);
-    this.marker.x = pos.x * S;
-    this.marker.setVisible(true);
+    const wx = pos.x * S;
+    const wy = pos.y * S - 26 + this.bob.v;
+    this.marker.setPosition(wx, wy).setVisible(true);
+    const cam = this.scene.cameras.main;
+    const sx = wx - cam.scrollX;
+    const sy = wy - cam.scrollY;
+    const inset = 60;
+    if (sx >= inset && sy >= inset && sx <= cam.width - inset && sy <= cam.height - inset) {
+      this.edgeArrow.setVisible(false);
+      return;
+    }
+    const cx = cam.width / 2;
+    const cy = cam.height / 2;
+    const dx = sx - cx;
+    const dy = sy - cy;
+    const t = Math.min(
+      (cx - inset) / Math.max(1e-6, Math.abs(dx)),
+      (cy - inset) / Math.max(1e-6, Math.abs(dy)),
+    );
+    this.edgeArrow
+      .setPosition(cx + dx * t, cy + dy * t)
+      .setRotation(Math.atan2(dy, dx))
+      .setVisible(true);
   }
 
   damageNumber(x: number, y: number, amount: number, crit: boolean): void {

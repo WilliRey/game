@@ -40,7 +40,7 @@ export function applyEffect(ctx: GameContext, e: EffectT, source = 'effect'): vo
     }
     case 'takeItem':
       if (removeItem(ctx, e.itemId, e.qty, 'given')) {
-        const name = ctx.content.items[e.itemId]?.name ?? e.itemId;
+        const name = ctx.content.items[e.itemId]?.name ?? e.itemId.replace(/^cat:/, '');
         ctx.bus.emit('ui:toast', { text: `−${e.qty > 1 ? `${e.qty} ` : ''}${name}`, kind: 'info' });
       }
       break;
@@ -133,6 +133,9 @@ export function applyEffect(ctx: GameContext, e: EffectT, source = 'effect'): vo
       break;
     case 'note':
       readNote(ctx, e.noteId);
+      break;
+    case 'stamp':
+      s.flags[e.key] = s.time.minutes;
       break;
     case 'broadcast':
       playBroadcast(ctx, e.broadcastId);

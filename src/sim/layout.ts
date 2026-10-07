@@ -18,6 +18,7 @@ export interface Rect {
 export interface LayoutContainer extends Rect {
   id: string;
   type: string;
+  keyOnly?: boolean;
   lootTable?: string;
   items?: { itemId: string; qty: number }[];
   locked?: boolean;
@@ -33,6 +34,7 @@ export interface LayoutDoor {
   open: boolean;
   locked: boolean;
   keyId?: string;
+  keyOnly?: boolean;
   hp?: number;
   /** True when the door sits in a wall running north–south (drawn rotated). */
   vertical: boolean;
@@ -244,6 +246,7 @@ export function parseZone(content: Content, def: ZoneDef): ZoneLayout {
         d.id = o.id;
         if (o.locked !== undefined) d.locked = o.locked;
         if (o.keyId) d.keyId = o.keyId;
+        if (o.keyOnly) d.keyOnly = true;
         if (o.hp) d.hp = o.hp;
         break;
       }
@@ -261,6 +264,7 @@ export function parseZone(content: Content, def: ZoneDef): ZoneLayout {
           items: o.items?.map((i) => ({ itemId: i.itemId, qty: i.qty })),
           locked: o.locked,
           keyId: o.keyId,
+          keyOnly: o.keyOnly,
           alarm: o.alarm,
           label: o.label,
         };

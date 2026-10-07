@@ -34,11 +34,11 @@
     "#,,,,,,;;|:::::;;;;;;;;;;;;;;;;:::::::::::::::::::::::::::|#",
     "#,,,,,,;;|:::::;;;;;;;;;;;;;;;;:::::::::::::::::::::::::::|#",
     "#,,,,,,;;|:cc;;;;;cc::::::::::::::::::::######+#######::::|#",
-    "#,,,,,,;;|:;;;;;;;;;:::;;;;;;;;;;;;:::::#;nnnnnnnnnn;#::::|#",
+    "#,,,,,,;;|:;;;;;;;;;:::;;;;;;;;;;;;:::::#;;;;;;;;;;;;#::::|#",
     "#,,,,,,;;|:;;;;;;;;;:::;nnnn;;nnnn;:::::#;;;;;;;;;;;;#::::|#",
     "#,,,,,,;;|:;nnnnnnn;:::;;;;;;;;;;;;:::::#;;;;;;;;;;;;#::::|#",
     "#,,,,,,;;|:;;;;;;;;;:::;nnnn;;nnnn;:::::#;;;;;;;;;;;;#::::|#",
-    "#,,,,,,;;|:;;;;;;;;;:::;;;;;;;;;;;;:::::#;;;;;;;;;;;;#::::|#",
+    "#,,,,,,;;|:;;;;;;;;;:::;;;;;;;;;;;;:::::#;nn;;;;;nnn;#::::|#",
     "#,,,,,,;;|:;;Y;;;;;;:::::::::Y::::::::::##############::::|#",
     "#,,,,,,;;|::::::::::::::::::::::::::::::::::::::::::::::::|#",
     "#,,,,,,;;|:::::::::*::*::::::::**:*:::*:::::::::::::::::::|#",
@@ -101,16 +101,112 @@
     },
     {
       "id": "ambulance",
-      "type": "interact",
+      "type": "vehicle",
       "x": 21,
       "y": 9,
       "w": 2,
       "h": 4,
-      "solid": true,
       "label": "Ambulance",
-      "text": "Inspect",
-      "once": false,
-      "failText": "Dead battery, empty tank. Ruth wants it running."
+      "text": "Repair",
+      "if": [
+        {
+          "type": "quest",
+          "questId": "act1",
+          "stage": 3
+        },
+        {
+          "type": "hasItem",
+          "itemId": "car_battery",
+          "qty": 1
+        },
+        {
+          "type": "hasItem",
+          "itemId": "fuel_can",
+          "qty": 2
+        }
+      ],
+      "effects": [
+        {
+          "type": "takeItem",
+          "itemId": "car_battery",
+          "qty": 1
+        },
+        {
+          "type": "takeItem",
+          "itemId": "fuel_can",
+          "qty": 2
+        },
+        {
+          "type": "vehicle",
+          "owned": true
+        },
+        {
+          "type": "fuel",
+          "liters": 10
+        },
+        {
+          "type": "xp",
+          "amount": 80
+        },
+        {
+          "type": "textCard",
+          "title": "It turns over",
+          "body": "Battery in, ten liters of stolen gas in the tank. You crank it once, twice, and the old engine coughs itself awake. Somebody in the yard actually cheers.\n\nThe ambulance is yours. Leave the camp and pick a destination on the world map to drive there. Driving is fast, but it burns fuel."
+        }
+      ],
+      "failText": "Dead battery, empty tank. Ruth wants it running: a car battery and two cans of fuel."
+    },
+    {
+      "id": "fh_board",
+      "type": "interact",
+      "x": 30,
+      "y": 30,
+      "label": "Bounty board",
+      "text": "Read",
+      "dialogue": "board",
+      "once": false
+    },
+    {
+      "id": "fh_ruth",
+      "type": "npc",
+      "x": 34,
+      "y": 21,
+      "npcId": "ruth"
+    },
+    {
+      "id": "fh_gus",
+      "type": "npc",
+      "x": 15,
+      "y": 34,
+      "npcId": "gus"
+    },
+    {
+      "id": "fh_vera",
+      "type": "npc",
+      "x": 46,
+      "y": 33,
+      "npcId": "vera"
+    },
+    {
+      "id": "fh_doc",
+      "type": "npc",
+      "x": 42,
+      "y": 19,
+      "npcId": "doc_ama"
+    },
+    {
+      "id": "fh_pike",
+      "type": "npc",
+      "x": 52,
+      "y": 17,
+      "npcId": "pike",
+      "if": [
+        {
+          "type": "quest",
+          "questId": "missing_scout",
+          "outcome": "saved"
+        }
+      ]
     },
     {
       "id": "fh_sign",

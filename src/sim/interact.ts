@@ -69,8 +69,13 @@ const STATION_LABEL: Record<string, string> = {
 function lockDescription(
   ctx: GameContext,
   keyId: string | undefined,
+  keyOnly = false,
 ): { verb: string; hold: boolean; alt?: string; disabled?: string } {
   if (hasKey(ctx, keyId)) return { verb: 'Unlock (key)', hold: false };
+  if (keyOnly) {
+    const key = ctx.content.lists.items.find((i) => i.tool?.keyFor?.includes(keyId ?? ''));
+    return { verb: 'Locked', hold: false, disabled: `Needs the ${key?.name ?? 'key'}` };
+  }
   const pick = hasTool(ctx, 'lockpick');
   const bar = hasTool(ctx, 'crowbar');
   const picks = countItem(ctx, 'lockpick');
@@ -104,7 +109,7 @@ export function interactablesNear(ctx: GameContext, zone: ZoneState, rt: ZoneRun
     if (d.broken) continue;
     const r = { x: d.x, y: d.y, w: 1, h: 1 };
     if (d.locked) {
-      const l = lockDescription(ctx, d.keyId);
+      const l = lockDescription(ctx, d.keyId, d.keyOnly);
       consider({ kind: 'door', id: d.id, x: d.x + 0.5, y: d.y + 0.5, label: 'Locked door', ...l }, r);
     } else
       consider(
@@ -123,7 +128,7 @@ export function interactablesNear(ctx: GameContext, zone: ZoneState, rt: ZoneRun
   for (const c of Object.values(zone.containers)) {
     const name = c.label ?? ctx.content.containerTypes[c.type]?.name ?? 'Container';
     const base = { kind: 'container' as const, id: c.id, x: c.x + c.w / 2, y: c.y + c.h / 2, label: name };
-    if (c.locked) consider({ ...base, ...lockDescription(ctx, c.keyId) }, c);
+    if (c.locked) consider({ ...base, ...lockDescription(ctx, c.keyId, c.keyOnly) }, c);
     else if (c.searched) consider({ ...base, verb: c.items.length ? 'Loot' : 'Empty', hold: false }, c);
     else consider({ ...base, verb: 'Search', hold: true }, c);
   }
@@ -227,6 +232,17 @@ function objectInteractable(ctx: GameContext, zone: ZoneState, o: ZoneObjectT): 
     if (o.hold === undefined && !o.dialogue && o.effects.length === 0 && !o.text) return null;
     return { ...base, label: o.label ?? 'Object', verb: o.text ?? 'Use', hold: (o.hold ?? 0) > 0 };
   }
+  if (o.type === 'vehicle') {
+    const v = ctx.state.vehicle;
+    if (!v.owned) return { ...base, label: o.label ?? 'Vehicle', verb: o.text ?? 'Repair', hold: false };
+    const cans = countItem(ctx, 'fuel_can');
+    return {
+      ...base,
+      label: `${o.label ?? 'Vehicle'} (${Math.round(v.fuel)}/${v.maxFuel} L)`,
+      verb: cans > 0 && v.fuel < v.maxFuel ? 'Refuel' : 'Check',
+      hold: false,
+    };
+  }
   return null;
 }
 
@@ -244,7 +260,9 @@ function holdDuration(
 ): { verb: TimedAction['verb']; duration: number } | null {
   const I = BALANCE.interact;
   if (it.kind === 'door' || it.kind === 'container') {
-    const locked = it.kind === 'door' ? zone.doors[it.id]?.locked : zone.containers[it.id]?.locked;
+    const target = it.kind === 'door' ? zone.doors[it.id] : zone.containers[it.id];
+    const locked = target?.locked;
+    if (locked && target?.keyOnly) return null;
     if (locked) {
       const bar = hasTool(ctx, 'crowbar');
       const pick = hasTool(ctx, 'lockpick');
@@ -559,6 +577,10 @@ function completeObject(ctx: GameContext, zone: ZoneState, rt: ZoneRuntime, o: Z
     applyEffects(ctx, o.effects, `object:${o.id}`);
     return;
   }
+  if (o.type === 'vehicle') {
+    useVehicle(ctx, zone, o);
+    return;
+  }
   if (o.type === 'interact') {
     if (!checkAll(ctx, o.if) || (o.requires && !hasTool(ctx, o.requires as 'cutter'))) {
       ctx.bus.emit('ui:toast', { text: o.failText ?? 'Nothing happens.', kind: 'warn' });
@@ -570,6 +592,42 @@ function completeObject(ctx: GameContext, zone: ZoneState, rt: ZoneRuntime, o: Z
     if (o.dialogue) ctx.bus.emit('ui:open', { screen: 'dialogue', props: { dialogueId: o.dialogue } });
     applyEffects(ctx, o.effects, `object:${o.id}`);
   }
+}
+
+/** The camp's vehicle: repaired through the main quest, then refuelled with fuel cans. */
+function useVehicle(ctx: GameContext, zone: ZoneState, o: ZoneObjectT): void {
+  const v = ctx.state.vehicle;
+  if (!v.owned) {
+    if (!checkAll(ctx, o.if)) {
+      ctx.bus.emit('ui:toast', { text: o.failText ?? "It won't start.", kind: 'warn' });
+      return;
+    }
+    ctx.bus.emit('interact', { targetId: o.id, kind: 'vehicle', zoneId: zone.zoneId });
+    applyEffects(ctx, o.effects, `object:${o.id}`);
+    return;
+  }
+  let cans = countItem(ctx, 'fuel_can');
+  const per = ctx.content.items.fuel_can?.fuel?.liters ?? 5;
+  let added = 0;
+  while (cans > 0 && v.fuel + per <= v.maxFuel + 0.01) {
+    removeItem(ctx, 'fuel_can', 1, 'refuel');
+    v.fuel = Math.min(v.maxFuel, v.fuel + per);
+    added += per;
+    cans--;
+  }
+  if (added > 0) {
+    ctx.bus.emit('sfx:play', { key: 'siphon' });
+    ctx.bus.emit('ui:toast', {
+      text: `Refuelled +${added} L (${Math.round(v.fuel)}/${v.maxFuel} L).`,
+      kind: 'good',
+    });
+  } else {
+    ctx.bus.emit('ui:toast', {
+      text: `Fuel ${Math.round(v.fuel)}/${v.maxFuel} L. Drive it from the world map when you leave the camp.`,
+      kind: 'info',
+    });
+  }
+  ctx.bus.emit('interact', { targetId: o.id, kind: 'vehicle', zoneId: zone.zoneId });
 }
 
 /** Progress 0..1 of the current hold action, for the in-world progress ring. */

@@ -20,6 +20,7 @@ export interface DoorState {
   hp: number;
   maxHp: number;
   keyId?: string;
+  keyOnly?: boolean;
 }
 
 export interface ContainerState {
@@ -35,6 +36,7 @@ export interface ContainerState {
   items: ItemStack[];
   locked: boolean;
   keyId?: string;
+  keyOnly?: boolean;
   lootTable?: string;
   alarm?: boolean;
   label?: string;

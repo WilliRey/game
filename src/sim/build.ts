@@ -146,6 +146,7 @@ export function buildZone(ctx: GameContext, zoneId: string, entry?: string): Zon
       hp: r?.hp ?? maxHp,
       maxHp,
       keyId: d.keyId,
+      keyOnly: d.keyOnly,
     };
     zone.doors[d.id] = door;
   }
@@ -166,6 +167,7 @@ export function buildZone(ctx: GameContext, zoneId: string, entry?: string): Zon
       locked:
         r?.locked ?? c.locked ?? (fixed ? false : containerLocked(ctx, zoneId, c.id, c.type, def.danger)),
       keyId: c.keyId,
+      keyOnly: c.keyOnly,
       lootTable: c.lootTable,
       alarm: c.alarm,
       label: c.label,

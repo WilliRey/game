@@ -5,6 +5,7 @@ import { zoneDarkness } from '@/sim/fov';
 import type { Interactable } from '@/sim/interact';
 import { getRuntime, type ZoneRuntime } from '@/sim/runtime';
 import { stepZone } from '@/sim/step';
+import { objectiveMarker } from '@/systems/markers';
 import type { ZoneState } from '@/sim/types';
 import { TILE_SIZE } from '../art/manifest';
 import { storeOf, VIEW_H, VIEW_W } from '../createGame';
@@ -45,6 +46,7 @@ export class ZoneScene extends Phaser.Scene {
   private worldUi!: WorldUi;
   private audio: AudioManager | undefined;
   private hitStopUntil = 0;
+  private markerIn = 0;
   private tint!: Phaser.GameObjects.Rectangle;
   private debugGfx!: Phaser.GameObjects.Graphics;
   private target: Interactable | null = null;
@@ -149,6 +151,11 @@ export class ZoneScene extends Phaser.Scene {
     this.fog.update(zone, this.rt, dark);
     this.tint.setAlpha(dark * 0.45);
     this.worldUi.update(zone, store.inputCaptured ? null : this.target);
+    this.markerIn -= dt;
+    if (this.markerIn <= 0) {
+      this.markerIn = 0.25;
+      this.worldUi.setMarker(objectiveMarker(store.ctx));
+    }
     this.updateCamera(dt, input.aim);
     this.drawDebug();
 

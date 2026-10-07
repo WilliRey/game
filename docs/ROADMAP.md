@@ -5,10 +5,11 @@ Anything stubbed or faked is listed under **Stubs** at the bottom.
 
 ## STATUS
 
-**Session 2 (current):** M0–M4 complete. New Game drops Sam into a real Maple Court map with movement,
+**Session 2 (current):** M0–M5 complete. New Game drops Sam into a real Maple Court map with movement,
 FOV, day/night, HUD and dev tools; zombies see, hear, path, bash doors and attack; melee, guns, shove and
 throwables work with FX and positional synthesized sound. Inventory, loot, survival, crafting, mods,
-repair and the safehouse done. Working through M5 (NPCs, dialogue, quests, trading) next.
+repair and the safehouse done. NPCs talk through data-driven dialogue, quests track and reward, the journal
+and markers point the way, and three traders barter. Working on M6 (world map, travel, saves) next.
 
 ## M0 — Scaffold & CI (boots to a menu)
 - [x] package.json with pinned Phaser 4.2.1, Vite, Vitest, Playwright, ESLint, Prettier, zod, Preact
@@ -74,11 +75,16 @@ repair and the safehouse done. Working through M5 (NPCs, dialogue, quests, tradi
       Firehouse 9 hub map with all stations; skills screen (spend points)
 
 ## M5 — NPCs, dialogue, quests, trading, reputation
-- [ ] dialogue graphs with conditions/effects; dialogue screen
-- [ ] quest system (main/side/repeatable; talk/collect/deliver/kill/reach/interact/craft/flag; outcomes; rewards)
-- [ ] journal + tracked objective on HUD + markers
-- [ ] barter trade screen with live totals, pricing rules, credit, restock, no-exploit test
-- [ ] radio broadcasts, notes, text cards
+- [x] dialogue graphs with conditions (item, quest, flag, skill, reputation, time, day, cooldown, not/any)
+      and effects (items, quests, flags, reputation, trade, XP, recipes, nodes, traders, heal, fuel, cards,
+      base upgrades, stamps...); dialogue screen with number keys and disabled-with-reason choices
+- [x] quest system (main/side/repeatable; talk/collect/deliver/kill/reach/interact/craft/flag objectives,
+      optional objectives, multiple outcomes, rewards incl. reputation and recipes); scripted chain test
+- [x] journal (active/completed/notes) + tracked objective on HUD + zone-map ring + in-field edge arrow
+- [x] barter trade screen with live totals, pricing rules (wants/junk/condition/quality/rep/Barter), credit,
+      restock; no-exploit unit test over every item and discount
+- [x] radio broadcasts (Firehouse radio), notes, text cards; 5 NPCs (Ruth, Gus, Dr. Imani Hale, Tomas,
+      Junie) with dialogue; zone map (M) of explored tiles, containers searched, exits, people
 
 ## M6 — World map, travel, vehicle & fuel, saves, menus, death
 - [ ] world map screen with nodes (danger, loot types, % searched, quest markers), unlocking

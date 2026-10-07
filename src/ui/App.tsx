@@ -6,6 +6,10 @@ import { Hud } from './hud/Hud';
 import { Console } from './screens/Console';
 import { Crafting } from './screens/Crafting';
 import { Death } from './screens/Death';
+import { Dialogue } from './screens/Dialogue';
+import { Journal } from './screens/Journal';
+import { Trade } from './screens/Trade';
+import { ZoneMap } from './screens/ZoneMap';
 import { Inventory } from './screens/Inventory';
 import { Loot } from './screens/Loot';
 import { MainMenu } from './screens/MainMenu';
@@ -36,6 +40,10 @@ export const SCREENS: Partial<Record<ScreenId, ScreenComponent>> = {
   stash: Stash,
   sleep: Sleep,
   skills: Skills,
+  dialogue: Dialogue,
+  trade: Trade,
+  journal: Journal,
+  zoneMap: ZoneMap,
 };
 
 export function App() {
