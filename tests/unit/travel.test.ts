@@ -4,7 +4,9 @@
  */
 import { describe, expect, it } from 'vitest';
 import type { GameContext } from '@/core/store';
+import { BALANCE } from '@/config/balance';
 import { addItem, countItem } from '@/systems/inventory';
+import { addEffect } from '@/systems/survival';
 import {
   arrive,
   chooseEventOption,
@@ -64,6 +66,16 @@ describe('travel plans', () => {
     expect(q.vehicle.fuel).toBeLessThanOrEqual(10);
     expect(q.vehicle.minutes).toBeLessThan(travelPlan(ctx, 'firehouse9', 'route17').foot.minutes);
     expect(q.vehicle.eventChance).toBeLessThan(travelPlan(ctx, 'firehouse9', 'route17').foot.eventChance);
+  });
+
+  it('forecasts health lost on the way to bleeding and empty needs', () => {
+    const ctx = at('firehouse9');
+    expect(travelPlan(ctx, 'firehouse9', 'route17').foot.hpLoss).toBe(0);
+    addEffect(ctx, 'bleeding', BALANCE.health.bleedMinutes);
+    const bleeding = travelPlan(ctx, 'firehouse9', 'route17').foot.hpLoss;
+    expect(bleeding).toBeCloseTo(BALANCE.health.bleedMinutes * BALANCE.health.bleedHpPerMinute, 1);
+    ctx.state.player.thirst = 0;
+    expect(travelPlan(ctx, 'firehouse9', 'route17').foot.hpLoss).toBeGreaterThan(bleeding + 5);
   });
 
   it('locked places and the current place cannot be travelled to', () => {

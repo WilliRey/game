@@ -30,7 +30,7 @@ export function addEffect(ctx: GameContext, id: EffectId, value = 0): StatusEffe
       encumbered: 'encumbered',
     };
     if (hint[id]) showHint(ctx, hint[id]!);
-  } else if (id === 'food_poisoning') {
+  } else if (id === 'food_poisoning' || id === 'bleeding') {
     e.value = Math.max(e.value, value);
   }
   return e;
@@ -92,7 +92,8 @@ export function damagePlayer(
       opts.infectionChance * (1 - armor.infection) * difficultyOf(ctx.state.difficulty).infectionChance;
     if (ctx.rng.chance(chance)) addEffect(ctx, 'infection', 5);
   }
-  if (opts.bleedChance && ctx.rng.chance(opts.bleedChance * (1 - armor.damage))) addEffect(ctx, 'bleeding');
+  if (opts.bleedChance && ctx.rng.chance(opts.bleedChance * (1 - armor.damage)))
+    addEffect(ctx, 'bleeding', BALANCE.health.bleedMinutes);
   if (p.hp <= 0) killPlayer(ctx, source);
   return dmg;
 }
@@ -137,7 +138,15 @@ export function survivalTick(ctx: GameContext, minutes: number, mode: TimeMode, 
   let hpDelta = 0;
   if (p.hunger <= 0) hpDelta -= (n.starvingHpPerHour / 60) * minutes;
   if (p.thirst <= 0) hpDelta -= (n.dehydratedHpPerHour / 60) * minutes;
-  if (hasEffect(ctx, 'bleeding')) hpDelta -= h.bleedHpPerMinute * minutes;
+  const bleed = getEffect(ctx, 'bleeding');
+  if (bleed) {
+    hpDelta -= h.bleedHpPerMinute * Math.min(minutes, Math.max(0, bleed.value));
+    bleed.value -= minutes;
+    if (bleed.value <= 0) {
+      removeEffect(ctx, 'bleeding');
+      ctx.bus.emit('ui:toast', { text: 'The bleeding has stopped on its own.', kind: 'info' });
+    }
+  }
   if (poison) {
     hpDelta -= h.foodPoisoningHpPerMinute * minutes;
     poison.value -= minutes;

@@ -143,6 +143,15 @@ export function applyEffect(ctx: GameContext, e: EffectT, source = 'effect'): vo
     case 'dialogue':
       ctx.bus.emit('ui:open', { screen: 'dialogue', props: { dialogueId: e.dialogueId } });
       break;
+    case 'pan':
+      ctx.bus.emit('fx:pan', {
+        objectId: e.objectId,
+        x: e.x,
+        y: e.y,
+        seconds: e.seconds,
+        caption: e.caption,
+      });
+      break;
     case 'end':
       break;
   }

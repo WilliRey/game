@@ -58,7 +58,7 @@ export function App() {
   const settings = store.settings;
   return (
     <div class="ui-root" style={{ '--ui-scale': String(settings.uiScale) } as JSX.CSSProperties}>
-      {store.phase === 'playing' && !store.isOpen('death') ? <Hud /> : null}
+      {store.phase === 'playing' && !store.isOpen('death') && !store.cinematic ? <Hud /> : null}
       {store.phase === 'playing' ? <DebugPanel /> : null}
       {store.screens.map((entry) => {
         const C = SCREENS[entry.id];

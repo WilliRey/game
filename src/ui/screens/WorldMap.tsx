@@ -105,6 +105,15 @@ export function WorldMap({ entry }: { entry: { props?: Record<string, unknown> }
               Hunger <span class="num">−{Math.round(o.hunger)}</span> · Thirst{' '}
               <span class="num">−{Math.round(o.thirst)}</span> · Encounter{' '}
               <span class="num">{Math.round(o.eventChance * 100)}%</span>
+              {o.hpLoss >= 0.5 ? (
+                <span class="bad">
+                  {' '}
+                  · Health <span class="num">−{Math.round(o.hpLoss)}</span>
+                </span>
+              ) : null}
+              {o.hpLoss >= s.player.hp ? (
+                <div class="bad">You won't survive the trip. Treat your wounds, eat and drink first.</div>
+              ) : null}
             </>
           ) : null}
           {o.reason ? <div class={o.forced ? 'warn-text' : 'bad'}>{o.reason}</div> : null}

@@ -179,3 +179,17 @@ export function isVisible(rt: ZoneRuntime, x: number, y: number): boolean {
   const ty = Math.floor(y);
   return inBounds(rt, tx, ty) && rt.visible[ty * rt.w + tx] === 1;
 }
+
+/** Presentation-only reveal for scripted camera pans: light up what can be seen from a point. */
+export function revealAround(rt: ZoneRuntime, x: number, y: number, radius: number): void {
+  const opaque: Opaque = (tx, ty) => !inBounds(rt, tx, ty) || rt.opaque[ty * rt.w + tx] === 1;
+  shadowcast(Math.floor(x), Math.floor(y), Math.ceil(radius), opaque, (tx, ty) => {
+    if (!inBounds(rt, tx, ty)) return;
+    const d = Math.hypot(tx + 0.5 - x, ty + 0.5 - y);
+    if (d > radius) return;
+    const i = ty * rt.w + tx;
+    rt.visible[i] = 1;
+    rt.bright[i] = Math.max(rt.bright[i]!, 1 - (d / radius) * 0.6);
+  });
+  rt.fovKey = '';
+}

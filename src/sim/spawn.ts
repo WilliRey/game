@@ -4,6 +4,7 @@
  * elapsed (cleared nests stay cleared). At night, a slow trickle arrives from spawn points out of sight.
  */
 import { BALANCE, difficultyOf } from '@/config/balance';
+import { Rng } from '@/core/rng';
 import type { GameContext } from '@/core/store';
 import { isNight } from '@/core/time';
 import type { RememberedZone } from '@/core/types';
@@ -114,6 +115,8 @@ export function populateZone(ctx: GameContext, zone: ZoneState, mem: RememberedZ
 
   if (!mem) {
     const target = ambientTarget(ctx, zone);
+    // Which spawn points are used differs per save (but not per reload): shuffle with a derived stream.
+    Rng.fromSeed(`${ctx.state.seed}:population:${zone.zoneId}`).shuffle(points);
     for (let i = 0; i < target && points.length; i++) {
       const pt = points[i % points.length]!;
       spawnEnemy(ctx, zone, pickAmbientType(ctx, zone), pt.x, pt.y);

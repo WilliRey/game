@@ -82,6 +82,8 @@ export class GameStore {
   screens: ScreenEntry[] = [];
   phase: Phase = 'boot';
   version = 0;
+  /** A scripted camera pan is playing: the HUD steps aside. Presentation state, never saved. */
+  cinematic = false;
   /** Unsubscribers for listeners that live as long as one play session (quests, hints, autosave...). */
   private sessionDisposers: (() => void)[] = [];
   private listeners = new Set<() => void>();

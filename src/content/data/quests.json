@@ -59,6 +59,14 @@
             "target": "maple_court:mc_street",
             "text": "Get out onto Depot Street"
           }
+        ],
+        "onEnter": [
+          {
+            "type": "pan",
+            "objectId": "mc_stair_walker",
+            "seconds": 2.4,
+            "caption": "Something is moving in the stairwell."
+          }
         ]
       },
       {

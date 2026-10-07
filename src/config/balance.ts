@@ -63,6 +63,8 @@ export const BALANCE = {
     antibioticsReduction: 40,
     bleedChancePerHit: 0.2,
     bleedHpPerMinute: 0.5,
+    /** An untreated bleed clots on its own after this many game minutes (a bandage stops it at once). */
+    bleedMinutes: 40,
     foodPoisoningHpPerMinute: 0.3,
     foodPoisoningMinutes: 120,
     sleepHealPerHour: 6,

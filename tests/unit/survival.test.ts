@@ -45,12 +45,24 @@ describe('needs', () => {
 describe('status effects', () => {
   it('bleeding drains health until bandaged', () => {
     const { ctx } = makeCtx();
-    addEffect(ctx, 'bleeding');
+    addEffect(ctx, 'bleeding', BALANCE.health.bleedMinutes);
     passTime(ctx, 10);
     expect(ctx.state.player.hp).toBeLessThan(100);
     const b = addItem(ctx, 'bandage', 1)[0]!;
     useItem(ctx, b.uid);
     expect(hasEffect(ctx, 'bleeding')).toBe(false);
+  });
+
+  it('an untreated bleed clots on its own, so a long walk does not bleed you dry', () => {
+    const { ctx } = makeCtx();
+    // Fed enough not to starve, not enough for the well-fed regeneration to hide the loss.
+    ctx.state.player.hunger = 75;
+    ctx.state.player.thirst = 75;
+    addEffect(ctx, 'bleeding', BALANCE.health.bleedMinutes);
+    passTime(ctx, 180);
+    expect(hasEffect(ctx, 'bleeding')).toBe(false);
+    const lost = 100 - ctx.state.player.hp;
+    expect(lost).toBeCloseTo(BALANCE.health.bleedMinutes * BALANCE.health.bleedHpPerMinute, 0);
   });
 
   it('infection progresses over days, antibiotics knock it back 40, untreated it kills', () => {

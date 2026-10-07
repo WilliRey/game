@@ -126,6 +126,14 @@ export function validateContent(content: Content): ValidationReport {
       case 'dialogue':
         need(has(content.dialogues, e.dialogueId), `dialogue '${e.dialogueId}'`);
         break;
+      case 'pan':
+        if (e.objectId)
+          need(
+            content.lists.zones.some((z) => z.objects.some((o) => o.id === e.objectId)),
+            `object '${e.objectId}'`,
+          );
+        else if (e.x === undefined || e.y === undefined) err(`${where}: pan needs an objectId or x and y`);
+        break;
       default:
         break;
     }

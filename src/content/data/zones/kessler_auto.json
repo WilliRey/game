@@ -242,5 +242,13 @@
   },
   "lootTypes": ["tools", "materials", "food"],
   "exitNode": "kessler_auto",
+  "onFirstEnter": [
+    {
+      "type": "pan",
+      "objectId": "ka_chain",
+      "seconds": 2.6,
+      "caption": "Kessler Auto. The roll-up door is chained shut, like Ruth said."
+    }
+  ],
   "description": "A residential street and an auto shop. The garage is chained shut."
 }

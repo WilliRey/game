@@ -1,7 +1,8 @@
 import Phaser from 'phaser';
 import type { GameStore } from '@/core/store';
 import { debugInfo, devTools } from '@/dev/devtools';
-import { zoneDarkness } from '@/sim/fov';
+import { revealAround, zoneDarkness } from '@/sim/fov';
+import { getLayout } from '@/sim/layout';
 import type { Interactable } from '@/sim/interact';
 import { getRuntime, type ZoneRuntime } from '@/sim/runtime';
 import { stepZone } from '@/sim/step';
@@ -9,6 +10,7 @@ import { objectiveMarker } from '@/systems/markers';
 import type { ZoneState } from '@/sim/types';
 import { TILE_SIZE } from '../art/manifest';
 import { storeOf, VIEW_H, VIEW_W } from '../createGame';
+import { cinematics } from '../director';
 import { InputTracker } from '../input';
 import type { AudioManager } from '../audio/AudioManager';
 import { ActorsLayer } from '../render/actors';
@@ -52,6 +54,10 @@ export class ZoneScene extends Phaser.Scene {
   private target: Interactable | null = null;
   private offs: (() => void)[] = [];
   private fpsAcc = { t: 0, frames: 0 };
+  /** A scripted camera pan in progress (tiles). The sim waits while it plays. */
+  private pan: { x: number; y: number; t: number; dur: number } | null = null;
+  private letterbox!: Phaser.GameObjects.Graphics;
+  private caption!: Phaser.GameObjects.Text;
 
   constructor() {
     super('Zone');
@@ -86,6 +92,22 @@ export class ZoneScene extends Phaser.Scene {
       .setAlpha(0);
     this.worldUi = new WorldUi(this, DEPTH.worldUi);
     this.debugGfx = this.add.graphics().setDepth(DEPTH.debug);
+    this.letterbox = this.add
+      .graphics()
+      .setScrollFactor(0)
+      .setDepth(DEPTH.debug - 1);
+    this.caption = this.add
+      .text(VIEW_W / 2, VIEW_H - 46, '', {
+        fontFamily: 'Segoe UI, system-ui, sans-serif',
+        fontSize: '18px',
+        color: '#f1e6cc',
+        align: 'center',
+        wordWrap: { width: 900 },
+      })
+      .setOrigin(0.5)
+      .setScrollFactor(0)
+      .setDepth(DEPTH.debug)
+      .setVisible(false);
     this.tracker = new InputTracker(this, () => this.store.inputCaptured);
 
     const cam = this.cameras.main;
@@ -123,6 +145,10 @@ export class ZoneScene extends Phaser.Scene {
   }
 
   private cleanup(): void {
+    if (this.store.cinematic) {
+      this.store.cinematic = false;
+      this.store.notify();
+    }
     this.offs.forEach((o) => o());
     this.offs = [];
     this.tracker?.destroy();
@@ -135,7 +161,8 @@ export class ZoneScene extends Phaser.Scene {
     const dt = Math.min(deltaMs, 100) / 1000;
     const t0 = performance.now();
     const input = this.tracker.read(S, store.inputCaptured);
-    const frozen = store.clockStopped || performance.now() < this.hitStopUntil;
+    if (!this.pan && cinematics.pending && !store.clockStopped) this.startPan();
+    const frozen = store.clockStopped || !!this.pan || performance.now() < this.hitStopUntil;
     if (!frozen) this.target = stepZone(store.ctx, input, dt).target;
     else if (store.clockStopped) this.target = null;
     const t1 = performance.now();
@@ -152,11 +179,15 @@ export class ZoneScene extends Phaser.Scene {
     this.tint.setAlpha(dark * 0.45);
     this.worldUi.update(zone, store.inputCaptured ? null : this.target);
     this.markerIn -= dt;
-    if (this.markerIn <= 0) {
+    if (this.pan) {
+      this.worldUi.setMarker(null);
+      this.markerIn = 0;
+    } else if (this.markerIn <= 0) {
       this.markerIn = 0.25;
       this.worldUi.setMarker(objectiveMarker(store.ctx));
     }
-    this.updateCamera(dt, input.aim);
+    if (this.pan) this.updatePan(store.clockStopped ? 0 : dt);
+    else this.updateCamera(dt, input.aim);
     this.drawDebug();
 
     this.fpsAcc.t += deltaMs;
@@ -194,6 +225,55 @@ export class ZoneScene extends Phaser.Scene {
     cam.scrollX += (tx - cam.scrollX) * f;
     cam.scrollY += (ty - cam.scrollY) * f;
     this.clampCamera();
+  }
+
+  /** Start the buffered pan: resolve its target, reveal what's there, and letterbox the view. */
+  private startPan(): void {
+    const req = cinematics.pending!;
+    cinematics.pending = null;
+    let x = req.x;
+    let y = req.y;
+    if (req.objectId) {
+      const layout = getLayout(this.store.content, this.zone.zoneId);
+      const o =
+        layout.objects.find((q) => q.id === req.objectId) ??
+        layout.containers.find((q) => q.id === req.objectId) ??
+        layout.stations.find((q) => q.id === req.objectId) ??
+        layout.exits.find((q) => q.id === req.objectId);
+      if (o) {
+        x = o.x + o.w / 2;
+        y = o.y + o.h / 2;
+      }
+    }
+    if (x === undefined || y === undefined) return;
+    this.pan = { x, y, t: 0, dur: req.seconds };
+    this.store.cinematic = true;
+    this.store.notify();
+    revealAround(this.rt, x, y, 6);
+    this.caption.setText(req.caption ?? '').setVisible(!!req.caption);
+  }
+
+  private updatePan(dt: number): void {
+    const pan = this.pan!;
+    pan.t += dt;
+    const cam = this.cameras.main;
+    const f = 1 - Math.exp(-dt * 3.2);
+    cam.scrollX += (pan.x * S - VIEW_W / 2 - cam.scrollX) * f;
+    cam.scrollY += (pan.y * S - VIEW_H / 2 - cam.scrollY) * f;
+    this.clampCamera();
+    // Letterbox bars slide in and out.
+    const k = Math.min(1, pan.t / 0.35, Math.max(0, (pan.dur - pan.t) / 0.35));
+    this.letterbox.clear().fillStyle(0x000000, 0.92);
+    this.letterbox.fillRect(0, 0, VIEW_W, 64 * k).fillRect(0, VIEW_H - 64 * k, VIEW_W, 64 * k);
+    this.caption.setAlpha(k);
+    if (pan.t >= pan.dur) {
+      this.pan = null;
+      this.store.cinematic = false;
+      this.store.notify();
+      this.letterbox.clear();
+      this.caption.setVisible(false);
+      this.rt.fovKey = '';
+    }
   }
 
   private clampCamera(): void {

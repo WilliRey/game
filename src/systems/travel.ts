@@ -17,6 +17,7 @@ import { checkAll, describeCondition } from './conditions';
 import { applyEffects } from './effects';
 import { countItem, removeItem } from './inventory';
 import { SKILL, rank } from './progression';
+import { getEffect } from './survival';
 import { enterZone, leaveZone } from './zones';
 
 export interface TravelOption {
@@ -29,6 +30,8 @@ export interface TravelOption {
   eventChance: number;
   hunger: number;
   thirst: number;
+  /** Health lost on the way to bleeding, food poisoning and empty needs (not counting events). */
+  hpLoss: number;
   /** A walk beyond the normal limit, allowed only when the player would otherwise be stranded. */
   forced?: boolean;
 }
@@ -59,6 +62,24 @@ function drainPerMinute(ctx: GameContext, exertion: boolean): { hunger: number; 
     hunger: (100 * mult) / (n.hungerHoursToEmpty * 60),
     thirst: (100 * mult) / (n.thirstHoursToEmpty * 60),
   };
+}
+
+/** Health lost over `minutes` of travel to bleeding, food poisoning and running out of food or water. */
+export function projectedHpLoss(ctx: GameContext, minutes: number, exertion: boolean): number {
+  const p = ctx.state.player;
+  if (p.godMode) return 0;
+  const n = BALANCE.needs;
+  const h = BALANCE.health;
+  const drain = drainPerMinute(ctx, exertion);
+  let loss = 0;
+  const bleed = getEffect(ctx, 'bleeding');
+  if (bleed) loss += h.bleedHpPerMinute * Math.min(minutes, Math.max(0, bleed.value));
+  const poison = getEffect(ctx, 'food_poisoning');
+  if (poison) loss += h.foodPoisoningHpPerMinute * Math.min(minutes, Math.max(0, poison.value));
+  const thirstRate = drain.thirst * (poison ? 1.6 : 1);
+  loss += (Math.max(0, minutes - p.hunger / drain.hunger) * n.starvingHpPerHour) / 60;
+  loss += (Math.max(0, minutes - p.thirst / thirstRate) * n.dehydratedHpPerHour) / 60;
+  return loss;
 }
 
 function eventChance(ctx: GameContext, mode: TravelMode, km: number): number {
@@ -110,6 +131,7 @@ export function travelPlan(ctx: GameContext, fromId: string, toId: string): Trav
     eventChance: eventChance(ctx, 'foot', km),
     hunger: footDrain.hunger * footMinutes,
     thirst: footDrain.thirst * footMinutes,
+    hpLoss: projectedHpLoss(ctx, footMinutes, true),
   };
   if (!blocked && km > T.maxFootKm) {
     if (isStranded(ctx, fromId)) {
@@ -117,6 +139,7 @@ export function travelPlan(ctx: GameContext, fromId: string, toId: string): Trav
       foot.minutes = Math.round(footMinutes * T.forcedMarchTimeMultiplier);
       foot.hunger = footDrain.hunger * foot.minutes;
       foot.thirst = footDrain.thirst * foot.minutes;
+      foot.hpLoss = projectedHpLoss(ctx, foot.minutes, true);
       foot.eventChance = Math.min(0.9, foot.eventChance * 1.5);
       foot.reason = 'A long, dangerous walk. Nothing else is in reach.';
     } else {
@@ -144,6 +167,7 @@ export function travelPlan(ctx: GameContext, fromId: string, toId: string): Trav
     eventChance: eventChance(ctx, 'vehicle', km),
     hunger: carDrain.hunger * vehicleMinutes,
     thirst: carDrain.thirst * vehicleMinutes,
+    hpLoss: projectedHpLoss(ctx, vehicleMinutes, false),
   };
   return { km, foot, vehicle };
 }

@@ -369,6 +369,17 @@ export const Effect = z.discriminatedUnion('type', [
   z.object({ type: z.literal('stamp'), key: z.string() }).strict(),
   z.object({ type: z.literal('broadcast'), broadcastId: id }).strict(),
   z.object({ type: z.literal('dialogue'), dialogueId: id }).strict(),
+  /** A short scripted camera pan to an object (or tile) in the current zone; the sim waits while it plays. */
+  z
+    .object({
+      type: z.literal('pan'),
+      objectId: z.string().optional(),
+      x: z.number().optional(),
+      y: z.number().optional(),
+      seconds: z.number().positive().default(2.4),
+      caption: z.string().optional(),
+    })
+    .strict(),
   z.object({ type: z.literal('end') }).strict(),
 ]);
 export type EffectT = z.infer<typeof Effect>;

@@ -198,6 +198,12 @@
       "type": "textCard",
       "title": "B1 \u2014 Isolation",
       "body": "The air is thick and sweet and wrong. Emergency lights pulse red along a corridor of cells with their doors hanging open.\n\nFrom somewhere ahead, past a set of double doors, comes a sound like a very large animal breathing in its sleep."
+    },
+    {
+      "type": "pan",
+      "objectId": "sb_boss",
+      "seconds": 3,
+      "caption": "Past the double doors, something huge is breathing."
     }
   ],
   "description": "The sealed isolation ward under St. Agnes."

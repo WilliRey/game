@@ -1,7 +1,11 @@
-/** Switches Phaser scenes in response to session and zone events. */
+/** Switches Phaser scenes in response to session and zone events, and buffers scripted camera pans. */
 import type Phaser from 'phaser';
+import type { GameEvents } from '@/core/events';
 import type { GameStore } from '@/core/store';
 import { enterZone } from '@/systems/zones';
+
+/** A pan requested by an effect, waiting for the zone scene (which may be restarting) to play it. */
+export const cinematics: { pending: GameEvents['fx:pan'] | null } = { pending: null };
 
 export function installDirector(game: Phaser.Game, store: GameStore): void {
   const bus = store.bus;
@@ -12,6 +16,12 @@ export function installDirector(game: Phaser.Game, store: GameStore): void {
       game.scene.start(key);
     }, 0);
   };
+  bus.on('fx:pan', (p) => {
+    cinematics.pending = p;
+  });
+  bus.on('session:reset', () => {
+    cinematics.pending = null;
+  });
   bus.on('session:started', () => switchTo('Zone'));
   bus.on('session:ended', () => switchTo('Title'));
   bus.on('zone:loaded', () => {

@@ -78,6 +78,7 @@ export interface GameEvents {
   'fx:flash': { entityId: string };
   'fx:camPan': { x: number; y: number; durationMs: number };
   'fx:hitstop': { ms: number };
+  'fx:pan': { objectId?: string; x?: number; y?: number; seconds: number; caption?: string };
   'fx:muzzle': { x: number; y: number; angle: number; small: boolean };
   'fx:spark': { x: number; y: number };
   'fx:explosion': { x: number; y: number; radius: number };
