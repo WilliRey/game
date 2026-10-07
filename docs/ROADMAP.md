@@ -3,52 +3,22 @@
 Keep this accurate at every push. Legend: `[x]` done, `[~]` in progress / partial, `[ ]` not started.
 Anything stubbed or faked is listed under **Stubs** at the bottom.
 
-## STATUS (session 1 stopped here, budget reached)
+## STATUS
 
-**Does the project build?** No. `src/content/raw.ts` imports 25 JSON data files that do not exist yet, and
-there is no `index.html`, `src/main.ts`, sim, Phaser scene, UI or test file. `npm install` works.
-
-**Done (committed):**
-- Toolchain: `package.json` (pinned versions, all brief scripts), `tsconfig.json` (strict), `vite.config.ts`
-  (base `/game/` on build), `vitest.config.ts`, `playwright.config.ts`, `eslint.config.js`, Prettier,
-  `.github/workflows/ci.yml` and `deploy.yml`.
-- `docs/DESIGN.md`: architecture, layers, decisions log. Read it before writing code.
-- `src/config/balance.ts`: every brief §7 number + difficulty multiplier presets.
-- `src/core/rng.ts` (sfc32, serializable, derived streams), `src/core/events.ts` (typed `GameEvents` + `EventBus`),
-  `src/core/types.ts` (full `GameState`, `ItemStack`, `RememberedZone`, `QuestState`, `TraderState`, `BaseState`…),
-  `src/core/time.ts` (clock helpers, night/darkness), `src/core/store.ts` (`GameStore`: context, screen stack,
-  clock-stopping screens, change notification, settings persistence, `newUid`).
-- `src/content/schemas.ts`: zod schemas for items/weapons/mods/recipes/loot/containers/enemies/npcs/dialogue/
-  conditions/effects/quests/traders/zones (ASCII map + legend + objects)/world nodes/travel events/notes/
-  broadcasts/hints/station upgrades/skills. `src/content/index.ts`: `loadContent()` registry + `fillNames()`.
-  `src/content/raw.ts`: the explicit JSON import list (the file names are the contract for the data files).
-
-**Half-finished / missing:** everything below M0's last two boxes.
-
-**Exact next steps (in order):**
-1. Create every JSON file listed in `src/content/raw.ts` under `src/content/data/` (start minimal but valid:
-   `names.json`, `legend.json` with the brief's legend chars, one zone `zones/maple_court.json`, a handful of
-   items; empty arrays elsewhere are fine) so `loadContent()` passes.
-2. `scripts/validate-content.ts`: call `loadContent()` then cross-reference checks (see DESIGN §3.4).
-3. `src/sim/types.ts` (`ZoneState`: grid flags, entities, doors, containers) referenced by `core/types.ts`;
-   `systems/zoneLoader.ts` (ASCII → ZoneState); `sim/fov.ts` (shadowcasting); `sim/step.ts`.
-4. `index.html`, `src/main.ts` (loadContent → GameStore → Phaser.Game 1280×720 FIT scale → mount Preact `App`),
-   `game/scenes/BootScene.ts` (generate placeholder textures), `game/scenes/ZoneScene.ts`, `ui/App.tsx` with
-   main menu + HUD shell. Then `e2e/smoke.spec.ts` and the first unit tests (rng, time, events).
-5. Run `npm run check && npm run build && npm run test:e2e`, commit as M0/M1, then continue M2 onward per the
-   milestone lists below.
-
+**Session 2 (current):** M0 complete — the game builds, boots to the main menu, and all checks pass
+(`npm run check`, `npm run build`, `npm run test:e2e`). Working through M1 next.
 
 ## M0 — Scaffold & CI (boots to a menu)
 - [x] package.json with pinned Phaser 4.2.1, Vite, Vitest, Playwright, ESLint, Prettier, zod, Preact
 - [x] strict tsconfig, Vite base `/game/` for Pages, CI + Pages deploy workflows
 - [x] docs/DESIGN.md, docs/ROADMAP.md
-- [ ] boot → main menu with placeholder art + Preact overlay mounted
-- [ ] Playwright smoke test skeleton
+- [x] boot → main menu with placeholder art + Preact overlay mounted
+- [x] Playwright smoke test skeleton
+- [x] content data files for every schema, `npm run validate:content` (references + quest completability)
 
 ## M1 — Zone, movement, camera, FOV, day/night, HUD shell, debug overlay
 - [x] GameState types, EventBus, RNG, store
-- [~] zod schemas + content loader done; data files and validate:content script not yet
+- [x] zod schemas + content loader + data files + validate:content
 - [ ] ASCII zone loader → ZoneState (walls, floors, glass, doors, containers, spawns, start, exit)
 - [ ] placeholder texture generation + asset manifest
 - [ ] player movement (walk/sprint/crouch/aim speeds), tile collision, camera look-ahead
@@ -104,7 +74,8 @@ there is no `index.html`, `src/main.ts`, sim, Phaser scene, UI or test file. `np
 - [ ] docs/CONTENT_GUIDE.md, README with run/play instructions, CREDITS.md
 
 ## Stubs / known gaps
-- Project does not build yet (data files, sim, scenes, UI missing). See STATUS above.
+- Zones other than the ones built so far are placeholder rooms; NPCs, dialogues, traders and most quests are
+  stubs until M5/M7.
 
 ## Next concrete steps
-See STATUS at the top.
+M1: zone loader, ZoneScene, movement, FOV, day/night, HUD shell, debug overlay.

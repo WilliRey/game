@@ -44,5 +44,13 @@ export const RAW_CONTENT = {
   hints,
   stationUpgrades,
   skills,
-  zones: [zoneMapleCourt, zoneFirehouse, zoneKessler, zoneOverpass, zoneWestside, zoneStAgnes, zoneStAgnesBasement],
+  zones: [
+    zoneMapleCourt,
+    zoneFirehouse,
+    zoneKessler,
+    zoneOverpass,
+    zoneWestside,
+    zoneStAgnes,
+    zoneStAgnesBasement,
+  ],
 };

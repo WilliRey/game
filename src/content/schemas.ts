@@ -171,10 +171,13 @@ export const ItemDef = z
         hose: z.boolean().optional(),
         keyFor: z.array(id).optional(),
         cutter: z.boolean().optional(),
+        flashlight: z.boolean().optional(),
       })
       .strict()
       .optional(),
-    dismantle: z.array(z.object({ itemId: id, qty: z.number().int().min(1) })).optional(),
+    dismantle: z.array(z.object({ itemId: id, qty: z.number().int().min(1) }).strict()).optional(),
+    /** Materials per repair; defaults come from balance.crafting.repairCost by weapon kind. */
+    repair: z.array(z.object({ itemId: id, qty: z.number().int().min(1) }).strict()).optional(),
   })
   .strict();
 export type ItemDef = z.infer<typeof ItemDef>;
@@ -266,7 +269,13 @@ export const Condition: z.ZodType<ConditionT> = z.lazy(() =>
         outcome: z.string().optional(),
       })
       .strict(),
-    z.object({ type: z.literal('flag'), key: z.string(), value: z.union([z.boolean(), z.number(), z.string()]).optional() }).strict(),
+    z
+      .object({
+        type: z.literal('flag'),
+        key: z.string(),
+        value: z.union([z.boolean(), z.number(), z.string()]).optional(),
+      })
+      .strict(),
     z.object({ type: z.literal('skill'), skill: z.string(), rank: z.number().int() }).strict(),
     z.object({ type: z.literal('reputation'), min: z.number() }).strict(),
     z.object({ type: z.literal('time'), night: z.boolean() }).strict(),
@@ -302,26 +311,59 @@ export const Effect = z.discriminatedUnion('type', [
   z.object({ type: z.literal('takeItem'), itemId: id, qty: z.number().int().min(1).default(1) }).strict(),
   z.object({ type: z.literal('startQuest'), questId: id }).strict(),
   z.object({ type: z.literal('advanceQuest'), questId: id, stage: z.number().int().optional() }).strict(),
-  z.object({ type: z.literal('completeQuest'), questId: id, outcome: z.string().default('default') }).strict(),
+  z
+    .object({ type: z.literal('completeQuest'), questId: id, outcome: z.string().default('default') })
+    .strict(),
   z.object({ type: z.literal('failQuest'), questId: id }).strict(),
-  z.object({ type: z.literal('setFlag'), key: z.string(), value: z.union([z.boolean(), z.number(), z.string()]).default(true) }).strict(),
+  z
+    .object({
+      type: z.literal('setFlag'),
+      key: z.string(),
+      value: z.union([z.boolean(), z.number(), z.string()]).default(true),
+    })
+    .strict(),
   z.object({ type: z.literal('reputation'), delta: z.number() }).strict(),
   z.object({ type: z.literal('openTrade'), traderId: id }).strict(),
   z.object({ type: z.literal('xp'), amount: z.number() }).strict(),
   z.object({ type: z.literal('unlockRecipe'), recipeId: id }).strict(),
   z.object({ type: z.literal('unlockNode'), nodeId: id }).strict(),
   z.object({ type: z.literal('unlockTrader'), traderId: id }).strict(),
-  z.object({ type: z.literal('heal'), hp: z.number().optional(), cureInfection: z.boolean().optional(), cureBleeding: z.boolean().optional() }).strict(),
-  z.object({ type: z.literal('needs'), hunger: z.number().optional(), thirst: z.number().optional() }).strict(),
+  z
+    .object({
+      type: z.literal('heal'),
+      hp: z.number().optional(),
+      cureInfection: z.boolean().optional(),
+      cureBleeding: z.boolean().optional(),
+    })
+    .strict(),
+  z
+    .object({ type: z.literal('needs'), hunger: z.number().optional(), thirst: z.number().optional() })
+    .strict(),
   z.object({ type: z.literal('damage'), hp: z.number() }).strict(),
   z.object({ type: z.literal('fuel'), liters: z.number() }).strict(),
   z.object({ type: z.literal('time'), minutes: z.number() }).strict(),
   z.object({ type: z.literal('textCard'), title: z.string(), body: z.string() }).strict(),
   z.object({ type: z.literal('toast'), text: z.string() }).strict(),
-  z.object({ type: z.literal('baseUpgrade'), station: z.enum(['workbench', 'stove', 'reloading', 'rainCollector']), tier: z.number().int().default(1) }).strict(),
+  z
+    .object({
+      type: z.literal('baseUpgrade'),
+      station: z.enum(['workbench', 'stove', 'reloading', 'rainCollector']),
+      tier: z.number().int().default(1),
+    })
+    .strict(),
   z.object({ type: z.literal('vehicle'), owned: z.boolean() }).strict(),
   z.object({ type: z.literal('hint'), hintId: id }).strict(),
-  z.object({ type: z.literal('spawn'), enemyType: id, count: z.number().int().default(1), near: z.string().optional() }).strict(),
+  z
+    .object({
+      type: z.literal('spawn'),
+      enemyType: id,
+      count: z.number().int().default(1),
+      near: z.string().optional(),
+    })
+    .strict(),
+  z.object({ type: z.literal('note'), noteId: id }).strict(),
+  z.object({ type: z.literal('broadcast'), broadcastId: id }).strict(),
+  z.object({ type: z.literal('dialogue'), dialogueId: id }).strict(),
   z.object({ type: z.literal('end') }).strict(),
 ]);
 export type EffectT = z.infer<typeof Effect>;
@@ -370,12 +412,22 @@ export const NpcDef = z
 export type NpcDef = z.infer<typeof NpcDef>;
 
 // ---------- quests ----------
-export const ObjectiveType = z.enum(['talk', 'collect', 'deliver', 'kill', 'reach', 'interact', 'craft', 'flag']);
+export const ObjectiveType = z.enum([
+  'talk',
+  'collect',
+  'deliver',
+  'kill',
+  'reach',
+  'interact',
+  'craft',
+  'flag',
+  'use',
+]);
 export const ObjectiveDef = z
   .object({
     id,
     type: ObjectiveType,
-    /** npcId | itemId | enemyType ('any') | zoneId or zoneId:areaId | objectId | recipeId | flag key */
+    /** npcId | item matcher (itemId, cat:<category>, tag:<tag>) | enemyType or 'any' | zoneId or zoneId:areaId | objectId | flag key */
     target: z.string(),
     count: z.number().int().min(1).default(1),
     zoneId: id.optional(),
@@ -394,7 +446,10 @@ export const QuestStage = z
     objectives: z.array(ObjectiveDef).min(1),
     onEnter: z.array(Effect).default([]),
     onComplete: z.array(Effect).default([]),
-    marker: z.object({ nodeId: id.optional(), zoneId: id.optional(), objectId: z.string().optional() }).strict().optional(),
+    marker: z
+      .object({ nodeId: id.optional(), zoneId: id.optional(), objectId: z.string().optional() })
+      .strict()
+      .optional(),
     /** If true, completing the objectives does not auto-advance (a dialogue effect will). */
     manualAdvance: z.boolean().default(false),
   })
@@ -407,7 +462,10 @@ export const QuestDef = z
     description: z.string(),
     giver: id.optional(),
     stages: z.array(QuestStage).min(1),
-    outcomes: z.record(z.string(), z.object({ text: z.string(), rewards: z.array(Effect).default([]) }).strict()),
+    outcomes: z.record(
+      z.string(),
+      z.object({ text: z.string(), rewards: z.array(Effect).default([]) }).strict(),
+    ),
     rewards: z.array(Effect).default([]),
     autoStart: z.boolean().default(false),
     cooldownMinutes: z.number().default(0),
@@ -445,7 +503,29 @@ export const TraderDef = z
 export type TraderDef = z.infer<typeof TraderDef>;
 
 // ---------- zones ----------
-export const TileKind = z.enum(['void', 'wall', 'floor', 'glass', 'door', 'lockedDoor', 'window', 'rubble', 'road', 'grass', 'water', 'counter']);
+export const TILE_KIND_LIST = [
+  'void',
+  'wall',
+  'floor',
+  'glass',
+  'door',
+  'lockedDoor',
+  'window',
+  'rubble',
+  'road',
+  'grass',
+  'water',
+  'counter',
+  'tile',
+  'carpet',
+  'concrete',
+  'dirt',
+  'fence',
+  'tree',
+  'bush',
+  'stairs',
+] as const;
+export const TileKind = z.enum(TILE_KIND_LIST);
 export type TileKind = z.infer<typeof TileKind>;
 export const LegendEntry = z
   .object({
@@ -457,6 +537,8 @@ export const LegendEntry = z
     light: z.boolean().optional(),
     station: z.string().optional(),
     vehicle: z.boolean().optional(),
+    /** Doors only: starts open. */
+    open: z.boolean().optional(),
   })
   .strict();
 export type LegendEntryT = z.infer<typeof LegendEntry>;
@@ -464,7 +546,23 @@ export type LegendEntryT = z.infer<typeof LegendEntry>;
 export const ZoneObject = z
   .object({
     id: z.string(),
-    type: z.enum(['door', 'container', 'npc', 'exit', 'start', 'pickup', 'trigger', 'station', 'nest', 'spawn', 'vehicle', 'light', 'label', 'blocker']),
+    type: z.enum([
+      'door',
+      'container',
+      'npc',
+      'exit',
+      'start',
+      'pickup',
+      'trigger',
+      'station',
+      'nest',
+      'spawn',
+      'light',
+      'label',
+      'blocker',
+      'interact',
+      'siphon',
+    ]),
     x: z.number().int(),
     y: z.number().int(),
     w: z.number().int().default(1),
@@ -473,24 +571,40 @@ export const ZoneObject = z
     keyId: id.optional(),
     containerType: id.optional(),
     lootTable: id.optional(),
-    items: z.array(z.object({ itemId: id, qty: z.number().int().min(1).default(1) })).optional(),
+    items: z.array(z.object({ itemId: id, qty: z.number().int().min(1).default(1) }).strict()).optional(),
     npcId: id.optional(),
+    /** exit: world-map node to travel from (defaults to the zone's exitNode). */
     nodeId: id.optional(),
+    /** exit: walk straight into another zone (e.g. a basement) at its `entry` start object. */
+    toZone: id.optional(),
+    entry: z.string().optional(),
     itemId: id.optional(),
     qty: z.number().int().optional(),
     station: z.string().optional(),
+    /** station: fixed tier for field stations (the hub's stations read the base state). */
+    tier: z.number().int().optional(),
     enemyType: id.optional(),
     count: z.number().int().optional(),
     text: z.string().optional(),
+    /** Shown when an interact/blocker/trigger's conditions or tool requirement aren't met. */
+    failText: z.string().optional(),
     once: z.boolean().default(true),
     effects: z.array(Effect).default([]),
     if: z.array(Condition).default([]),
     label: z.string().optional(),
     hp: z.number().optional(),
-    /** For 'blocker': what removes it (tool flag) e.g. 'cutter'. */
+    /** blocker/interact: a tool flag the player must carry (lockpick, crowbar, hose, cutter). */
     requires: z.string().optional(),
+    /** interact/blocker/siphon: seconds to hold E (0 = tap). */
+    hold: z.number().optional(),
+    /** interact: open this dialogue instead of running effects directly. */
+    dialogue: id.optional(),
     siphonLiters: z.number().optional(),
     alarm: z.boolean().optional(),
+    radius: z.number().optional(),
+    color: z.string().optional(),
+    /** Noise radius made when this interaction completes (forcing, cutting chains). */
+    noise: z.number().optional(),
   })
   .strict();
 export type ZoneObjectT = z.infer<typeof ZoneObject>;
@@ -516,6 +630,10 @@ export const ZoneDef = z
     lootTypes: z.array(z.string()).default([]),
     exitNode: id.optional(),
     onEnter: z.array(Effect).default([]),
+    /** Effects run only the first time the player enters. */
+    onFirstEnter: z.array(Effect).default([]),
+    /** Shown on the world map. */
+    description: z.string().default(''),
   })
   .strict();
 export type ZoneDef = z.infer<typeof ZoneDef>;
@@ -529,6 +647,8 @@ export const WorldNodeDef = z
     y: z.number(),
     startKnown: z.boolean().default(false),
     description: z.string().default(''),
+    /** A node that is shown but can't be travelled to yet (story teaser). */
+    lockedText: z.string().optional(),
   })
   .strict();
 export type WorldNodeDef = z.infer<typeof WorldNodeDef>;
@@ -547,7 +667,17 @@ export const TravelEventDef = z
           .object({
             text: z.string(),
             if: z.array(Condition).default([]),
-            outcomes: z.array(z.object({ weight: z.number().positive().default(1), text: z.string(), effects: z.array(Effect).default([]) }).strict()).min(1),
+            outcomes: z
+              .array(
+                z
+                  .object({
+                    weight: z.number().positive().default(1),
+                    text: z.string(),
+                    effects: z.array(Effect).default([]),
+                  })
+                  .strict(),
+              )
+              .min(1),
           })
           .strict(),
       )
@@ -556,11 +686,19 @@ export const TravelEventDef = z
   .strict();
 export type TravelEventDef = z.infer<typeof TravelEventDef>;
 
-export const NoteDef = z.object({ id, title: z.string(), body: z.string(), effects: z.array(Effect).default([]) }).strict();
+export const NoteDef = z
+  .object({ id, title: z.string(), body: z.string(), effects: z.array(Effect).default([]) })
+  .strict();
 export type NoteDef = z.infer<typeof NoteDef>;
 
 export const BroadcastDef = z
-  .object({ id, if: z.array(Condition).default([]), title: z.string(), text: z.string(), effects: z.array(Effect).default([]) })
+  .object({
+    id,
+    if: z.array(Condition).default([]),
+    title: z.string(),
+    text: z.string(),
+    effects: z.array(Effect).default([]),
+  })
   .strict();
 export type BroadcastDef = z.infer<typeof BroadcastDef>;
 
@@ -578,7 +716,9 @@ export const StationUpgradeDef = z
   .strict();
 export type StationUpgradeDef = z.infer<typeof StationUpgradeDef>;
 
-export const SkillDef = z.object({ id, name: z.string(), description: z.string(), ranks: z.array(z.string()).length(5) }).strict();
+export const SkillDef = z
+  .object({ id, name: z.string(), description: z.string(), ranks: z.array(z.string()).length(5) })
+  .strict();
 
 export const ContentFiles = {
   names: z.record(z.string(), z.string()),

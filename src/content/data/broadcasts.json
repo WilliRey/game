@@ -1,0 +1,33 @@
+[
+  {
+    "id": "radio_train",
+    "title": "Radio — static, then a voice",
+    "text": "\"...this is Northgate Rail Yard, repeating. We have a train. We have diesel for one run out of {city}. If you can reach us, come. Cross the river. Don't bring the dead.\"",
+    "effects": [{ "type": "setFlag", "key": "heard_train", "value": true }]
+  },
+  {
+    "id": "radio_firehouse",
+    "title": "Radio — a calm woman's voice",
+    "text": "\"This is Ruth at {firehouse9}, Alder Street. We have water and a fence. If you're alive and you're not stupid, come east past the transit depot. Knock twice.\"",
+    "if": [{ "type": "quest", "questId": "prologue", "status": "active" }],
+    "effects": [{ "type": "unlockNode", "nodeId": "firehouse9" }]
+  },
+  {
+    "id": "radio_st_agnes",
+    "title": "Radio — an old recording loop",
+    "text": "\"...St. Agnes evacuation has been suspended. Staff are ordered to shelter in place. Repeat, St. Agnes evacuation has been...\" The loop is dated day 4.",
+    "if": [{ "type": "quest", "questId": "act1", "status": "started" }]
+  },
+  {
+    "id": "radio_tollmen",
+    "title": "Radio — a man laughing",
+    "text": "\"Northgate bridge is open for business, friends. Toll's fifty cans or one gun. Ask the river what happens if you don't pay.\"",
+    "if": [{ "type": "flag", "key": "act1_done" }]
+  },
+  {
+    "id": "radio_weather",
+    "title": "Radio — a teenager reading a notebook",
+    "text": "\"Weather report for day {day}. Clouds. Probably rain later. Fill your buckets. That's the weather. Stay alive, Harrow.\"",
+    "if": [{ "type": "day", "min": 24 }]
+  }
+]

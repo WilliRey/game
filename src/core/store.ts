@@ -34,9 +34,15 @@ export type ScreenId =
   | 'newGame'
   | 'stash'
   | 'travelEvent'
-  | 'console';
+  | 'skills'
+  | 'console'
+  | 'credits';
 
-/** Screens that stop the game clock while open (brief §5 "Clock behavior"). */
+/**
+ * Screens that stop the game clock while open (brief §5 "Clock behavior"). The inventory, loot window and
+ * journal are deliberately absent: in the field the world keeps moving unless the player opts into
+ * `inventoryPausesClock` (DESIGN decision 16).
+ */
 export const CLOCK_STOPPING: ReadonlySet<ScreenId> = new Set<ScreenId>([
   'mainMenu',
   'pause',
@@ -54,24 +60,32 @@ export const CLOCK_STOPPING: ReadonlySet<ScreenId> = new Set<ScreenId>([
   'newGame',
   'stash',
   'travelEvent',
-  'journal',
+  'skills',
+  'console',
+  'credits',
 ]);
+const INVENTORY_LIKE: ReadonlySet<ScreenId> = new Set<ScreenId>(['inventory', 'loot', 'journal']);
 
 export interface ScreenEntry {
   id: ScreenId;
   props?: Record<string, unknown>;
 }
 
+export type Phase = 'boot' | 'menu' | 'playing';
+
 /**
  * The single owner of game state at runtime. Systems get the GameContext; presentation reads
- * `store.ctx.state` and subscribes to `store.subscribe` for re-render notifications.
+ * `store.state` and subscribes via `store.subscribe` for re-render notifications.
  */
 export class GameStore {
   ctx: GameContext;
   screens: ScreenEntry[] = [];
+  phase: Phase = 'boot';
   version = 0;
+  /** Unsubscribers for listeners that live as long as one play session (quests, hints, autosave...). */
+  private sessionDisposers: (() => void)[] = [];
   private listeners = new Set<() => void>();
-  private rafPending = false;
+  private flushPending = false;
 
   constructor(content: Content, settings: SettingsState = loadSettings()) {
     const bus = new EventBus();
@@ -94,6 +108,9 @@ export class GameStore {
   get bus(): EventBus {
     return this.ctx.bus;
   }
+  get settings(): SettingsState {
+    return this.ctx.settings;
+  }
   get hasGame(): boolean {
     return this.ctx.state !== null;
   }
@@ -102,6 +119,19 @@ export class GameStore {
   setState(state: GameState): void {
     this.ctx.state = state;
     this.ctx.rng = new Rng(state.rng);
+    this.notify();
+  }
+
+  /** Register a listener that is removed when the session ends (new game, load, quit to menu). */
+  addSessionDisposer(fn: () => void): void {
+    this.sessionDisposers.push(fn);
+  }
+  endSession(): void {
+    for (const d of this.sessionDisposers.splice(0)) d();
+  }
+
+  setPhase(phase: Phase): void {
+    this.phase = phase;
     this.notify();
   }
 
@@ -132,10 +162,10 @@ export class GameStore {
   }
   /** True when a screen that stops the game clock is open. */
   get clockStopped(): boolean {
+    if (this.phase !== 'playing') return true;
     for (const s of this.screens) {
       if (CLOCK_STOPPING.has(s.id)) return true;
-      if (s.id === 'inventory' && this.ctx.settings.inventoryPausesClock) return true;
-      if (s.id === 'loot') return true;
+      if (INVENTORY_LIKE.has(s.id) && this.ctx.settings.inventoryPausesClock) return true;
     }
     return false;
   }
@@ -149,12 +179,13 @@ export class GameStore {
     this.listeners.add(fn);
     return () => this.listeners.delete(fn);
   }
+  /** Schedule a UI refresh. Batched to one flush per frame. */
   notify(): void {
     this.version++;
-    if (this.rafPending) return;
-    this.rafPending = true;
+    if (this.flushPending) return;
+    this.flushPending = true;
     const flush = () => {
-      this.rafPending = false;
+      this.flushPending = false;
       for (const l of [...this.listeners]) l();
     };
     if (typeof requestAnimationFrame === 'function') requestAnimationFrame(flush);

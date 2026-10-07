@@ -1,0 +1,122 @@
+[
+  {
+    "id": "move",
+    "title": "Getting around",
+    "text": "WASD moves, the mouse aims. Shift sprints, C crouches. Crouching is slow but quiet."
+  },
+  {
+    "id": "search",
+    "title": "Searching",
+    "text": "Hold E at a container to search it. It takes a few seconds and makes a little noise. Moving or getting hit stops you."
+  },
+  {
+    "id": "hungry",
+    "title": "Hungry",
+    "text": "Your hunger is low. Open the inventory (Tab) and eat something. At zero you start losing health."
+  },
+  {
+    "id": "thirsty",
+    "title": "Thirsty",
+    "text": "Your thirst is low. Drink something from the inventory (Tab). Dirty water should be boiled at a stove first."
+  },
+  {
+    "id": "locked",
+    "title": "Locked",
+    "text": "Hold E to pick the lock if you carry a lockpick: quiet and slow. Hold Shift+E to force it with a crowbar: fast and loud. Some locks need a key."
+  },
+  {
+    "id": "night",
+    "title": "Night falls",
+    "text": "At night you see less, and zombies are more numerous and faster. F toggles the flashlight, but it makes you easier to spot."
+  },
+  {
+    "id": "bleeding",
+    "title": "Bleeding",
+    "text": "You're bleeding. Use a bandage before it adds up. Bandages are crafted from cloth rags (Tab → Craft)."
+  },
+  {
+    "id": "infection",
+    "title": "Infected",
+    "text": "A bite got infected. It worsens over days. Antibiotics knock it back; left untreated, it kills."
+  },
+  {
+    "id": "encumbered",
+    "title": "Encumbered",
+    "text": "You're carrying more than you can manage: slower, and no sprinting. Drop something, stash it, or find a backpack."
+  },
+  {
+    "id": "bottle",
+    "title": "Distractions",
+    "text": "Select a bottle with 4 and press G (or click) to throw it. Zombies go to check out the noise."
+  },
+  {
+    "id": "noise",
+    "title": "Noise",
+    "text": "Everything you do makes noise; the meter shows how loud you are. Zombies hear it. Broken glass underfoot is loud."
+  },
+  {
+    "id": "fight",
+    "title": "Fighting",
+    "text": "Click to swing. An unaware zombie hit from behind takes triple damage. Space shoves when you're surrounded."
+  },
+  {
+    "id": "craft",
+    "title": "Crafting",
+    "text": "Tab opens crafting for simple items. Weapons and mods need a workbench (E). Blueprints unlock new recipes."
+  },
+  {
+    "id": "weapon_broken",
+    "title": "Broken weapon",
+    "text": "That weapon broke. Repair it at a workbench, or dismantle it for parts."
+  },
+  {
+    "id": "worldmap",
+    "title": "The world map",
+    "text": "Walking costs time, and time costs food and water. Some places are too far to walk."
+  },
+  {
+    "id": "trade",
+    "title": "Bartering",
+    "text": "Money is worthless. Offer goods worth at least what you take. Anything extra stays with the trader as credit."
+  },
+  {
+    "id": "journal",
+    "title": "Journal",
+    "text": "J opens the journal. The tracked objective is shown at the top right."
+  },
+  {
+    "id": "sleep",
+    "title": "The bunk",
+    "text": "Sleep to pass time and heal slowly. Sleeping saves the game."
+  },
+  {
+    "id": "reload",
+    "title": "Reloading",
+    "text": "R reloads from your reserve ammo. The shotgun loads one shell at a time."
+  },
+  {
+    "id": "quickslot",
+    "title": "Quick slots",
+    "text": "In the inventory, assign food or medicine to quick slots 5–8 for one-key use."
+  },
+  {
+    "id": "zombie",
+    "title": "Zombies",
+    "text": "They see in a cone in front of them and they hear everything. Crouch (C) and come from behind."
+  },
+  {
+    "id": "low_hp",
+    "title": "Hurt",
+    "text": "Your health is low. Eat well to regenerate slowly, or use painkillers and first-aid kits."
+  },
+  {
+    "id": "food_poisoning",
+    "title": "Food poisoning",
+    "text": "Raw food or unboiled water made you sick. It passes, but it hurts. Charcoal tablets settle it."
+  },
+  {
+    "id": "vehicle",
+    "title": "Driving",
+    "text": "The ambulance is yours. On the world map, travel by vehicle: much faster, fewer encounters, but it burns fuel."
+  }
+]

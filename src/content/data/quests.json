@@ -1,0 +1,32 @@
+[
+  {
+    "id": "prologue",
+    "name": "Empty Cupboards",
+    "type": "main",
+    "description": "The food ran out this morning. Find some, then find other people.",
+    "stages": [
+      {
+        "id": "reach_firehouse",
+        "text": "Make it to Firehouse 9.",
+        "objectives": [
+          { "id": "reach", "type": "reach", "target": "firehouse9", "text": "Reach Firehouse 9" }
+        ]
+      }
+    ],
+    "outcomes": {}
+  },
+  {
+    "id": "act1",
+    "name": "Firehouse 9",
+    "type": "main",
+    "description": "Ruth's deal: get the ambulance running and it's yours.",
+    "stages": [
+      {
+        "id": "placeholder",
+        "text": "Placeholder until M5.",
+        "objectives": [{ "id": "flag", "type": "flag", "target": "act1_placeholder", "text": "Placeholder" }]
+      }
+    ],
+    "outcomes": {}
+  }
+]

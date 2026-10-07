@@ -5,6 +5,21 @@
 export type Difficulty = 'story' | 'survivor' | 'hardcore';
 
 export const BALANCE = {
+  /** Sam's kit on a new game. Equipped automatically where it fits a slot. */
+  start: {
+    items: [
+      { itemId: 'wrench', qty: 1 },
+      { itemId: 'flashlight', qty: 1 },
+      { itemId: 'glass_bottle', qty: 2 },
+      { itemId: 'bandage', qty: 1 },
+      { itemId: 'dirty_water', qty: 1 },
+    ] as { itemId: string; qty: number }[],
+    hunger: 32,
+    thirst: 55,
+    zone: 'maple_court',
+    node: 'maple_court',
+    quest: 'prologue',
+  },
   time: {
     gameMinutesPerRealSecond: 1,
     startDay: 23,
@@ -152,7 +167,10 @@ export const BALANCE = {
     xpPerLevelBase: 100,
     xpPerLevelGrowth: 1.35,
     maxSkillRank: 5,
-    killXp: { walker: 10, runner: 14, bloater: 40, bloater_boss: 200, screamer: 25 } as Record<string, number>,
+    killXp: { walker: 10, runner: 14, bloater: 40, bloater_boss: 200, screamer: 25 } as Record<
+      string,
+      number
+    >,
     discoveryXp: 25,
     craftXp: 5,
   },

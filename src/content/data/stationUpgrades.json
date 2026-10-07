@@ -1,0 +1,52 @@
+[
+  {
+    "station": "workbench",
+    "tier": 2,
+    "cost": [
+      { "itemId": "scrap_metal", "qty": 6 },
+      { "itemId": "mechanical_parts", "qty": 2 },
+      { "itemId": "duct_tape", "qty": 2 }
+    ],
+    "description": "Bolt on a vise and proper clamps. Unlocks tier 2 recipes and raises crafted quality."
+  },
+  {
+    "station": "workbench",
+    "tier": 3,
+    "cost": [
+      { "itemId": "scrap_metal", "qty": 8 },
+      { "itemId": "mechanical_parts", "qty": 4 },
+      { "itemId": "electronics", "qty": 2 },
+      { "itemId": "spring", "qty": 2 }
+    ],
+    "description": "Power tools running off a truck battery. Unlocks tier 3 recipes and the best quality."
+  },
+  {
+    "station": "reloading",
+    "tier": 1,
+    "cost": [
+      { "itemId": "scrap_metal", "qty": 5 },
+      { "itemId": "mechanical_parts", "qty": 3 },
+      { "itemId": "spring", "qty": 2 }
+    ],
+    "description": "A press and a set of dies. Turns scrap and gunpowder into ammunition."
+  },
+  {
+    "station": "stove",
+    "tier": 2,
+    "cost": [
+      { "itemId": "scrap_metal", "qty": 4 },
+      { "itemId": "pipe_section", "qty": 1 }
+    ],
+    "description": "A second burner and a chimney. Cooking takes half the time."
+  },
+  {
+    "station": "rainCollector",
+    "tier": 1,
+    "cost": [
+      { "itemId": "wood_plank", "qty": 3 },
+      { "itemId": "rubber_tube", "qty": 1 }
+    ],
+    "requiresFlag": "rain_check_done",
+    "description": "Collects rain into a barrel: dirty water, free, forever. Built through Gus's Rain Check."
+  }
+]

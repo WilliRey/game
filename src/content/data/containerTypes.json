@@ -1,0 +1,81 @@
+[
+  { "id": "fridge", "name": "Fridge", "size": "medium", "lootTable": "fridge", "blocksSight": true },
+  { "id": "cabinet", "name": "Kitchen Cabinet", "size": "small", "lootTable": "cabinet" },
+  { "id": "medicine_cabinet", "name": "Medicine Cabinet", "size": "small", "lootTable": "medicine_cabinet" },
+  { "id": "toolbox", "name": "Toolbox", "size": "small", "lootTable": "toolbox" },
+  { "id": "desk", "name": "Desk", "size": "medium", "lootTable": "desk" },
+  {
+    "id": "locker",
+    "name": "Locker",
+    "size": "medium",
+    "lootTable": "locker",
+    "lockChanceByTier": [0.1, 0.2, 0.3, 0.4],
+    "blocksSight": true
+  },
+  {
+    "id": "car_trunk",
+    "name": "Car Wreck",
+    "size": "large",
+    "lootTable": "car_trunk",
+    "lockChanceByTier": [0, 0.1, 0.15, 0.2]
+  },
+  {
+    "id": "dumpster",
+    "name": "Dumpster",
+    "size": "large",
+    "lootTable": "dumpster",
+    "lockChanceByTier": [0, 0, 0, 0]
+  },
+  {
+    "id": "corpse",
+    "name": "Corpse",
+    "size": "small",
+    "lootTable": "corpse",
+    "lockChanceByTier": [0, 0, 0, 0],
+    "blocksMovement": false
+  },
+  {
+    "id": "shelf",
+    "name": "Store Shelf",
+    "size": "medium",
+    "lootTable": "shelf",
+    "lockChanceByTier": [0, 0, 0, 0]
+  },
+  {
+    "id": "crate",
+    "name": "Supply Crate",
+    "size": "medium",
+    "lootTable": "crate",
+    "lockChanceByTier": [0.05, 0.15, 0.25, 0.35]
+  },
+  { "id": "wardrobe", "name": "Wardrobe", "size": "medium", "lootTable": "wardrobe", "blocksSight": true },
+  {
+    "id": "register",
+    "name": "Cash Register",
+    "size": "small",
+    "lootTable": "register",
+    "lockChanceByTier": [0, 0, 0, 0]
+  },
+  {
+    "id": "pharmacy_shelf",
+    "name": "Pharmacy Shelf",
+    "size": "medium",
+    "lootTable": "pharmacy_shelf",
+    "lockChanceByTier": [0, 0, 0, 0]
+  },
+  {
+    "id": "gun_locker",
+    "name": "Gun Locker",
+    "size": "medium",
+    "lootTable": "gun_locker",
+    "lockChanceByTier": [0.6, 0.6, 0.7, 0.8],
+    "blocksSight": true
+  },
+  {
+    "id": "hospital_cart",
+    "name": "Supply Cart",
+    "size": "small",
+    "lootTable": "hospital_cart",
+    "lockChanceByTier": [0, 0, 0, 0]
+  }
+]

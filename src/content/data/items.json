@@ -1,0 +1,1475 @@
+[
+  {
+    "id": "canned_beans",
+    "name": "Canned Beans",
+    "description": "Cold beans. Still beans.",
+    "category": "food",
+    "weight": 0.45,
+    "value": 10,
+    "stack": 10,
+    "use": {
+      "hunger": 30,
+      "thirst": -3
+    }
+  },
+  {
+    "id": "canned_peaches",
+    "name": "Canned Peaches",
+    "description": "Sweet syrup and soft fruit.",
+    "category": "food",
+    "weight": 0.45,
+    "value": 12,
+    "stack": 10,
+    "use": {
+      "hunger": 20,
+      "thirst": 8
+    }
+  },
+  {
+    "id": "crackers",
+    "name": "Stale Crackers",
+    "description": "Dry enough to make you thirsty.",
+    "category": "food",
+    "weight": 0.2,
+    "value": 5,
+    "stack": 10,
+    "use": {
+      "hunger": 12,
+      "thirst": -4
+    }
+  },
+  {
+    "id": "chips",
+    "name": "Bag of Chips",
+    "description": "Salty. Loud to open.",
+    "category": "food",
+    "weight": 0.15,
+    "value": 4,
+    "stack": 10,
+    "use": {
+      "hunger": 10,
+      "thirst": -6
+    }
+  },
+  {
+    "id": "energy_bar",
+    "name": "Energy Bar",
+    "description": "Chalky, sweet, and good for a second wind.",
+    "category": "food",
+    "weight": 0.1,
+    "value": 9,
+    "stack": 10,
+    "use": {
+      "hunger": 18,
+      "stamina": 30
+    }
+  },
+  {
+    "id": "dog_food",
+    "name": "Dog Food",
+    "description": "Nobody has to know.",
+    "category": "food",
+    "weight": 0.4,
+    "value": 3,
+    "stack": 10,
+    "use": {
+      "hunger": 18,
+      "foodPoisonChance": 0.15
+    }
+  },
+  {
+    "id": "raw_meat",
+    "name": "Raw Meat",
+    "description": "Cook it first unless you like gambling.",
+    "category": "food",
+    "weight": 0.5,
+    "value": 6,
+    "stack": 5,
+    "tags": ["raw"],
+    "use": {
+      "hunger": 20,
+      "raw": true,
+      "foodPoisonChance": 0.6
+    }
+  },
+  {
+    "id": "cooked_meat",
+    "name": "Cooked Meat",
+    "description": "Charred and safe.",
+    "category": "food",
+    "weight": 0.4,
+    "value": 14,
+    "stack": 5,
+    "use": {
+      "hunger": 40
+    }
+  },
+  {
+    "id": "rice",
+    "name": "Bag of Rice",
+    "description": "Needs a pot and some water.",
+    "category": "food",
+    "weight": 1.0,
+    "value": 8,
+    "stack": 5,
+    "tags": ["raw"],
+    "use": {
+      "hunger": 6,
+      "raw": true,
+      "foodPoisonChance": 0.15
+    }
+  },
+  {
+    "id": "rice_porridge",
+    "name": "Rice Porridge",
+    "description": "Bland, warm, filling.",
+    "category": "food",
+    "weight": 0.6,
+    "value": 16,
+    "stack": 5,
+    "use": {
+      "hunger": 45,
+      "thirst": 10
+    }
+  },
+  {
+    "id": "stew",
+    "name": "Hearty Stew",
+    "description": "The best thing anyone has eaten in weeks.",
+    "category": "food",
+    "weight": 0.8,
+    "value": 30,
+    "rarity": "uncommon",
+    "stack": 5,
+    "use": {
+      "hunger": 65,
+      "thirst": 15,
+      "hp": 10
+    }
+  },
+  {
+    "id": "mre",
+    "name": "Ration Pack",
+    "description": "Military issue. Heater included, flavor not.",
+    "category": "food",
+    "weight": 0.6,
+    "value": 22,
+    "rarity": "uncommon",
+    "stack": 5,
+    "use": {
+      "hunger": 55,
+      "thirst": 5
+    }
+  },
+  {
+    "id": "water_bottle",
+    "name": "Bottled Water",
+    "description": "Clean water. Worth more than gold now.",
+    "category": "drink",
+    "weight": 0.5,
+    "value": 8,
+    "stack": 10,
+    "use": {
+      "thirst": 40
+    }
+  },
+  {
+    "id": "boiled_water",
+    "name": "Boiled Water",
+    "description": "Tastes like the pot. Safe.",
+    "category": "drink",
+    "weight": 0.5,
+    "value": 6,
+    "stack": 10,
+    "use": {
+      "thirst": 40
+    }
+  },
+  {
+    "id": "dirty_water",
+    "name": "Dirty Water",
+    "description": "Boil it first, or risk your gut.",
+    "category": "drink",
+    "weight": 0.5,
+    "value": 2,
+    "stack": 10,
+    "tags": ["raw"],
+    "use": {
+      "thirst": 30,
+      "raw": true,
+      "foodPoisonChance": 0.5
+    }
+  },
+  {
+    "id": "soda",
+    "name": "Flat Soda",
+    "description": "Sugar and memories.",
+    "category": "drink",
+    "weight": 0.35,
+    "value": 6,
+    "stack": 10,
+    "use": {
+      "thirst": 22,
+      "hunger": 4,
+      "stamina": 15
+    }
+  },
+  {
+    "id": "coffee",
+    "name": "Canned Coffee",
+    "description": "Cold, bitter, wakes you up.",
+    "category": "drink",
+    "weight": 0.3,
+    "value": 7,
+    "stack": 10,
+    "use": {
+      "thirst": 15,
+      "stamina": 40
+    }
+  },
+  {
+    "id": "bandage",
+    "name": "Bandage",
+    "description": "Stops bleeding.",
+    "category": "medical",
+    "weight": 0.05,
+    "value": 6,
+    "stack": 10,
+    "use": {
+      "cureBleeding": true,
+      "hp": 5,
+      "useTimeMs": 1500
+    }
+  },
+  {
+    "id": "painkillers",
+    "name": "Painkillers",
+    "description": "Takes the edge off.",
+    "category": "medical",
+    "weight": 0.05,
+    "value": 15,
+    "stack": 10,
+    "use": {
+      "hp": 15,
+      "useTimeMs": 600
+    }
+  },
+  {
+    "id": "first_aid_kit",
+    "name": "First-Aid Kit",
+    "description": "Proper dressing, sutures, the works.",
+    "category": "medical",
+    "weight": 0.4,
+    "value": 40,
+    "rarity": "uncommon",
+    "stack": 3,
+    "use": {
+      "hp": 45,
+      "cureBleeding": true,
+      "useTimeMs": 2500
+    }
+  },
+  {
+    "id": "antibiotics",
+    "name": "Antibiotics",
+    "description": "Knocks an infection back hard.",
+    "category": "medical",
+    "weight": 0.05,
+    "value": 60,
+    "rarity": "rare",
+    "stack": 5,
+    "use": {
+      "antibiotic": true,
+      "useTimeMs": 800
+    }
+  },
+  {
+    "id": "activated_charcoal",
+    "name": "Charcoal Tablets",
+    "description": "Settles a poisoned stomach.",
+    "category": "medical",
+    "weight": 0.05,
+    "value": 10,
+    "stack": 10,
+    "use": {
+      "cureFoodPoisoning": true,
+      "useTimeMs": 600
+    }
+  },
+  {
+    "id": "scrap_metal",
+    "name": "Scrap Metal",
+    "description": "Bent sheet, bolts, brackets.",
+    "category": "material",
+    "weight": 0.5,
+    "value": 3,
+    "stack": 20
+  },
+  {
+    "id": "wood_plank",
+    "name": "Wood Plank",
+    "description": "Pulled off a fence.",
+    "category": "material",
+    "weight": 1.0,
+    "value": 2,
+    "stack": 10
+  },
+  {
+    "id": "nails",
+    "name": "Box of Nails",
+    "description": "Assorted, mostly straight.",
+    "category": "material",
+    "weight": 0.3,
+    "value": 4,
+    "stack": 10
+  },
+  {
+    "id": "duct_tape",
+    "name": "Duct Tape",
+    "description": "Holds the world together.",
+    "category": "material",
+    "weight": 0.2,
+    "value": 6,
+    "stack": 10
+  },
+  {
+    "id": "cloth",
+    "name": "Cloth Rags",
+    "description": "Torn sheets and shirts.",
+    "category": "material",
+    "weight": 0.1,
+    "value": 2,
+    "stack": 20
+  },
+  {
+    "id": "alcohol",
+    "name": "Rubbing Alcohol",
+    "description": "Burns well. Disinfects too.",
+    "category": "material",
+    "weight": 0.4,
+    "value": 8,
+    "stack": 5
+  },
+  {
+    "id": "gunpowder",
+    "name": "Gunpowder",
+    "description": "Scraped from old shells and fireworks.",
+    "category": "material",
+    "weight": 0.1,
+    "value": 8,
+    "rarity": "uncommon",
+    "stack": 20
+  },
+  {
+    "id": "pipe_section",
+    "name": "Pipe Section",
+    "description": "A short length of steel pipe.",
+    "category": "material",
+    "weight": 0.6,
+    "value": 4,
+    "stack": 5
+  },
+  {
+    "id": "spring",
+    "name": "Spring",
+    "description": "Useful in anything that clicks.",
+    "category": "material",
+    "weight": 0.05,
+    "value": 6,
+    "rarity": "uncommon",
+    "stack": 10
+  },
+  {
+    "id": "wire",
+    "name": "Copper Wire",
+    "description": "Stripped from walls.",
+    "category": "material",
+    "weight": 0.1,
+    "value": 4,
+    "stack": 10
+  },
+  {
+    "id": "rubber_tube",
+    "name": "Rubber Tubing",
+    "description": "Flexible and mostly intact.",
+    "category": "material",
+    "weight": 0.2,
+    "value": 5,
+    "stack": 5
+  },
+  {
+    "id": "mechanical_parts",
+    "name": "Mechanical Parts",
+    "description": "Gears, bearings, a fan belt. Sam's favorite kind of junk.",
+    "category": "material",
+    "weight": 0.4,
+    "value": 8,
+    "stack": 10
+  },
+  {
+    "id": "electronics",
+    "name": "Electronic Parts",
+    "description": "Circuit boards and switches.",
+    "category": "material",
+    "weight": 0.2,
+    "value": 10,
+    "rarity": "uncommon",
+    "stack": 10
+  },
+  {
+    "id": "batteries",
+    "name": "Batteries",
+    "description": "Some of them still hold a charge.",
+    "category": "material",
+    "weight": 0.1,
+    "value": 6,
+    "stack": 10
+  },
+  {
+    "id": "chemicals",
+    "name": "Cleaning Chemicals",
+    "description": "Do not mix. Or do, carefully.",
+    "category": "material",
+    "weight": 0.5,
+    "value": 6,
+    "stack": 5
+  },
+  {
+    "id": "lens",
+    "name": "Glass Lens",
+    "description": "From a camera or binoculars.",
+    "category": "material",
+    "weight": 0.1,
+    "value": 12,
+    "rarity": "rare",
+    "stack": 5
+  },
+  {
+    "id": "lockpick",
+    "name": "Lockpick",
+    "description": "Quiet way in. Breaks after one lock.",
+    "category": "tool",
+    "weight": 0.02,
+    "value": 8,
+    "stack": 10,
+    "tool": {
+      "lockpick": true
+    }
+  },
+  {
+    "id": "bolt_cutters",
+    "name": "Bolt Cutters",
+    "description": "Cuts chains and padlocks.",
+    "category": "tool",
+    "weight": 2.0,
+    "value": 35,
+    "rarity": "uncommon",
+    "tool": {
+      "cutter": true
+    }
+  },
+  {
+    "id": "siphon_hose",
+    "name": "Siphon Hose",
+    "description": "Gets fuel out of a tank and into a can.",
+    "category": "tool",
+    "weight": 0.4,
+    "value": 15,
+    "tool": {
+      "hose": true
+    }
+  },
+  {
+    "id": "flashlight",
+    "name": "Flashlight",
+    "description": "Press F. Lights the way, and lights you up.",
+    "category": "tool",
+    "weight": 0.3,
+    "value": 12,
+    "tool": {
+      "flashlight": true
+    }
+  },
+  {
+    "id": "ammo_9mm",
+    "name": "9mm Rounds",
+    "description": "Pistol ammunition.",
+    "category": "ammo",
+    "weight": 0.012,
+    "value": 2,
+    "stack": 60,
+    "ammo": {
+      "type": "9mm"
+    }
+  },
+  {
+    "id": "ammo_shell",
+    "name": "12ga Shells",
+    "description": "Shotgun shells.",
+    "category": "ammo",
+    "weight": 0.04,
+    "value": 4,
+    "stack": 30,
+    "ammo": {
+      "type": "shell"
+    }
+  },
+  {
+    "id": "ammo_rifle",
+    "name": ".308 Rounds",
+    "description": "Rifle ammunition.",
+    "category": "ammo",
+    "weight": 0.025,
+    "value": 6,
+    "rarity": "uncommon",
+    "stack": 30,
+    "ammo": {
+      "type": "rifle"
+    }
+  },
+  {
+    "id": "crossbow_bolt",
+    "name": "Crossbow Bolts",
+    "description": "Recoverable if they don't snap.",
+    "category": "ammo",
+    "weight": 0.06,
+    "value": 4,
+    "stack": 20,
+    "ammo": {
+      "type": "bolt"
+    }
+  },
+  {
+    "id": "scrap_rounds",
+    "name": "Scrap Rounds",
+    "description": "Hand-packed rounds for the pipe pistol.",
+    "category": "ammo",
+    "weight": 0.015,
+    "value": 1,
+    "stack": 60,
+    "ammo": {
+      "type": "scrap"
+    }
+  },
+  {
+    "id": "knife",
+    "name": "Kitchen Knife",
+    "description": "Fast and quiet. Best from behind.",
+    "category": "weapon",
+    "weight": 0.3,
+    "value": 15,
+    "rarity": "common",
+    "durability": 60,
+    "weapon": {
+      "kind": "melee",
+      "damage": 10,
+      "melee": {
+        "arcDeg": 60,
+        "range": 1.1,
+        "windupMs": 80,
+        "recoveryMs": 180,
+        "stamina": 5,
+        "knockback": 0.2,
+        "staggerChance": 0.1
+      },
+      "modSlots": ["grip"]
+    },
+    "dismantle": [
+      {
+        "itemId": "scrap_metal",
+        "qty": 1
+      }
+    ]
+  },
+  {
+    "id": "wrench",
+    "name": "Pipe Wrench",
+    "description": "Sam's wrench from the depot. Heavy, reliable.",
+    "category": "weapon",
+    "weight": 1.4,
+    "value": 18,
+    "rarity": "common",
+    "durability": 120,
+    "weapon": {
+      "kind": "melee",
+      "damage": 14,
+      "melee": {
+        "arcDeg": 80,
+        "range": 1.3,
+        "windupMs": 140,
+        "recoveryMs": 280,
+        "stamina": 9,
+        "knockback": 0.6,
+        "staggerChance": 0.3
+      },
+      "modSlots": ["head", "grip"]
+    },
+    "dismantle": [
+      {
+        "itemId": "scrap_metal",
+        "qty": 2
+      }
+    ]
+  },
+  {
+    "id": "lead_pipe",
+    "name": "Lead Pipe",
+    "description": "A length of pipe with a good heft.",
+    "category": "weapon",
+    "weight": 1.5,
+    "value": 14,
+    "rarity": "common",
+    "durability": 90,
+    "weapon": {
+      "kind": "melee",
+      "damage": 15,
+      "melee": {
+        "arcDeg": 85,
+        "range": 1.4,
+        "windupMs": 150,
+        "recoveryMs": 300,
+        "stamina": 10,
+        "knockback": 0.7,
+        "staggerChance": 0.35
+      },
+      "modSlots": ["head", "grip"]
+    },
+    "dismantle": [
+      {
+        "itemId": "pipe_section",
+        "qty": 1
+      }
+    ]
+  },
+  {
+    "id": "crowbar",
+    "name": "Crowbar",
+    "description": "Pries doors and skulls. Forcing locks is loud.",
+    "category": "weapon",
+    "weight": 2.0,
+    "value": 30,
+    "rarity": "common",
+    "durability": 150,
+    "weapon": {
+      "kind": "melee",
+      "damage": 16,
+      "melee": {
+        "arcDeg": 80,
+        "range": 1.4,
+        "windupMs": 160,
+        "recoveryMs": 300,
+        "stamina": 10,
+        "knockback": 0.7,
+        "staggerChance": 0.35
+      },
+      "modSlots": ["grip"]
+    },
+    "tool": {
+      "crowbar": true
+    },
+    "dismantle": [
+      {
+        "itemId": "scrap_metal",
+        "qty": 3
+      }
+    ]
+  },
+  {
+    "id": "bat",
+    "name": "Baseball Bat",
+    "description": "Wide swings, good knockback.",
+    "category": "weapon",
+    "weight": 1.0,
+    "value": 20,
+    "rarity": "common",
+    "durability": 80,
+    "weapon": {
+      "kind": "melee",
+      "damage": 18,
+      "melee": {
+        "arcDeg": 100,
+        "range": 1.5,
+        "windupMs": 170,
+        "recoveryMs": 320,
+        "stamina": 11,
+        "knockback": 1.0,
+        "staggerChance": 0.45
+      },
+      "modSlots": ["head", "grip"]
+    },
+    "dismantle": [
+      {
+        "itemId": "wood_plank",
+        "qty": 1
+      }
+    ]
+  },
+  {
+    "id": "nail_bat",
+    "name": "Nail Bat",
+    "description": "A bat with opinions.",
+    "category": "weapon",
+    "weight": 1.2,
+    "value": 35,
+    "rarity": "uncommon",
+    "durability": 70,
+    "weapon": {
+      "kind": "melee",
+      "damage": 25,
+      "melee": {
+        "arcDeg": 100,
+        "range": 1.5,
+        "windupMs": 180,
+        "recoveryMs": 330,
+        "stamina": 12,
+        "knockback": 1.0,
+        "staggerChance": 0.45
+      },
+      "modSlots": ["grip"]
+    },
+    "dismantle": [
+      {
+        "itemId": "wood_plank",
+        "qty": 1
+      },
+      {
+        "itemId": "nails",
+        "qty": 1
+      }
+    ]
+  },
+  {
+    "id": "machete",
+    "name": "Machete",
+    "description": "Cleaves through a crowd.",
+    "category": "weapon",
+    "weight": 0.8,
+    "value": 45,
+    "rarity": "uncommon",
+    "durability": 100,
+    "weapon": {
+      "kind": "melee",
+      "damage": 26,
+      "melee": {
+        "arcDeg": 110,
+        "range": 1.5,
+        "windupMs": 140,
+        "recoveryMs": 280,
+        "stamina": 10,
+        "knockback": 0.4,
+        "staggerChance": 0.25,
+        "cleave": true
+      },
+      "modSlots": ["grip"]
+    },
+    "dismantle": [
+      {
+        "itemId": "scrap_metal",
+        "qty": 2
+      }
+    ]
+  },
+  {
+    "id": "fire_axe",
+    "name": "Fire Axe",
+    "description": "Slow, brutal, cleaves.",
+    "category": "weapon",
+    "weight": 2.8,
+    "value": 60,
+    "rarity": "rare",
+    "durability": 140,
+    "weapon": {
+      "kind": "melee",
+      "damage": 34,
+      "melee": {
+        "arcDeg": 110,
+        "range": 1.6,
+        "windupMs": 320,
+        "recoveryMs": 520,
+        "stamina": 20,
+        "knockback": 1.4,
+        "staggerChance": 0.7,
+        "cleave": true,
+        "heavy": true
+      },
+      "modSlots": ["head", "grip"]
+    },
+    "dismantle": [
+      {
+        "itemId": "scrap_metal",
+        "qty": 2
+      },
+      {
+        "itemId": "wood_plank",
+        "qty": 1
+      }
+    ]
+  },
+  {
+    "id": "pipe_pistol",
+    "name": "Pipe Pistol",
+    "description": "Two shots, held together with tape and hope. Jams.",
+    "category": "weapon",
+    "weight": 1.1,
+    "value": 40,
+    "rarity": "common",
+    "durability": 50,
+    "weapon": {
+      "kind": "firearm",
+      "damage": 18,
+      "firearm": {
+        "ammoType": "scrap",
+        "magSize": 2,
+        "reloadMs": 1800,
+        "spreadBaseDeg": 5,
+        "spreadMaxDeg": 18,
+        "range": 14,
+        "noise": 28,
+        "fireIntervalMs": 400,
+        "jamChance": 0.12
+      },
+      "modSlots": [],
+      "wearPerUse": 1,
+      "crude": true
+    },
+    "dismantle": [
+      {
+        "itemId": "pipe_section",
+        "qty": 1
+      },
+      {
+        "itemId": "spring",
+        "qty": 1
+      }
+    ]
+  },
+  {
+    "id": "pistol_9mm",
+    "name": "9mm Pistol",
+    "description": "A dependable sidearm. Loud.",
+    "category": "weapon",
+    "weight": 0.9,
+    "value": 120,
+    "rarity": "uncommon",
+    "durability": 200,
+    "weapon": {
+      "kind": "firearm",
+      "damage": 20,
+      "firearm": {
+        "ammoType": "9mm",
+        "magSize": 12,
+        "reloadMs": 1400,
+        "spreadBaseDeg": 3,
+        "spreadMaxDeg": 14,
+        "range": 20,
+        "noise": 28,
+        "fireIntervalMs": 220
+      },
+      "modSlots": ["muzzle", "sight", "magazine"],
+      "wearPerUse": 1
+    },
+    "dismantle": [
+      {
+        "itemId": "spring",
+        "qty": 1
+      },
+      {
+        "itemId": "scrap_metal",
+        "qty": 2
+      }
+    ]
+  },
+  {
+    "id": "pump_shotgun",
+    "name": "Pump Shotgun",
+    "description": "Nine pellets. Loads shell by shell. Very loud.",
+    "category": "weapon",
+    "weight": 3.4,
+    "value": 220,
+    "rarity": "rare",
+    "durability": 180,
+    "weapon": {
+      "kind": "firearm",
+      "damage": 8,
+      "firearm": {
+        "ammoType": "shell",
+        "magSize": 5,
+        "reloadMs": 550,
+        "shellByShell": true,
+        "spreadBaseDeg": 12,
+        "spreadMaxDeg": 22,
+        "pellets": 9,
+        "range": 10,
+        "noise": 38,
+        "fireIntervalMs": 750
+      },
+      "modSlots": ["muzzle", "stock"],
+      "wearPerUse": 1
+    },
+    "dismantle": [
+      {
+        "itemId": "pipe_section",
+        "qty": 1
+      },
+      {
+        "itemId": "spring",
+        "qty": 1
+      },
+      {
+        "itemId": "scrap_metal",
+        "qty": 2
+      }
+    ]
+  },
+  {
+    "id": "hunting_rifle",
+    "name": "Hunting Rifle",
+    "description": "One shot, one kill. Everyone hears it.",
+    "category": "weapon",
+    "weight": 3.8,
+    "value": 300,
+    "rarity": "rare",
+    "durability": 220,
+    "weapon": {
+      "kind": "firearm",
+      "damage": 70,
+      "firearm": {
+        "ammoType": "rifle",
+        "magSize": 4,
+        "reloadMs": 2600,
+        "spreadBaseDeg": 1,
+        "spreadMaxDeg": 10,
+        "range": 32,
+        "noise": 45,
+        "fireIntervalMs": 1100
+      },
+      "modSlots": ["muzzle", "sight", "stock"],
+      "wearPerUse": 1
+    },
+    "dismantle": [
+      {
+        "itemId": "pipe_section",
+        "qty": 1
+      },
+      {
+        "itemId": "spring",
+        "qty": 1
+      },
+      {
+        "itemId": "wood_plank",
+        "qty": 1
+      }
+    ]
+  },
+  {
+    "id": "crossbow",
+    "name": "Crossbow",
+    "description": "Near silent. Bolts can be recovered.",
+    "category": "weapon",
+    "weight": 2.6,
+    "value": 180,
+    "rarity": "rare",
+    "durability": 150,
+    "weapon": {
+      "kind": "firearm",
+      "damage": 55,
+      "firearm": {
+        "ammoType": "bolt",
+        "magSize": 1,
+        "reloadMs": 1700,
+        "spreadBaseDeg": 1.5,
+        "spreadMaxDeg": 8,
+        "range": 22,
+        "noise": 3,
+        "fireIntervalMs": 300,
+        "recoverable": true
+      },
+      "modSlots": ["sight", "stock"],
+      "wearPerUse": 1
+    },
+    "dismantle": [
+      {
+        "itemId": "spring",
+        "qty": 1
+      },
+      {
+        "itemId": "wood_plank",
+        "qty": 2
+      }
+    ]
+  },
+  {
+    "id": "glass_bottle",
+    "name": "Glass Bottle",
+    "description": "Throw it (G) to make noise somewhere else. Also a molotov waiting to happen.",
+    "category": "throwable",
+    "weight": 0.4,
+    "value": 2,
+    "stack": 5,
+    "weapon": {
+      "kind": "throwable",
+      "throwable": {
+        "effect": "noise",
+        "radius": 0.5,
+        "noise": 14,
+        "throwRange": 10
+      }
+    }
+  },
+  {
+    "id": "molotov",
+    "name": "Molotov",
+    "description": "A burning area that zombies walk into.",
+    "category": "throwable",
+    "weight": 0.6,
+    "value": 18,
+    "stack": 3,
+    "weapon": {
+      "kind": "throwable",
+      "damage": 14,
+      "throwable": {
+        "effect": "fire",
+        "radius": 2.2,
+        "noise": 10,
+        "durationSec": 8,
+        "throwRange": 9
+      }
+    }
+  },
+  {
+    "id": "pipe_bomb",
+    "name": "Pipe Bomb",
+    "description": "Beeps, draws a crowd, then ends it.",
+    "category": "throwable",
+    "weight": 0.8,
+    "value": 40,
+    "rarity": "uncommon",
+    "stack": 3,
+    "weapon": {
+      "kind": "throwable",
+      "damage": 140,
+      "throwable": {
+        "effect": "explosion",
+        "radius": 3.5,
+        "noise": 40,
+        "fuseMs": 3000,
+        "throwRange": 9
+      }
+    }
+  },
+  {
+    "id": "suppressor",
+    "name": "Suppressor",
+    "description": "Gunshots become a cough (noise radius 9).",
+    "category": "mod",
+    "weight": 0.3,
+    "value": 60,
+    "rarity": "rare",
+    "mod": {
+      "slot": "muzzle",
+      "appliesTo": "firearm",
+      "stats": {
+        "suppressed": true,
+        "damage": 0.95
+      },
+      "ammoTypes": ["9mm", "rifle"]
+    }
+  },
+  {
+    "id": "extended_mag",
+    "name": "Extended Mag",
+    "description": "+6 rounds per magazine.",
+    "category": "mod",
+    "weight": 0.3,
+    "value": 45,
+    "rarity": "uncommon",
+    "mod": {
+      "slot": "magazine",
+      "appliesTo": "firearm",
+      "stats": {
+        "magSize": 6
+      },
+      "ammoTypes": ["9mm"]
+    }
+  },
+  {
+    "id": "scope",
+    "name": "Scope",
+    "description": "Tighter spread, longer range.",
+    "category": "mod",
+    "weight": 0.3,
+    "value": 70,
+    "rarity": "rare",
+    "mod": {
+      "slot": "sight",
+      "appliesTo": "firearm",
+      "stats": {
+        "spread": 0.6,
+        "range": 1.3
+      },
+      "ammoTypes": ["9mm", "rifle", "bolt"]
+    }
+  },
+  {
+    "id": "choke",
+    "name": "Shotgun Choke",
+    "description": "Keeps pellets together.",
+    "category": "mod",
+    "weight": 0.3,
+    "value": 40,
+    "rarity": "uncommon",
+    "mod": {
+      "slot": "muzzle",
+      "appliesTo": "firearm",
+      "stats": {
+        "spread": 0.65,
+        "range": 1.2
+      },
+      "ammoTypes": ["shell"]
+    }
+  },
+  {
+    "id": "padded_stock",
+    "name": "Padded Stock",
+    "description": "Less kick, steadier follow-up shots.",
+    "category": "mod",
+    "weight": 0.3,
+    "value": 35,
+    "rarity": "uncommon",
+    "mod": {
+      "slot": "stock",
+      "appliesTo": "firearm",
+      "stats": {
+        "recoilBloom": 0.6,
+        "spread": 0.9
+      },
+      "ammoTypes": ["shell", "rifle", "bolt"]
+    }
+  },
+  {
+    "id": "spiked_head",
+    "name": "Spiked Head",
+    "description": "Nails and spikes. +30% damage.",
+    "category": "mod",
+    "weight": 0.3,
+    "value": 30,
+    "rarity": "uncommon",
+    "mod": {
+      "slot": "head",
+      "appliesTo": "melee",
+      "stats": {
+        "damage": 1.3,
+        "durability": 0.9
+      }
+    }
+  },
+  {
+    "id": "reinforced_grip",
+    "name": "Reinforced Grip",
+    "description": "Taped grip. Less stamina per swing, lasts longer.",
+    "category": "mod",
+    "weight": 0.3,
+    "value": 25,
+    "rarity": "uncommon",
+    "mod": {
+      "slot": "grip",
+      "appliesTo": "melee",
+      "stats": {
+        "stamina": 0.8,
+        "durability": 1.25
+      }
+    }
+  },
+  {
+    "id": "padded_jacket",
+    "name": "Padded Jacket",
+    "description": "Thick layers. Bites have a harder time getting through.",
+    "category": "armor",
+    "weight": 2.0,
+    "value": 45,
+    "armor": {
+      "slot": "torso",
+      "damageReduction": 0.15,
+      "infectionReduction": 0.35,
+      "noisePenalty": 0.05
+    },
+    "dismantle": [
+      {
+        "itemId": "cloth",
+        "qty": 3
+      }
+    ]
+  },
+  {
+    "id": "bike_helmet",
+    "name": "Bike Helmet",
+    "description": "Better than nothing.",
+    "category": "armor",
+    "weight": 0.6,
+    "value": 25,
+    "armor": {
+      "slot": "head",
+      "damageReduction": 0.08,
+      "infectionReduction": 0.15
+    }
+  },
+  {
+    "id": "school_backpack",
+    "name": "School Backpack",
+    "description": "+8 kg carry capacity.",
+    "category": "backpack",
+    "weight": 0.6,
+    "value": 25,
+    "backpack": {
+      "capacityBonus": 8
+    }
+  },
+  {
+    "id": "hiking_pack",
+    "name": "Hiking Pack",
+    "description": "+15 kg carry capacity.",
+    "category": "backpack",
+    "weight": 1.2,
+    "value": 60,
+    "rarity": "uncommon",
+    "backpack": {
+      "capacityBonus": 15
+    }
+  },
+  {
+    "id": "bp_nail_bat",
+    "name": "Blueprint: Nail Bat",
+    "description": "Depot break-room doodle. Bat + nails, at a workbench.",
+    "category": "blueprint",
+    "weight": 0.05,
+    "value": 15,
+    "rarity": "common",
+    "blueprint": {
+      "recipeId": "nail_bat"
+    }
+  },
+  {
+    "id": "bp_bolt_cutters",
+    "name": "Blueprint: Bolt Cutters",
+    "description": "Read it to learn the recipe.",
+    "category": "blueprint",
+    "weight": 0.05,
+    "value": 30,
+    "rarity": "uncommon",
+    "blueprint": {
+      "recipeId": "bolt_cutters"
+    }
+  },
+  {
+    "id": "bp_siphon_hose",
+    "name": "Blueprint: Siphon Hose",
+    "description": "Read it to learn the recipe.",
+    "category": "blueprint",
+    "weight": 0.05,
+    "value": 20,
+    "rarity": "uncommon",
+    "blueprint": {
+      "recipeId": "siphon_hose"
+    }
+  },
+  {
+    "id": "bp_rain_collector",
+    "name": "Blueprint: Rain Collector",
+    "description": "Read it to learn the recipe.",
+    "category": "blueprint",
+    "weight": 0.05,
+    "value": 30,
+    "rarity": "uncommon",
+    "blueprint": {
+      "recipeId": "rain_collector_kit"
+    }
+  },
+  {
+    "id": "bp_pipe_pistol",
+    "name": "Blueprint: Pipe Pistol",
+    "description": "Read it to learn the recipe.",
+    "category": "blueprint",
+    "weight": 0.05,
+    "value": 35,
+    "rarity": "uncommon",
+    "blueprint": {
+      "recipeId": "pipe_pistol"
+    }
+  },
+  {
+    "id": "bp_pipe_bomb",
+    "name": "Blueprint: Pipe Bomb",
+    "description": "Read it to learn the recipe.",
+    "category": "blueprint",
+    "weight": 0.05,
+    "value": 45,
+    "rarity": "rare",
+    "blueprint": {
+      "recipeId": "pipe_bomb"
+    }
+  },
+  {
+    "id": "bp_suppressor",
+    "name": "Blueprint: Suppressor",
+    "description": "Read it to learn the recipe.",
+    "category": "blueprint",
+    "weight": 0.05,
+    "value": 60,
+    "rarity": "rare",
+    "blueprint": {
+      "recipeId": "suppressor"
+    }
+  },
+  {
+    "id": "bp_machete",
+    "name": "Blueprint: Machete",
+    "description": "Read it to learn the recipe.",
+    "category": "blueprint",
+    "weight": 0.05,
+    "value": 35,
+    "rarity": "uncommon",
+    "blueprint": {
+      "recipeId": "machete"
+    }
+  },
+  {
+    "id": "bp_crossbow",
+    "name": "Blueprint: Crossbow",
+    "description": "Read it to learn the recipe.",
+    "category": "blueprint",
+    "weight": 0.05,
+    "value": 60,
+    "rarity": "rare",
+    "blueprint": {
+      "recipeId": "crossbow"
+    }
+  },
+  {
+    "id": "bp_spiked_head",
+    "name": "Blueprint: Spiked Head",
+    "description": "Read it to learn the recipe.",
+    "category": "blueprint",
+    "weight": 0.05,
+    "value": 25,
+    "rarity": "uncommon",
+    "blueprint": {
+      "recipeId": "spiked_head"
+    }
+  },
+  {
+    "id": "bp_first_aid",
+    "name": "Blueprint: First-Aid Kit",
+    "description": "Read it to learn the recipe.",
+    "category": "blueprint",
+    "weight": 0.05,
+    "value": 40,
+    "rarity": "uncommon",
+    "blueprint": {
+      "recipeId": "first_aid_kit"
+    }
+  },
+  {
+    "id": "car_battery",
+    "name": "Car Battery",
+    "description": "Heavy. The ambulance needs one.",
+    "category": "quest",
+    "weight": 12,
+    "value": 50,
+    "rarity": "uncommon"
+  },
+  {
+    "id": "fuel_can",
+    "name": "Fuel Can (5 L)",
+    "description": "Five liters of gasoline. Use it at the ambulance.",
+    "category": "fuel",
+    "weight": 4.5,
+    "value": 30,
+    "stack": 4,
+    "fuel": {
+      "liters": 5
+    }
+  },
+  {
+    "id": "rain_collector_kit",
+    "name": "Rain Collector Kit",
+    "description": "Tarp, gutter, barrel. Gus wants one for the camp.",
+    "category": "quest",
+    "weight": 4,
+    "value": 40
+  },
+  {
+    "id": "jo_recorder",
+    "name": "Jo's Voice Recorder",
+    "description": "A small recorder with a strip of tape that says JO.",
+    "category": "quest",
+    "weight": 0.2,
+    "value": 0,
+    "rarity": "epic"
+  },
+  {
+    "id": "pharmacy_key",
+    "name": "Pharmacy Key",
+    "description": "Tagged \"BACK RM\".",
+    "category": "quest",
+    "weight": 0.01,
+    "value": 0,
+    "tool": {
+      "keyFor": ["westside_backroom"]
+    }
+  },
+  {
+    "id": "hospital_keycard",
+    "name": "Staff Keycard",
+    "description": "St. Agnes staff keycard. Opens the basement stairwell.",
+    "category": "quest",
+    "weight": 0.01,
+    "value": 0,
+    "tool": {
+      "keyFor": ["agnes_basement_door"]
+    }
+  },
+  {
+    "id": "pike_tags",
+    "name": "Pike's Dog Tags",
+    "description": "TANNER, P.",
+    "category": "quest",
+    "weight": 0.02,
+    "value": 5
+  },
+  {
+    "id": "old_phone",
+    "name": "Dead Phone",
+    "description": "No signal, no charge, no point.",
+    "category": "junk",
+    "weight": 0.2,
+    "value": 3,
+    "stack": 5
+  },
+  {
+    "id": "wristwatch",
+    "name": "Wristwatch",
+    "description": "Still ticking.",
+    "category": "junk",
+    "weight": 0.1,
+    "value": 8,
+    "stack": 5
+  },
+  {
+    "id": "cash_bundle",
+    "name": "Bundle of Cash",
+    "description": "Money stopped meaning anything on day three.",
+    "category": "junk",
+    "weight": 0.1,
+    "value": 1,
+    "stack": 20
+  },
+  {
+    "id": "jewelry",
+    "name": "Jewelry",
+    "description": "Somebody's rings.",
+    "category": "junk",
+    "weight": 0.05,
+    "value": 12,
+    "stack": 10
+  }
+]
