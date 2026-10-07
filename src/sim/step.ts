@@ -7,12 +7,16 @@ import type { GameContext } from '@/core/store';
 import { passTime } from '@/systems/clock';
 import { applyEffects } from '@/systems/effects';
 import { checkAll } from '@/systems/conditions';
-import { updatePlayerFov } from './fov';
+import { showHint } from '@/systems/story';
+import { updateCombat, updateProjectiles } from './combat';
+import { isVisible, updatePlayerFov, type DynamicLight } from './fov';
 import { updateInteraction, type Interactable } from './interact';
 import { decayNoises } from './noise';
 import { updatePlayerMovement, type PlayerInput } from './player';
 import { getRuntime } from './runtime';
+import { updateTrickle } from './spawn';
 import type { ZoneState } from './types';
+import { updateZombies } from './zombies';
 
 export interface StepResult {
   target: Interactable | null;
@@ -35,10 +39,24 @@ export function stepZone(ctx: GameContext, input: PlayerInput, realDt: number): 
   if (input.flashlightToggle) toggleFlashlight(ctx);
   updatePlayerMovement(ctx, zone, rt, input, dt);
   const target = updateInteraction(ctx, zone, rt, input, dt);
+  updateCombat(ctx, zone, rt, input, dt);
+  updateProjectiles(ctx, zone, rt, dt);
+  updateZombies(ctx, zone, rt, dt);
+  updateTrickle(ctx, zone, dt);
   decayNoises(zone, dt);
-  updatePlayerFov(ctx, zone, rt);
+  updatePlayerFov(ctx, zone, rt, dynamicLights(zone));
   checkTriggers(ctx, zone);
+  if (!zone.safe && zone.zombies.some((z) => isVisible(rt, z.x, z.y))) showHint(ctx, 'zombie');
+  if (zone.player.noise > 7) showHint(ctx, 'noise');
   return { target };
+}
+
+/** Fires and fresh muzzle flashes light up their surroundings. */
+function dynamicLights(zone: ZoneState): DynamicLight[] {
+  const out: DynamicLight[] = [];
+  for (const h of zone.hazards) if (h.kind === 'fire') out.push({ x: h.x, y: h.y, radius: h.radius + 2.5 });
+  for (const t of zone.tracers) if (t.ttl > 0.03) out.push({ x: t.x1, y: t.y1, radius: 3.5 });
+  return out;
 }
 
 function toggleFlashlight(ctx: GameContext): void {

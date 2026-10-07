@@ -29,7 +29,8 @@ export const COMMANDS: Record<string, Cmd> = {
     help: 'give <itemId> [qty] — add items to the inventory',
     run: (store, [id, qty]) => {
       if (!id || !store.content.items[id]) return [`unknown item '${id ?? ''}' (try: items ${id ?? ''})`];
-      addItem(store.ctx, id, num(qty, 1), 'console');
+      const mag = store.content.items[id]?.weapon?.firearm?.magSize;
+      addItem(store.ctx, id, num(qty, 1), 'console', mag ? { mag } : {});
       return [`gave ${num(qty, 1)} × ${id}`];
     },
   },

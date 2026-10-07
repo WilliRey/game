@@ -28,3 +28,38 @@ export function makeCtx(opts: { setup?: boolean; difficulty?: Difficulty; seed?:
   if (opts.setup) setupNewGame(store.ctx);
   return { store, ctx: store.ctx };
 }
+
+import { ZoneDef } from '@/content/schemas';
+import { buildZone } from '@/sim/build';
+import { getRuntime, type ZoneRuntime } from '@/sim/runtime';
+import { newZombie } from '@/sim/spawn';
+import type { Zombie, ZoneState } from '@/sim/types';
+
+/** Inject a small test zone into the shared content and make it the active zone. */
+export function arena(
+  ctx: GameContext,
+  id: string,
+  map: string[],
+  extra: Partial<Record<string, unknown>> = {},
+): { zone: ZoneState; rt: ZoneRuntime } {
+  const def = ZoneDef.parse({ id, danger: 1, map, ...extra });
+  ctx.content.zones[id] = def;
+  const zone = buildZone(ctx, id);
+  ctx.state.zone = zone;
+  return { zone, rt: getRuntime(ctx.content, zone) };
+}
+
+export function addZombie(
+  ctx: GameContext,
+  zone: ZoneState,
+  type: string,
+  x: number,
+  y: number,
+  facing = 0,
+): Zombie {
+  const z = newZombie(ctx, zone, type, x, y)!;
+  z.facing = facing;
+  z.senseIn = 0;
+  zone.zombies.push(z);
+  return z;
+}

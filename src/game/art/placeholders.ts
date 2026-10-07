@@ -88,21 +88,21 @@ function ellipse(g: Ctx, x: number, y: number, rx: number, ry: number, fill: str
 
 // ---------------------------------------------------------------- tiles
 
-const GROUND_UNDER: Partial<Record<TileKind, TileKind>> = {
-  fence: 'dirt',
-  tree: 'grass',
-  bush: 'grass',
-  counter: 'tile',
-  door: 'floor',
-  lockedDoor: 'floor',
-  window: 'wall',
-};
+/** Tiles drawn on top of whatever ground surrounds them (the map renderer draws that ground first). */
+export const OVERLAY_TILES: ReadonlySet<TileKind> = new Set<TileKind>([
+  'glass',
+  'door',
+  'lockedDoor',
+  'fence',
+  'tree',
+  'bush',
+  'counter',
+  'rubble',
+]);
 
 export function drawTile(g: Ctx, kind: TileKind, variant: number): void {
   const S = TILE_SIZE;
   const r = rand(variant * 7919 + kind.length * 104729 + kind.charCodeAt(0));
-  const under = GROUND_UNDER[kind];
-  if (under && under !== 'wall') drawTile(g, under, variant);
   switch (kind) {
     case 'void':
       rect(g, 0, 0, S, S, '#0a0a0b');
@@ -166,12 +166,8 @@ export function drawTile(g: Ctx, kind: TileKind, variant: number): void {
       }
       break;
     case 'road':
-      rect(g, 0, 0, S, S, '#37383b');
-      speckle(g, S, S, r, ['#454648', '#2b2c2f', '#4c4b46'], 40, 1.2);
-      if (variant === 2) {
-        g.fillStyle = 'rgba(160,140,70,0.35)';
-        g.fillRect(14, 4, 4, 24);
-      }
+      rect(g, 0, 0, S, S, '#363739');
+      speckle(g, S, S, r, ['#424446', '#2b2c2e', '#4a4844'], 40, 1.2);
       break;
     case 'grass':
       rect(g, 0, 0, S, S, '#3a4634');
@@ -190,7 +186,6 @@ export function drawTile(g: Ctx, kind: TileKind, variant: number): void {
       speckle(g, S, S, r, ['#594a3b', '#383027'], 34, 2);
       break;
     case 'glass':
-      drawTile(g, 'floor', variant);
       for (let i = 0; i < 7; i++) {
         g.fillStyle = `rgba(170,195,210,${0.35 + r() * 0.35})`;
         const x = r() * S;
@@ -204,7 +199,6 @@ export function drawTile(g: Ctx, kind: TileKind, variant: number): void {
       }
       break;
     case 'rubble':
-      drawTile(g, 'concrete', variant);
       for (let i = 0; i < 6; i++) {
         g.fillStyle = ['#6c6861', '#5e5952', '#46423d'][i % 3] ?? '#444';
         g.fillRect(r() * 26, r() * 26, 3 + r() * 6, 3 + r() * 5);

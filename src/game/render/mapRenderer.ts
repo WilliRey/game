@@ -5,7 +5,9 @@
 import type Phaser from 'phaser';
 import { TILE_KINDS } from '@/sim/tiles';
 import type { ZoneState } from '@/sim/types';
+import type { TileKind } from '@/content/schemas';
 import { ART, TILE_SIZE, TILE_VARIANTS } from '../art/manifest';
+import { OVERLAY_TILES } from '../art/placeholders';
 
 const CHUNK = 32;
 
@@ -25,6 +27,28 @@ export function renderMap(scene: Phaser.Scene, zone: ZoneState, depth: number): 
     return k === 'wall' || k === 'void' || k === 'window';
   };
   const source = (key: string) => scene.textures.get(key).getSourceImage() as CanvasImageSource;
+  /** Ground under an overlay tile: the most common plain ground among its neighbours. */
+  const groundUnder = (x: number, y: number): TileKind => {
+    const counts = new Map<TileKind, number>();
+    for (const [dx, dy] of [
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
+      [1, 1],
+      [-1, -1],
+      [1, -1],
+      [-1, 1],
+    ] as const) {
+      const k = kindAt(x + dx, y + dy);
+      if (OVERLAY_TILES.has(k) || k === 'wall' || k === 'void' || k === 'window' || k === 'water') continue;
+      counts.set(k, (counts.get(k) ?? 0) + (dx === 0 || dy === 0 ? 2 : 1));
+    }
+    let best: TileKind = 'floor';
+    let n = 0;
+    for (const [k, c] of counts) if (c > n) [best, n] = [k, c];
+    return best;
+  };
 
   for (let cy = 0; cy * CHUNK < zone.h; cy++) {
     for (let cx = 0; cx * CHUNK < zone.w; cx++) {
@@ -42,6 +66,7 @@ export function renderMap(scene: Phaser.Scene, zone: ZoneState, depth: number): 
           const v = tileHash(x, y) % TILE_VARIANTS;
           const px = tx * S;
           const py = ty * S;
+          if (OVERLAY_TILES.has(kind)) g.drawImage(source(ART.tile(groundUnder(x, y), v)), px, py);
           g.drawImage(source(ART.tile(kind, v)), px, py);
           if (kind === 'wall') {
             // Front face where the wall meets open floor below: a darker band reads as height.

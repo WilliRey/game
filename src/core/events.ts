@@ -75,6 +75,10 @@ export interface GameEvents {
   'fx:ping': { x: number; y: number; radius: number };
   'fx:flash': { entityId: string };
   'fx:camPan': { x: number; y: number; durationMs: number };
+  'fx:hitstop': { ms: number };
+  'fx:muzzle': { x: number; y: number; angle: number; small: boolean };
+  'fx:spark': { x: number; y: number };
+  'fx:explosion': { x: number; y: number; radius: number };
   'sfx:play': { key: string; x?: number; y?: number; volume?: number };
 }
 

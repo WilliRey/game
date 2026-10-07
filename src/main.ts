@@ -1,6 +1,7 @@
 import './ui/styles.css';
 import { ContentError, loadContent } from './content';
 import { GameStore } from './core/store';
+import { AudioManager } from './game/audio/AudioManager';
 import { createGame } from './game/createGame';
 import { mountUI } from './ui/mount';
 
@@ -23,6 +24,7 @@ function boot(): void {
   }
   const store = new GameStore(content);
   const game = createGame(store, document.getElementById('game')!);
+  game.registry.set('audio', new AudioManager(store));
   mountUI(store, document.getElementById('ui')!, game);
   // Exposed for the Playwright smoke test and the browser console.
   (window as unknown as { holdout: unknown }).holdout = { store, game };

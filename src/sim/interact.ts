@@ -445,6 +445,7 @@ function tap(ctx: GameContext, zone: ZoneState, rt: ZoneRuntime, it: Interactabl
         kind: 'info',
       });
       if (def?.note) readNote(ctx, def.note.noteId);
+      if (def?.weapon?.kind === 'throwable') showHint(ctx, 'bottle');
       if (w.pickupId) {
         ctx.bus.emit('interact', { targetId: w.pickupId, kind: 'pickup', zoneId: zone.zoneId });
         const o = objectDef(ctx, zone, w.pickupId);

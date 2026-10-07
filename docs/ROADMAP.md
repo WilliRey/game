@@ -5,9 +5,10 @@ Anything stubbed or faked is listed under **Stubs** at the bottom.
 
 ## STATUS
 
-**Session 2 (current):** M0 and M1 complete. New Game drops Sam into a real Maple Court map with
-movement, collision, shadowcast FOV, day/night, flashlight, HUD, debug overlay (F3) and console (`).
-Working through M2 (combat, zombie AI, noise, stealth) next.
+**Session 2 (current):** M0–M2 complete. New Game drops Sam into a real Maple Court map with movement,
+FOV, day/night, HUD and dev tools; zombies see, hear, path, bash doors and attack; melee, guns, shove and
+throwables work with FX and positional synthesized sound. Working through M3 (inventory UI, loot window,
+survival) next.
 
 ## M0 — Scaffold & CI (boots to a menu)
 - [x] package.json with pinned Phaser 4.2.1, Vite, Vitest, Playwright, ESLint, Prettier, zod, Preact
@@ -34,14 +35,20 @@ Working through M2 (combat, zombie AI, noise, stealth) next.
       noclip, time, timescale, tp, spawn, kill, quest, rep, xp, skill, flag, fuel, reveal, fov)
 
 ## M2 — Combat, zombies, noise & stealth
-- [ ] noise events with radii, directional ping for unseen loud noise
-- [ ] zombie types (walker, runner, bloater, boss, screamer), senses, AI state machine
-- [ ] A* pathing with throttled repath + separation; door bashing; distant sleep
-- [ ] melee (arc, wind-up/recovery, stamina, knockback, stagger, cleave, sneak ×3)
-- [ ] firearms (mag/reserve, reload incl. shell-by-shell, bloom, wall-stopping, jams)
-- [ ] shove, throwables (bottle, molotov, pipe bomb), durability wear
-- [ ] feel: hit flash, hit-stop, shake (toggle), muzzle flash, capped blood decals
-- [ ] positional WebAudio SFX behind AudioManager
+- [x] noise events with radii (footsteps by surface, weapons, searching, forcing locks, bottles, alarms,
+      door bashing, explosions), walls dampen hearing, directional ping for unseen loud noise
+- [x] zombie types (walker, runner, bloater + burst, boss variant, screamer), sight cone with night /
+      crouch / flashlight modifiers, AI state machine idle/wander → investigate → chase → attack → search
+- [x] A* pathing (no corner cutting) with throttled repath budget + crowd separation; door bashing with door
+      HP; distant zombies sleep, far ones sense less often; population: first-visit roll, nests, regen per
+      day (cleared nests stay cleared), night trickle; night speed-up
+- [x] melee (arc, wind-up/recovery, stamina, knockback, stagger, cleave, ×3 sneak from behind, fists)
+- [x] firearms (mag/reserve by ammo type, reload incl. shell-by-shell, bloom/aim, wall-stopping hitscan,
+      crude-gun jams cleared by R, pellets, crossbow bolt recovery, suppressor noise)
+- [x] shove, throwables (bottle noise lure, molotov fire area, pipe bomb fuse + explosion), durability wear
+- [x] feel: hit flash, hit-stop on heavy melee, screen shake (toggle), muzzle flash + light, sparks,
+      explosions, capped blood/gore decals, damage numbers (toggle), enemy health bars
+- [x] positional WebAudio SFX behind AudioManager (pan + distance falloff), ~60 synthesized sounds
 
 ## M3 — Items, inventory, containers, searching, loot, survival
 - [ ] item schema + ~50 items, rarity, tooltips with equipped comparison

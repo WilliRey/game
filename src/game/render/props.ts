@@ -99,8 +99,8 @@ export class PropsLayer {
             align: 'center',
           })
           .setOrigin(0.5)
-          .setAlpha(0.75)
-          .setDepth(depths.props);
+          .setAlpha(0.55)
+          .setDepth(depths.props - 1);
         this.objects.set(o.id, [t]);
       } else if (o.type === 'blocker') {
         const parts: Phaser.GameObjects.GameObject[] = [];

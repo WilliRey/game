@@ -9,8 +9,10 @@ import type { ZoneState } from '@/sim/types';
 import { TILE_SIZE } from '../art/manifest';
 import { storeOf, VIEW_H, VIEW_W } from '../createGame';
 import { InputTracker } from '../input';
+import type { AudioManager } from '../audio/AudioManager';
 import { ActorsLayer } from '../render/actors';
 import { FogLayer } from '../render/fog';
+import { FxLayer } from '../render/fx';
 import { renderMap } from '../render/mapRenderer';
 import { PropsLayer } from '../render/props';
 import { WorldUi } from '../render/worldUi';
@@ -39,7 +41,10 @@ export class ZoneScene extends Phaser.Scene {
   private props!: PropsLayer;
   private actors!: ActorsLayer;
   private fog!: FogLayer;
+  private fx!: FxLayer;
   private worldUi!: WorldUi;
+  private audio: AudioManager | undefined;
+  private hitStopUntil = 0;
   private tint!: Phaser.GameObjects.Rectangle;
   private debugGfx!: Phaser.GameObjects.Graphics;
   private target: Interactable | null = null;
@@ -66,7 +71,9 @@ export class ZoneScene extends Phaser.Scene {
       items: DEPTH.items,
       glow: DEPTH.glow,
     });
+    this.fx = new FxLayer(this, { decals: DEPTH.decals, fx: DEPTH.fx, glow: DEPTH.glow });
     this.actors = new ActorsLayer(this, content, DEPTH.actors);
+    this.audio = this.registry.get('audio') as AudioManager | undefined;
     this.fog = new FogLayer(this, zone, DEPTH.fog);
     this.tint = this.add
       .rectangle(0, 0, VIEW_W, VIEW_H, 0x6c7ca8)
@@ -89,11 +96,17 @@ export class ZoneScene extends Phaser.Scene {
       bus.on('fx:shake', ({ intensity, durationMs }) => {
         if (this.store.settings.screenShake) cam.shake(durationMs, intensity);
       }),
+      bus.on('fx:muzzle', ({ x, y, angle, small }) => this.fx.muzzle(x, y, angle, small)),
+      bus.on('fx:spark', ({ x, y }) => this.fx.spark(x, y)),
+      bus.on('fx:explosion', ({ x, y, radius }) => this.fx.explosion(x, y, radius)),
+      bus.on('fx:hitstop', ({ ms }) => {
+        this.hitStopUntil = performance.now() + ms;
+      }),
       bus.on('fx:damageNumber', ({ x, y, amount, crit }) => {
         if (this.store.settings.damageNumbers) this.worldUi.damageNumber(x, y, amount, crit);
       }),
       bus.on('noise:emitted', ({ x, y, radius, byPlayer }) => {
-        if (byPlayer || radius < 10) return;
+        if (byPlayer || radius < 7) return;
         const p = this.zone.player;
         const tx = Math.floor(x);
         const ty = Math.floor(y);
@@ -120,12 +133,15 @@ export class ZoneScene extends Phaser.Scene {
     const dt = Math.min(deltaMs, 100) / 1000;
     const t0 = performance.now();
     const input = this.tracker.read(S, store.inputCaptured);
-    if (!store.clockStopped) this.target = stepZone(store.ctx, input, dt).target;
-    else this.target = null;
+    const frozen = store.clockStopped || performance.now() < this.hitStopUntil;
+    if (!frozen) this.target = stepZone(store.ctx, input, dt).target;
+    else if (store.clockStopped) this.target = null;
     const t1 = performance.now();
 
     const zone = this.zone;
     this.props.update(zone, store.state, dt);
+    this.fx.update(zone, this.rt, frozen ? 0 : dt);
+    this.audio?.setListener(zone.player.x, zone.player.y);
     this.actors.showAll = devTools.fovOff;
     this.actors.update(zone, this.rt, zone.time);
     const dark = zoneDarkness(store.ctx, this.rt);
@@ -181,10 +197,43 @@ export class ZoneScene extends Phaser.Scene {
     cam.scrollY = mh <= VIEW_H ? (mh - VIEW_H) / 2 : Math.max(-S, Math.min(mh - VIEW_H + S, cam.scrollY));
   }
 
+  private aiLabels = new Map<string, Phaser.GameObjects.Text>();
+
   private drawDebug(): void {
     const g = this.debugGfx;
     g.clear();
-    if (!devTools.enabled || !devTools.overlay) return;
+    const on = devTools.enabled && devTools.overlay;
+    const seen = new Set<string>();
+    if (on) {
+      for (const z of this.zone.zombies) {
+        if (z.hp <= 0) continue;
+        seen.add(z.id);
+        let t = this.aiLabels.get(z.id);
+        if (!t) {
+          t = this.add
+            .text(0, 0, '', {
+              fontFamily: 'monospace',
+              fontSize: '10px',
+              color: '#9fe09a',
+              backgroundColor: 'rgba(0,0,0,0.6)',
+            })
+            .setOrigin(0.5, 1)
+            .setDepth(DEPTH.debug + 1);
+          this.aiLabels.set(z.id, t);
+        }
+        t.setText(`${z.type} ${z.mode}${z.awake ? '' : ' zz'} ${Math.ceil(z.hp)}`).setPosition(
+          z.x * S,
+          z.y * S - 18,
+        );
+      }
+    }
+    for (const [id, t] of this.aiLabels) {
+      if (!seen.has(id)) {
+        t.destroy();
+        this.aiLabels.delete(id);
+      }
+    }
+    if (!on) return;
     for (const n of this.zone.noises) {
       g.lineStyle(1, n.byPlayer ? 0x60c0ff : 0xff8040, Math.max(0.1, n.ttl));
       g.strokeCircle(n.x * S, n.y * S, n.radius * S);

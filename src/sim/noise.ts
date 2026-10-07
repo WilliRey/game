@@ -4,9 +4,12 @@
  */
 import type { GameContext } from '@/core/store';
 import type { ZoneState } from './types';
+import { hearNoise } from './zombies';
 
-export const NOISE_PING_MIN_RADIUS = 10;
-
+/**
+ * `byPlayer` marks noises the player is responsible for (footsteps, shots, a thrown bottle); only noises
+ * made at the player's own position count toward the HUD noise meter.
+ */
 export function emitNoise(
   ctx: GameContext,
   zone: ZoneState,
@@ -19,27 +22,10 @@ export function emitNoise(
   if (radius <= 0) return;
   zone.noises.push({ x, y, radius, source, byPlayer, ttl: 0.6 });
   if (zone.noises.length > 64) zone.noises.shift();
-  if (byPlayer) zone.player.noise = Math.max(zone.player.noise, radius);
+  const p = zone.player;
+  if (byPlayer && Math.hypot(x - p.x, y - p.y) < 1.5) p.noise = Math.max(p.noise, radius);
   ctx.bus.emit('noise:emitted', { x, y, radius, source, byPlayer });
-  hearNoise(ctx, zone, x, y, radius, byPlayer);
-}
-
-/** Zombie hearing hook; filled in by the zombie AI module. */
-let hearHook:
-  | ((ctx: GameContext, zone: ZoneState, x: number, y: number, radius: number, byPlayer: boolean) => void)
-  | null = null;
-export function setHearingHook(fn: typeof hearHook): void {
-  hearHook = fn;
-}
-function hearNoise(
-  ctx: GameContext,
-  zone: ZoneState,
-  x: number,
-  y: number,
-  radius: number,
-  byPlayer: boolean,
-): void {
-  hearHook?.(ctx, zone, x, y, radius, byPlayer);
+  hearNoise(ctx, zone, x, y, radius);
 }
 
 export function decayNoises(zone: ZoneState, dt: number): void {
