@@ -234,3 +234,108 @@ export function condition(s: ItemStack): number {
   if (s.durability === undefined || !s.maxDurability) return 1;
   return Math.max(0, Math.min(1, s.durability / s.maxDurability));
 }
+
+// ---------------------------------------------------------------- tooltips
+
+export interface StatRow {
+  label: string;
+  value: number;
+  /** Format for display. */
+  fmt: (v: number) => string;
+  /** Higher numbers are better (for comparison coloring). Undefined = neutral. */
+  better?: 'higher' | 'lower';
+}
+
+const n0 = (v: number) => String(Math.round(v));
+const n1 = (v: number) => (Math.round(v * 10) / 10).toString();
+const pct = (v: number) => `${Math.round(v * 100)}%`;
+const plus = (v: number) => `${v > 0 ? '+' : ''}${Math.round(v)}`;
+
+/** Numeric stats of an item instance for tooltips and before/after previews. */
+export function statRows(content: Content, s: ItemStack): StatRow[] {
+  const def = content.items[s.itemId];
+  if (!def) return [];
+  const rows: StatRow[] = [];
+  const st = weaponStats(content, s);
+  if (st?.kind === 'melee') {
+    rows.push({ label: 'Damage', value: st.damage, fmt: n1, better: 'higher' });
+    rows.push({
+      label: 'Swings / s',
+      value: 1000 / (st.windupMs + st.recoveryMs),
+      fmt: n1,
+      better: 'higher',
+    });
+    rows.push({ label: 'Reach', value: st.range, fmt: n1, better: 'higher' });
+    rows.push({ label: 'Arc°', value: st.arcDeg, fmt: n0, better: 'higher' });
+    rows.push({ label: 'Stamina / swing', value: st.stamina, fmt: n1, better: 'lower' });
+    rows.push({ label: 'Knockback', value: st.knockback, fmt: n1, better: 'higher' });
+  } else if (st?.kind === 'firearm') {
+    rows.push({
+      label: st.pellets > 1 ? `Damage (×${st.pellets})` : 'Damage',
+      value: st.damage,
+      fmt: n1,
+      better: 'higher',
+    });
+    rows.push({ label: 'Shots / s', value: 1000 / st.fireIntervalMs, fmt: n1, better: 'higher' });
+    rows.push({ label: 'Magazine', value: st.magSize, fmt: n0, better: 'higher' });
+    rows.push({
+      label: 'Reload s',
+      value: (st.reloadMs / 1000) * (st.shellByShell ? st.magSize : 1),
+      fmt: n1,
+      better: 'lower',
+    });
+    rows.push({ label: 'Spread°', value: st.spreadBaseDeg, fmt: n1, better: 'lower' });
+    rows.push({ label: 'Range', value: st.range, fmt: n0, better: 'higher' });
+    rows.push({ label: 'Noise radius', value: st.noise, fmt: n0, better: 'lower' });
+    if (st.jamChance > 0) rows.push({ label: 'Jam chance', value: st.jamChance, fmt: pct, better: 'lower' });
+  } else if (st?.kind === 'throwable') {
+    if (st.damage)
+      rows.push({
+        label: st.effect === 'fire' ? 'Burn / s' : 'Damage',
+        value: st.damage,
+        fmt: n0,
+        better: 'higher',
+      });
+    rows.push({ label: 'Radius', value: st.radius, fmt: n1, better: 'higher' });
+    rows.push({ label: 'Noise radius', value: st.noise, fmt: n0 });
+  }
+  if (def.armor) {
+    rows.push({ label: 'Damage reduction', value: def.armor.damageReduction, fmt: pct, better: 'higher' });
+    rows.push({ label: 'Bite protection', value: def.armor.infectionReduction, fmt: pct, better: 'higher' });
+    if (def.armor.noisePenalty)
+      rows.push({ label: 'Noise penalty', value: def.armor.noisePenalty, fmt: pct, better: 'lower' });
+  }
+  if (def.backpack)
+    rows.push({ label: 'Carry capacity', value: def.backpack.capacityBonus, fmt: plus, better: 'higher' });
+  const u = def.use;
+  if (u) {
+    if (u.hunger) rows.push({ label: 'Hunger', value: u.hunger, fmt: plus, better: 'higher' });
+    if (u.thirst) rows.push({ label: 'Thirst', value: u.thirst, fmt: plus, better: 'higher' });
+    if (u.hp) rows.push({ label: 'Health', value: u.hp, fmt: plus, better: 'higher' });
+    if (u.stamina) rows.push({ label: 'Stamina', value: u.stamina, fmt: plus, better: 'higher' });
+    if (u.foodPoisonChance)
+      rows.push({ label: 'Food poisoning risk', value: u.foodPoisonChance, fmt: pct, better: 'lower' });
+  }
+  if (s.maxDurability)
+    rows.push({
+      label: 'Durability',
+      value: s.durability ?? s.maxDurability,
+      fmt: (v) => `${Math.round(v)}/${s.maxDurability}`,
+      better: 'higher',
+    });
+  if (s.quality && s.quality !== 1)
+    rows.push({ label: 'Quality', value: s.quality, fmt: pct, better: 'higher' });
+  return rows;
+}
+
+/** Plain-language effects for consumables. */
+export function useNotes(content: Content, itemId: string): string[] {
+  const u = content.items[itemId]?.use;
+  const out: string[] = [];
+  if (!u) return out;
+  if (u.cureBleeding) out.push('Stops bleeding');
+  if (u.antibiotic) out.push('Knocks infection back 40%');
+  if (u.cureFoodPoisoning) out.push('Cures food poisoning');
+  if (u.raw) out.push('Raw: cook or boil it first');
+  return out;
+}

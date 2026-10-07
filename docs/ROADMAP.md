@@ -5,10 +5,10 @@ Anything stubbed or faked is listed under **Stubs** at the bottom.
 
 ## STATUS
 
-**Session 2 (current):** M0–M2 complete. New Game drops Sam into a real Maple Court map with movement,
+**Session 2 (current):** M0–M3 complete. New Game drops Sam into a real Maple Court map with movement,
 FOV, day/night, HUD and dev tools; zombies see, hear, path, bash doors and attack; melee, guns, shove and
-throwables work with FX and positional synthesized sound. Working through M3 (inventory UI, loot window,
-survival) next.
+throwables work with FX and positional synthesized sound. Inventory, loot window, survival effects done.
+Working through M4 (crafting, mods, repair, safehouse) next.
 
 ## M0 — Scaffold & CI (boots to a menu)
 - [x] package.json with pinned Phaser 4.2.1, Vite, Vitest, Playwright, ESLint, Prettier, zod, Preact
@@ -51,13 +51,16 @@ survival) next.
 - [x] positional WebAudio SFX behind AudioManager (pan + distance falloff), ~60 synthesized sounds
 
 ## M3 — Items, inventory, containers, searching, loot, survival
-- [ ] item schema + ~50 items, rarity, tooltips with equipped comparison
-- [ ] weight inventory with stacking, equipment + quick slots, backpacks, encumbrance
-- [ ] containers + hold-to-search (time by size, interrupted by damage/move, noise) + loot window
-- [ ] loot tables per container type × danger tier, rolled once, saved
-- [ ] locks: lockpick / crowbar / key
-- [ ] needs drain, debuffs, status effects (bleeding, infection, food poisoning, encumbered, well-fed)
-- [ ] cooking/boiling at stove or campfire; rain collector
+- [x] item schema + 109 items (incl. 13 notes), rarity colors, tooltips with stat comparison vs equipped
+- [x] weight inventory with stacking, equipment + quick slots (5–8), backpacks, encumbrance (slow, no
+      sprint); inventory screen (filters, equip, use, quick-assign, drop)
+- [x] containers + hold-to-search (time by size and Scavenging, interrupted by moving / damage, noise) +
+      loot window (take, take all, store); multi-tile containers; car alarms
+- [x] loot tables per container type × danger tier, rolled once per container from a derived seed, saved
+- [x] locks: lockpick (quiet, slow, uses picks) / crowbar (fast, loud, breaks the door) / key / note codes
+- [x] needs drain (×1.5 exertion, ×0.5 asleep), low-need stamina debuff, HP loss at zero, status effects
+      (bleeding, infection over days + antibiotics, food poisoning, encumbered, well-fed regen)
+- [ ] cooking/boiling at stove or campfire; rain collector → done with the crafting screen in M4
 
 ## M4 — Crafting, blueprints, mods, durability, base stations
 - [ ] recipes with stations (inventory, workbench tiers, stove, reloading bench) + blueprints

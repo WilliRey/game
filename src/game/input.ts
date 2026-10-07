@@ -28,7 +28,8 @@ export class InputTracker {
   private lmbWas = false;
   private onKeyDown = (e: KeyboardEvent) => {
     if (isTyping()) return;
-    if (!e.repeat) this.pressed.add(e.code);
+    // A key that closes a UI screen must not also act in the world on the next frame.
+    if (!e.repeat && !this.captured()) this.pressed.add(e.code);
     this.down.add(e.code);
     if (e.code === 'Space' || e.code.startsWith('Arrow')) e.preventDefault();
   };
@@ -40,7 +41,10 @@ export class InputTracker {
     this.pressed.clear();
   };
 
-  constructor(private scene: Phaser.Scene) {
+  constructor(
+    private scene: Phaser.Scene,
+    private captured: () => boolean,
+  ) {
     window.addEventListener('keydown', this.onKeyDown);
     window.addEventListener('keyup', this.onKeyUp);
     window.addEventListener('blur', this.onBlur);

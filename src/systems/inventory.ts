@@ -332,3 +332,66 @@ export function activeWeaponSummary(ctx: GameContext): {
   }
   return out;
 }
+
+// ---------------------------------------------------------------- containers and the ground
+
+/** Drop (part of) a stack at the player's feet in the current zone. */
+export function dropItem(ctx: GameContext, uid: Uid, qty?: number): boolean {
+  const zone = ctx.state.zone;
+  if (!zone) return false;
+  const s = removeStack(ctx, uid, qty, 'dropped');
+  if (!s) return false;
+  const p = zone.player;
+  const a = ctx.rng.range(0, Math.PI * 2);
+  zone.items.push({
+    uid: `w${zone.nextId++}`,
+    x: p.x + Math.cos(a) * 0.35,
+    y: p.y + Math.sin(a) * 0.35,
+    stack: s,
+  });
+  return true;
+}
+
+/** Take (part of) a stack from a container into the inventory. */
+export function takeFromContainer(ctx: GameContext, containerId: string, uid: Uid, qty?: number): boolean {
+  const c = ctx.state.zone?.containers[containerId];
+  if (!c) return false;
+  const s = takeStackFromList(ctx, c.items, uid, qty);
+  if (!s) return false;
+  addStack(ctx, s, 'loot');
+  ctx.bus.emit('sfx:play', { key: 'pickup' });
+  return true;
+}
+
+export function takeAll(ctx: GameContext, containerId: string): number {
+  const c = ctx.state.zone?.containers[containerId];
+  if (!c) return 0;
+  let n = 0;
+  for (const s of [...c.items]) if (takeFromContainer(ctx, containerId, s.uid)) n++;
+  return n;
+}
+
+/** Put (part of) a stack from the inventory into a container. */
+export function putIntoContainer(ctx: GameContext, containerId: string, uid: Uid, qty?: number): boolean {
+  const c = ctx.state.zone?.containers[containerId];
+  if (!c) return false;
+  const s = removeStack(ctx, uid, qty, 'stored');
+  if (!s) return false;
+  mergeInto(ctx, c.items, s);
+  return true;
+}
+
+/** Move between inventory and the safehouse stash. */
+export function stashItem(ctx: GameContext, uid: Uid, qty?: number): boolean {
+  const s = removeStack(ctx, uid, qty, 'stashed');
+  if (!s) return false;
+  mergeInto(ctx, ctx.state.base.stash, s);
+  return true;
+}
+
+export function unstashItem(ctx: GameContext, uid: Uid, qty?: number): boolean {
+  const s = takeStackFromList(ctx, ctx.state.base.stash, uid, qty);
+  if (!s) return false;
+  addStack(ctx, s, 'stash');
+  return true;
+}

@@ -84,7 +84,7 @@ export class ZoneScene extends Phaser.Scene {
       .setAlpha(0);
     this.worldUi = new WorldUi(this, DEPTH.worldUi);
     this.debugGfx = this.add.graphics().setDepth(DEPTH.debug);
-    this.tracker = new InputTracker(this);
+    this.tracker = new InputTracker(this, () => this.store.inputCaptured);
 
     const cam = this.cameras.main;
     cam.scrollX = zone.player.x * S - VIEW_W / 2;

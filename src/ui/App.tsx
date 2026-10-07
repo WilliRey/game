@@ -5,6 +5,8 @@ import { DebugPanel } from './hud/DebugPanel';
 import { Hud } from './hud/Hud';
 import { Console } from './screens/Console';
 import { Death } from './screens/Death';
+import { Inventory } from './screens/Inventory';
+import { Loot } from './screens/Loot';
 import { MainMenu } from './screens/MainMenu';
 import { NewGame } from './screens/NewGame';
 import { Pause } from './screens/Pause';
@@ -22,6 +24,8 @@ export const SCREENS: Partial<Record<ScreenId, ScreenComponent>> = {
   textCard: TextCard,
   death: Death,
   console: Console,
+  inventory: Inventory,
+  loot: Loot,
 };
 
 export function App() {
