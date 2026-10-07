@@ -43,3 +43,52 @@ test('boots, starts a new game, and plays without console errors', async ({ page
   expect(zone).toBe('maple_court');
   expect(errors).toEqual([]);
 });
+
+type Holdout = {
+  store: {
+    state: { zone: { zoneId: string; player: { x: number; y: number } }; time: { minutes: number } };
+    open: (id: string, props?: Record<string, unknown>) => void;
+  };
+};
+const holdout = (page: Page) =>
+  page.evaluate(() => {
+    const s = (window as unknown as { holdout: Holdout }).holdout.store.state;
+    return { zone: s.zone.zoneId, x: s.zone.player.x, y: s.zone.player.y, minutes: s.time.minutes };
+  });
+
+test('opens the world map, saves, reloads the page and continues where it left off', async ({ page }) => {
+  const errors = collectErrors(page);
+  await page.goto('/game/');
+  await page.click('[data-action="new-game"]');
+  await page.click('[data-action="start"]');
+  await expect(page.locator('[data-hud]')).toBeVisible({ timeout: 20_000 });
+  while (await page.locator('[data-screen="textCard"]').count()) await page.click('[data-action="continue"]');
+
+  // Leave Maple Court through the world map (the exit opens it with travel enabled).
+  await page.evaluate(() =>
+    (window as unknown as { holdout: Holdout }).holdout.store.open('worldMap', { atExit: true }),
+  );
+  await expect(page.locator('[data-screen="worldMap"]')).toBeVisible();
+  await page.screenshot({ path: 'e2e/screenshots/05-world-map.png' });
+  // Only Maple Court is known at the start: travelling isn't possible yet, so stay.
+  await page.keyboard.press('Escape');
+
+  await page.keyboard.press('Escape');
+  await expect(page.locator('[data-screen="pause"]')).toBeVisible();
+  await page.click('text=Save game');
+  await page.click('[data-action="save-slot1"]');
+  await page.keyboard.press('Escape');
+  await page.keyboard.press('Escape');
+  const before = await holdout(page);
+
+  await page.reload();
+  await expect(page.locator('[data-action="continue"]')).toBeVisible({ timeout: 20_000 });
+  await page.click('[data-action="continue"]');
+  await expect(page.locator('[data-hud]')).toBeVisible({ timeout: 20_000 });
+  const after = await holdout(page);
+  expect(after.zone).toBe(before.zone);
+  expect(after.x).toBeCloseTo(before.x, 3);
+  expect(after.y).toBeCloseTo(before.y, 3);
+  expect(Math.abs(after.minutes - before.minutes)).toBeLessThan(2);
+  expect(errors).toEqual([]);
+});

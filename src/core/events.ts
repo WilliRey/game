@@ -8,7 +8,10 @@ export interface GameEvents {
   'zone:exited': { zoneId: string };
   'zone:reached': { zoneId: string; areaId: string };
   'world:nodeUnlocked': { nodeId: string };
+  'travel:started': { from: string; to: string; mode: 'foot' | 'vehicle' };
+  'travel:event': { eventId: string };
   'travel:arrived': { nodeId: string; mode: 'foot' | 'vehicle' };
+  'save:written': { slot: string; auto: boolean };
   // combat
   'enemy:killed': { enemyType: string; enemyId: string; zoneId: string; sneak: boolean; weaponId?: string };
   'enemy:damaged': { enemyId: string; amount: number; x: number; y: number; crit: boolean };
@@ -52,7 +55,6 @@ export interface GameEvents {
   'time:night': { night: boolean };
   'player:slept': { hours: number };
   // save
-  'save:written': { slot: string };
   'save:loaded': { slot: string };
   // hints / UI
   'hint:show': { hintId: string };

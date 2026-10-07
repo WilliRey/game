@@ -12,6 +12,7 @@ import { addItem, addStack, countItem, hasKey, hasTool, removeItem } from '@/sys
 import { rollContainer } from '@/systems/loot';
 import { SKILL, rank } from '@/systems/progression';
 import { playBroadcast, readNote, showHint } from '@/systems/story';
+import { refuelVehicle } from '@/systems/travel';
 import { emitNoise } from './noise';
 import { rebuildGrids, type ZoneRuntime } from './runtime';
 import type { ContainerState, DoorState, TimedAction, ZoneState } from './types';
@@ -172,7 +173,7 @@ export function interactablesNear(ctx: GameContext, zone: ZoneState, rt: ZoneRun
     );
   }
   for (const e of rt.layout.exits) {
-    const label = e.label ?? (e.toZone ? (ctx.content.zones[e.toZone]?.name ?? 'Exit') : 'Leave area');
+    const label = e.label ?? (e.toZone ? (ctx.content.zones[e.toZone]?.name ?? 'Exit') : 'area (world map)');
     consider(
       {
         kind: 'exit',
@@ -180,7 +181,7 @@ export function interactablesNear(ctx: GameContext, zone: ZoneState, rt: ZoneRun
         x: e.x + e.w / 2,
         y: e.y + e.h / 2,
         label,
-        verb: e.toZone ? 'Go' : 'World map',
+        verb: e.toZone ? 'Go' : 'Leave',
         hold: false,
       },
       e,
@@ -490,7 +491,7 @@ function tap(ctx: GameContext, zone: ZoneState, rt: ZoneRuntime, it: Interactabl
       else
         ctx.bus.emit('ui:open', {
           screen: 'worldMap',
-          props: { fromNode: e.nodeId ?? ctx.state.world.currentNode },
+          props: { fromNode: e.nodeId ?? ctx.state.world.currentNode, atExit: true },
         });
       return;
     }
@@ -606,17 +607,8 @@ function useVehicle(ctx: GameContext, zone: ZoneState, o: ZoneObjectT): void {
     applyEffects(ctx, o.effects, `object:${o.id}`);
     return;
   }
-  let cans = countItem(ctx, 'fuel_can');
-  const per = ctx.content.items.fuel_can?.fuel?.liters ?? 5;
-  let added = 0;
-  while (cans > 0 && v.fuel + per <= v.maxFuel + 0.01) {
-    removeItem(ctx, 'fuel_can', 1, 'refuel');
-    v.fuel = Math.min(v.maxFuel, v.fuel + per);
-    added += per;
-    cans--;
-  }
+  const added = refuelVehicle(ctx);
   if (added > 0) {
-    ctx.bus.emit('sfx:play', { key: 'siphon' });
     ctx.bus.emit('ui:toast', {
       text: `Refuelled +${added} L (${Math.round(v.fuel)}/${v.maxFuel} L).`,
       kind: 'good',

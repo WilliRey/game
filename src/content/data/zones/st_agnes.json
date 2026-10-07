@@ -212,6 +212,29 @@
       "y": 33,
       "radius": 5,
       "color": "#ffcc80"
+    },
+    {
+      "id": "sa_fuel_ambulance",
+      "type": "siphon",
+      "x": 52,
+      "y": 47,
+      "siphonLiters": 10,
+      "label": "Ambulance fuel cap"
+    },
+    {
+      "id": "sa_fuel_car",
+      "type": "siphon",
+      "x": 13,
+      "y": 47,
+      "siphonLiters": 5,
+      "label": "Fuel cap"
+    },
+    {
+      "id": "sa_fuel_can",
+      "type": "pickup",
+      "x": 49,
+      "y": 50,
+      "itemId": "fuel_can"
     }
   ],
   "spawns": {

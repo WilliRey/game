@@ -1325,3 +1325,230 @@ input[type='range'] {
   margin-right: 4px;
   vertical-align: -1px;
 }
+
+/* ---------- menus: continue / saves ---------- */
+.menu-sub {
+  display: block;
+  font-size: 0.68em;
+  color: rgba(255, 255, 255, 0.62);
+  margin-top: 2px;
+  font-weight: 400;
+}
+.death-actions .btn {
+  min-width: 180px;
+}
+.save-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.save-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+}
+.save-row.empty {
+  opacity: 0.75;
+}
+.save-name {
+  font-weight: 700;
+  color: var(--accent-2);
+  margin-bottom: 2px;
+}
+.save-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.save-blocker {
+  margin-bottom: 10px;
+}
+.save-foot {
+  margin-top: 10px;
+}
+.warn-text {
+  color: var(--warn);
+}
+
+/* ---------- world map & travel ---------- */
+.world-panel {
+  width: 1200px;
+}
+.world-body {
+  display: flex;
+  gap: 14px;
+  padding: 12px 14px 0;
+}
+.world-map {
+  width: 840px;
+  height: 540px;
+  flex: none;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: #141618;
+}
+.world-map .district {
+  font-size: 0.2px;
+  letter-spacing: 0.06px;
+  font-weight: 700;
+}
+.map-node {
+  cursor: pointer;
+}
+.map-node .node-label {
+  font-size: 0.24px;
+  fill: #d8d2c4;
+  stroke: #0b0c0d;
+  stroke-width: 0.06px;
+  paint-order: stroke;
+  font-weight: 600;
+}
+.map-node.selected .node-label {
+  fill: var(--accent-2);
+}
+.map-node:hover .node-label {
+  fill: #ffffff;
+}
+.here-ring {
+  animation: here-pulse 1.6s ease-in-out infinite;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+@keyframes here-pulse {
+  0%,
+  100% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.25;
+    transform: scale(1.35);
+  }
+}
+.route-line {
+  stroke-width: 0.05px;
+  stroke-dasharray: 0.16 0.1;
+  opacity: 0.85;
+}
+.world-side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+.node-title {
+  margin: 0;
+  color: var(--accent-2);
+  font-size: 1.25em;
+}
+.node-facts {
+  display: grid;
+  gap: 4px;
+}
+.node-facts > div {
+  display: grid;
+  grid-template-columns: 82px 1fr;
+  gap: 8px;
+  align-items: baseline;
+}
+.node-facts .tag {
+  margin-right: 4px;
+}
+.locked-note,
+.quest-note,
+.here-note {
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.03);
+}
+.quest-note {
+  border-color: #5a4a2a;
+  color: var(--accent-2);
+}
+.here-note {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.travel-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.travel-option .btn {
+  width: 100%;
+  text-align: left;
+  margin-bottom: 3px;
+}
+.vehicle-box {
+  margin-top: auto;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.vehicle-head {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+}
+.world-legend {
+  padding: 8px 14px 12px;
+}
+.event-panel {
+  width: 640px;
+  padding: 20px 24px;
+}
+.event-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.event-title {
+  margin: 4px 0 10px;
+  color: var(--accent-2);
+}
+.event-text {
+  line-height: 1.55;
+  color: #ece4d2;
+}
+.event-text p {
+  margin: 0 0 8px;
+}
+.event-outcome {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-left: 3px solid var(--accent);
+  background: rgba(217, 164, 65, 0.06);
+}
+.event-outcome p {
+  margin: 4px 0 0;
+  line-height: 1.5;
+}
+.event-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+.screen[data-screen='travelEvent'] {
+  background: radial-gradient(circle, rgba(12, 12, 14, 0.82) 0%, rgba(3, 3, 4, 0.96) 75%);
+}
+.event-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+}
+.tag.bad {
+  color: var(--danger);
+  border-color: rgba(208, 80, 63, 0.5);
+}

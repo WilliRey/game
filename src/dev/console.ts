@@ -10,6 +10,9 @@ import { addItem } from '@/systems/inventory';
 import { grantXp } from '@/systems/progression';
 import { setQuestStage } from '@/systems/quests';
 import { changeReputation, setFlag, unlockNode } from '@/systems/story';
+import { loadGame, saveGame } from '@/systems/persistence';
+import { SLOTS, type SlotId } from '@/systems/save';
+import { startTravel } from '@/systems/travel';
 import { enterZone } from '@/systems/zones';
 import { devTools } from './devtools';
 
@@ -202,6 +205,31 @@ export const COMMANDS: Record<string, Cmd> = {
         rebuildGrids(getRuntime(store.content, zone), store.content);
       }
       return ['map revealed'];
+    },
+  },
+  save: {
+    help: 'save [auto|slot1|slot2|slot3] — save now (default slot1)',
+    run: (store, [slot = 'slot1']) => {
+      if (!SLOTS.includes(slot as SlotId)) return [`unknown slot '${slot}'`];
+      return [saveGame(store, slot as SlotId, slot === 'auto') ? `saved to ${slot}` : 'not saved'];
+    },
+  },
+  load: {
+    help: 'load [auto|slot1|slot2|slot3] — load a slot (default auto)',
+    run: (store, [slot = 'auto']) => {
+      if (!SLOTS.includes(slot as SlotId)) return [`unknown slot '${slot}'`];
+      return [loadGame(store, slot as SlotId) ? `loaded ${slot}` : 'load failed'];
+    },
+  },
+  travel: {
+    help: 'travel <nodeId> [foot|vehicle] — travel from the current location (events can fire)',
+    run: (store, [id, mode = 'foot']) => {
+      if (!id || !store.content.worldNodes[id]) return [`unknown node '${id ?? ''}'`];
+      if (!store.state.world.knownNodes.includes(id)) unlockNode(store.ctx, id);
+      const err = startTravel(store.ctx, id, mode === 'vehicle' || mode === 'car' ? 'vehicle' : 'foot');
+      if (err) return [err];
+      if (store.state.travel?.eventId) store.open('travelEvent');
+      return [store.state.travel?.eventId ? `event: ${store.state.travel.eventId}` : `arrived at ${id}`];
     },
   },
   fov: {

@@ -12,23 +12,51 @@
             "weight": 3,
             "text": "Jumper cables, a tire iron, a bag of scrap. You take what's useful.",
             "effects": [
-              { "type": "giveItem", "itemId": "scrap_metal", "qty": 2 },
-              { "type": "giveItem", "itemId": "rubber_tube", "qty": 1 },
-              { "type": "time", "minutes": 10 }
+              {
+                "type": "giveItem",
+                "itemId": "scrap_metal",
+                "qty": 2
+              },
+              {
+                "type": "giveItem",
+                "itemId": "rubber_tube",
+                "qty": 1
+              },
+              {
+                "type": "time",
+                "minutes": 10
+              }
             ]
           },
           {
             "weight": 1,
             "text": "The car alarm shrieks the moment you touch it. You run before anything answers.",
             "effects": [
-              { "type": "time", "minutes": 20 },
-              { "type": "needs", "thirst": -5 },
-              { "type": "damage", "hp": 4 }
+              {
+                "type": "time",
+                "minutes": 20
+              },
+              {
+                "type": "needs",
+                "thirst": -5
+              },
+              {
+                "type": "damage",
+                "hp": 4
+              }
             ]
           }
         ]
       },
-      { "text": "Keep moving.", "outcomes": [{ "text": "Not worth the risk. You leave it.", "effects": [] }] }
+      {
+        "text": "Keep moving.",
+        "outcomes": [
+          {
+            "text": "Not worth the risk. You leave it.",
+            "effects": []
+          }
+        ]
+      }
     ]
   },
   {
@@ -40,34 +68,73 @@
     "choices": [
       {
         "text": "Give him a bottle of water.",
-        "if": [{ "type": "hasItem", "itemId": "water_bottle" }],
+        "if": [
+          {
+            "type": "hasItem",
+            "itemId": "water_bottle"
+          }
+        ],
         "outcomes": [
           {
             "text": "He drinks half of it in one go and tells you the Westside pharmacy still has a back room nobody's opened. Word gets back to the camp.",
             "effects": [
-              { "type": "takeItem", "itemId": "water_bottle" },
-              { "type": "reputation", "delta": 4 },
-              { "type": "xp", "amount": 20 },
-              { "type": "unlockNode", "nodeId": "westside_mall" }
+              {
+                "type": "takeItem",
+                "itemId": "water_bottle"
+              },
+              {
+                "type": "reputation",
+                "delta": 4
+              },
+              {
+                "type": "xp",
+                "amount": 20
+              },
+              {
+                "type": "unlockNode",
+                "nodeId": "westside_mall"
+              }
             ]
           }
         ]
       },
       {
         "text": "Give him dirty water. It's all you can spare.",
-        "if": [{ "type": "hasItem", "itemId": "dirty_water" }],
+        "if": [
+          {
+            "type": "hasItem",
+            "itemId": "dirty_water"
+          }
+        ],
         "outcomes": [
           {
             "text": "He looks at it for a long time, then drinks it anyway. \"Thanks,\" he says, and means it.",
             "effects": [
-              { "type": "takeItem", "itemId": "dirty_water" },
-              { "type": "reputation", "delta": 2 },
-              { "type": "xp", "amount": 10 }
+              {
+                "type": "takeItem",
+                "itemId": "dirty_water"
+              },
+              {
+                "type": "reputation",
+                "delta": 2
+              },
+              {
+                "type": "xp",
+                "amount": 10
+              }
             ]
           }
         ]
       },
-      { "text": "\"Sorry.\" Walk on.", "outcomes": [{ "text": "You don't look back.", "effects": [] }] }
+      {
+        "text": "\"Sorry.\" Walk on.",
+        "outcomes": [
+          {
+            "text": "You don't look back.",
+            "effects": []
+          }
+        ]
+      }
     ]
   },
   {
@@ -81,7 +148,12 @@
         "outcomes": [
           {
             "text": "An hour behind a dumpster. Your legs cramp. They pass.",
-            "effects": [{ "type": "time", "minutes": 60 }]
+            "effects": [
+              {
+                "type": "time",
+                "minutes": 60
+              }
+            ]
           }
         ]
       },
@@ -91,8 +163,15 @@
           {
             "text": "Three blocks out of your way, but nobody bites you.",
             "effects": [
-              { "type": "time", "minutes": 30 },
-              { "type": "needs", "hunger": -3, "thirst": -5 }
+              {
+                "type": "time",
+                "minutes": 30
+              },
+              {
+                "type": "needs",
+                "hunger": -3,
+                "thirst": -5
+              }
             ]
           }
         ]
@@ -103,12 +182,22 @@
           {
             "weight": 3,
             "text": "You slip through a gap in the crowd with your heart in your throat.",
-            "effects": [{ "type": "xp", "amount": 15 }]
+            "effects": [
+              {
+                "type": "xp",
+                "amount": 15
+              }
+            ]
           },
           {
             "weight": 2,
             "text": "A hand catches your sleeve and nails rake your arm before you tear free.",
-            "effects": [{ "type": "damage", "hp": 12 }]
+            "effects": [
+              {
+                "type": "damage",
+                "hp": 12
+              }
+            ]
           }
         ]
       }
@@ -119,6 +208,7 @@
     "title": "Supply drop",
     "text": "A pallet with a torn parachute hangs from a streetlight, ten feet up. Military markings.",
     "weight": 1,
+    "once": true,
     "choices": [
       {
         "text": "Climb for it.",
@@ -127,22 +217,48 @@
             "weight": 3,
             "text": "You get it down. Ration packs and water. Someone, somewhere, still cares.",
             "effects": [
-              { "type": "giveItem", "itemId": "mre", "qty": 1 },
-              { "type": "giveItem", "itemId": "water_bottle", "qty": 2 },
-              { "type": "time", "minutes": 15 }
+              {
+                "type": "giveItem",
+                "itemId": "mre",
+                "qty": 1
+              },
+              {
+                "type": "giveItem",
+                "itemId": "water_bottle",
+                "qty": 2
+              },
+              {
+                "type": "time",
+                "minutes": 15
+              }
             ]
           },
           {
             "weight": 1,
             "text": "The pole bends. You fall hard, but grab one bottle on the way down.",
             "effects": [
-              { "type": "damage", "hp": 8 },
-              { "type": "giveItem", "itemId": "water_bottle", "qty": 1 }
+              {
+                "type": "damage",
+                "hp": 8
+              },
+              {
+                "type": "giveItem",
+                "itemId": "water_bottle",
+                "qty": 1
+              }
             ]
           }
         ]
       },
-      { "text": "Leave it. Drops draw crowds.", "outcomes": [{ "text": "Probably smart.", "effects": [] }] }
+      {
+        "text": "Leave it. Drops draw crowds.",
+        "outcomes": [
+          {
+            "text": "Probably smart.",
+            "effects": []
+          }
+        ]
+      }
     ]
   },
   {
@@ -150,17 +266,36 @@
     "title": "Men in hi-vis vests",
     "text": "Three men in orange safety vests and hunting rifles step out from behind a bus. \"Toll road, friend.\" One of them grins. \"Two cans and you keep walking.\"",
     "weight": 1,
-    "if": [{ "type": "day", "min": 24 }],
+    "if": [
+      {
+        "type": "day",
+        "min": 24
+      }
+    ],
     "choices": [
       {
         "text": "Pay them two cans of beans.",
-        "if": [{ "type": "hasItem", "itemId": "canned_beans", "qty": 2 }],
+        "if": [
+          {
+            "type": "hasItem",
+            "itemId": "canned_beans",
+            "qty": 2
+          }
+        ],
         "outcomes": [
           {
             "text": "\"Pleasure.\" They wave you through. You notice the patches: a bridge, crossed out. The Tollmen.",
             "effects": [
-              { "type": "takeItem", "itemId": "canned_beans", "qty": 2 },
-              { "type": "setFlag", "key": "met_tollmen", "value": true }
+              {
+                "type": "takeItem",
+                "itemId": "canned_beans",
+                "qty": 2
+              },
+              {
+                "type": "setFlag",
+                "key": "met_tollmen",
+                "value": true
+              }
             ]
           }
         ]
@@ -171,21 +306,40 @@
           {
             "text": "They laugh as you leave. It costs you forty minutes.",
             "effects": [
-              { "type": "time", "minutes": 40 },
-              { "type": "setFlag", "key": "met_tollmen", "value": true }
+              {
+                "type": "time",
+                "minutes": 40
+              },
+              {
+                "type": "setFlag",
+                "key": "met_tollmen",
+                "value": true
+              }
             ]
           }
         ]
       },
       {
         "text": "Bluff: \"Ruth Okafor sends her regards.\"",
-        "if": [{ "type": "reputation", "min": 20 }],
+        "if": [
+          {
+            "type": "reputation",
+            "min": 20
+          }
+        ],
         "outcomes": [
           {
             "text": "The grin fades. \"Firehouse lady. Fine. Go.\" Good to know her name carries weight.",
             "effects": [
-              { "type": "setFlag", "key": "met_tollmen", "value": true },
-              { "type": "xp", "amount": 20 }
+              {
+                "type": "setFlag",
+                "key": "met_tollmen",
+                "value": true
+              },
+              {
+                "type": "xp",
+                "amount": 20
+              }
             ]
           }
         ]
@@ -205,14 +359,25 @@
           {
             "weight": 2,
             "text": "Metal screams, mirrors go, but you're through.",
-            "effects": [{ "type": "fuel", "liters": -1.5 }]
+            "effects": [
+              {
+                "type": "fuel",
+                "liters": -1.5
+              }
+            ]
           },
           {
             "weight": 1,
             "text": "You wedge the ambulance and have to rock it free. Something big turns toward the noise.",
             "effects": [
-              { "type": "fuel", "liters": -2.5 },
-              { "type": "time", "minutes": 15 }
+              {
+                "type": "fuel",
+                "liters": -2.5
+              },
+              {
+                "type": "time",
+                "minutes": 15
+              }
             ]
           }
         ]
@@ -223,8 +388,14 @@
           {
             "text": "Ten extra minutes of side streets.",
             "effects": [
-              { "type": "time", "minutes": 10 },
-              { "type": "fuel", "liters": -1 }
+              {
+                "type": "time",
+                "minutes": 10
+              },
+              {
+                "type": "fuel",
+                "liters": -1
+              }
             ]
           }
         ]

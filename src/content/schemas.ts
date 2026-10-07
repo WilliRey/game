@@ -660,6 +660,8 @@ export const WorldNodeDef = z
     description: z.string().default(''),
     /** A node that is shown but can't be travelled to yet (story teaser). */
     lockedText: z.string().optional(),
+    /** Start object in the zone where travellers arrive (default: the zone's first start). */
+    entry: id.optional(),
   })
   .strict();
 export type WorldNodeDef = z.infer<typeof WorldNodeDef>;
@@ -671,6 +673,8 @@ export const TravelEventDef = z
     text: z.string(),
     weight: z.number().positive().default(1),
     modes: z.array(z.enum(['foot', 'vehicle'])).default(['foot', 'vehicle']),
+    /** One-off events never repeat once seen. */
+    once: z.boolean().default(false),
     if: z.array(Condition).default([]),
     choices: z
       .array(

@@ -199,6 +199,16 @@ export function useItem(ctx: GameContext, uid: Uid): string | null {
     ctx.bus.emit('item:used', { itemId: s.itemId });
     return `Learned: ${ctx.content.items[ctx.content.recipes[def.blueprint.recipeId]?.output.itemId ?? '']?.name ?? ''}`;
   }
+  if (def.fuel) {
+    const v = ctx.state.vehicle;
+    if (!v.owned) return 'Nothing to put it in yet.';
+    if (v.fuel + def.fuel.liters > v.maxFuel + 0.01) return 'The tank is full.';
+    v.fuel = Math.min(v.maxFuel, v.fuel + def.fuel.liters);
+    removeStack(ctx, uid, 1, 'refuel');
+    ctx.bus.emit('item:used', { itemId: s.itemId });
+    ctx.bus.emit('sfx:play', { key: 'siphon' });
+    return `Poured ${def.fuel.liters} L into the tank (${Math.round(v.fuel)}/${v.maxFuel} L).`;
+  }
   const u = def.use;
   if (!u) return null;
   const msgs: string[] = [];

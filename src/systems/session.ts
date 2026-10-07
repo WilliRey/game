@@ -80,6 +80,7 @@ export function newGameState(content: Content, difficulty: Difficulty, seed = ra
       visitedNodes: [],
       seenEvents: [],
     },
+    travel: null,
     unlockedRecipes: [],
     notesRead: [],
     broadcastsHeard: [],

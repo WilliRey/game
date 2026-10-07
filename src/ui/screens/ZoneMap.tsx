@@ -90,7 +90,20 @@ export function ZoneMap() {
   const total = Object.keys(zone.containers).length;
   const searched = Object.values(zone.containers).filter((c) => c.searched).length;
   return (
-    <Modal id="zoneMap" title={name} width={940}>
+    <Modal
+      id="zoneMap"
+      title={name}
+      width={940}
+      extra={
+        <button
+          class="btn btn-small"
+          data-action="world-map"
+          onClick={() => store.open('worldMap', { atExit: false })}
+        >
+          World map
+        </button>
+      }
+    >
       <div class="zone-map-wrap">
         <canvas ref={ref} class="zone-map" />
       </div>

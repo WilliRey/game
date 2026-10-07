@@ -275,11 +275,18 @@ export function validateContent(content: Content): ValidationReport {
   }
 
   // ---- world ----
-  for (const n of content.lists.worldNodes)
+  for (const n of content.lists.worldNodes) {
     if (!has(content.zones, n.zoneId)) err(`world node ${n.id}: zone '${n.zoneId}' unknown`);
+    else if (n.entry && !zoneEntries.get(n.zoneId)?.has(n.entry))
+      err(`world node ${n.id}: entry '${n.entry}' is not a start object in '${n.zoneId}'`);
+  }
+  if (!content.lists.worldNodes.some((n) => n.startKnown)) err('worldNodes.json: no node is startKnown');
   for (const ev of content.travelEvents) {
     const w = `travel event ${ev.id}`;
     ev.if.forEach((c) => checkCond(c, w));
+    // The event screen can't be closed, so one choice must always be available.
+    if (!ev.choices.some((ch) => ch.if.length === 0))
+      err(`${w}: needs at least one choice without conditions`);
     ev.choices.forEach((ch, i) => {
       ch.if.forEach((c) => checkCond(c, `${w} choice ${i}`));
       ch.outcomes.forEach((o) => o.effects.forEach((e) => checkEffect(e, `${w} choice ${i}`)));

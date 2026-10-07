@@ -5,11 +5,13 @@ Anything stubbed or faked is listed under **Stubs** at the bottom.
 
 ## STATUS
 
-**Session 2 (current):** M0–M5 complete. New Game drops Sam into a real Maple Court map with movement,
+**Session 2 (current):** M0–M6 complete. New Game drops Sam into a real Maple Court map with movement,
 FOV, day/night, HUD and dev tools; zombies see, hear, path, bash doors and attack; melee, guns, shove and
 throwables work with FX and positional synthesized sound. Inventory, loot, survival, crafting, mods,
 repair and the safehouse done. NPCs talk through data-driven dialogue, quests track and reward, the journal
-and markers point the way, and three traders barter. Working on M6 (world map, travel, saves) next.
+and markers point the way, and three traders barter. The world map plans walks and drives with travel events,
+fuel and needs costs; saves (3 slots + autosave, export/import) resume exactly where you were, and death
+loads the last save. Working on M7 (slice polish, balance, docs) next.
 
 ## M0 — Scaffold & CI (boots to a menu)
 - [x] package.json with pinned Phaser 4.2.1, Vite, Vitest, Playwright, ESLint, Prettier, zod, Preact
@@ -87,10 +89,15 @@ and markers point the way, and three traders barter. Working on M6 (world map, t
       Junie) with dialogue; zone map (M) of explored tiles, containers searched, exits, people
 
 ## M6 — World map, travel, vehicle & fuel, saves, menus, death
-- [ ] world map screen with nodes (danger, loot types, % searched, quest markers), unlocking
-- [ ] on-foot travel time/needs cost + travel events; vehicle travel with fuel; siphoning
-- [ ] versioned saves, 3 slots + autosave, export/import, migrations
-- [ ] main menu / pause / settings / death screens; difficulty presets
+- [x] world map screen (stylized city SVG) with nodes: danger, loot types, % searched, quest markers, visited
+      state, locked teaser; unlocking through story/dialogue/notes/radio/events; view-only from the zone map
+- [x] on-foot travel (time, needs at exertion rate, event chance, 6 km limit, forced march when stranded);
+      vehicle travel (fast, fewer events, fuel); refuel from cans (map, inventory, ambulance); siphoning
+- [x] 6 data-driven travel events with conditional choices and weighted outcomes, summary of effects
+- [x] versioned saves in localStorage: 3 slots + autosave (zone entry, quest steps, sleep; waits until safe),
+      export/import files, migration hook + default filling; unit tests for round-trip, RNG, migrations
+- [x] main menu (Continue/New/Load/Settings), pause (save/load/settings/quit confirm), settings, death →
+      load last save; difficulty presets; e2e test saves, reloads the page and continues
 
 ## M7 — Slice content, balance, docs, polish
 - [ ] Prologue "Empty Cupboards" with hints
@@ -101,8 +108,10 @@ and markers point the way, and three traders barter. Working on M6 (world map, t
 - [ ] docs/CONTENT_GUIDE.md, README with run/play instructions, CREDITS.md
 
 ## Stubs / known gaps
-- Zones other than the ones built so far are placeholder rooms; NPCs, dialogues, traders and most quests are
-  stubs until M5/M7.
+- All art is procedural placeholder (Canvas2D textures generated at boot); all sound is synthesized WebAudio.
+- The world map background is a generated street grid, not a drawn map.
+- Act 2 (Northgate bridge) is a locked teaser node.
 
 ## Next concrete steps
-M1: zone loader, ZoneScene, movement, FOV, day/night, HUD shell, debug overlay.
+M7: play the slice end to end in the browser (prologue → Firehouse → Act 1 → St. Agnes boss), balance
+needs/loot/prices, polish, Playwright screenshots, CONTENT_GUIDE / README / CREDITS, final report.

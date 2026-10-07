@@ -84,7 +84,8 @@ export function Inventory() {
   const def = selected ? content.items[selected.itemId] : undefined;
   const slot = selected ? slotFor(ctx, selected) : null;
   const compareWith = selected && slot && !isEquipped(ctx, selected.uid) ? equippedIn(ctx, slot) : undefined;
-  const usable = !!def && (!!def.use || !!def.note || !!def.blueprint);
+  const usable =
+    !!def && (!!def.use || !!def.note || !!def.blueprint || (!!def.fuel && ctx.state.vehicle.owned));
   const quickable = !!def?.use;
 
   return (
@@ -224,7 +225,9 @@ export function Inventory() {
                           ? 'Drink'
                           : def?.note || def?.blueprint
                             ? 'Read'
-                            : 'Use'}
+                            : def?.fuel
+                              ? 'Pour into tank'
+                              : 'Use'}
                     </button>
                   ) : null}
                   {slot && !isEquipped(ctx, selected.uid) ? (

@@ -170,13 +170,25 @@ export const BALANCE = {
   },
   travel: {
     vehicleTankLiters: 40,
-    footTilesPerMinute: 1,
-    footMinutesPerKm: 15,
+    /** On foot you sneak, detour and hide, so a kilometre takes a while (and drains needs ×exertion). */
+    footMinutesPerKm: 25,
     vehicleMinutesPerKm: 2,
-    fuelPerKm: 1.2,
+    fuelPerKm: 0.8,
+    /** Chance of a travel event on a trip of `eventReferenceKm`; scaled by distance (×0.5–1.5). */
     footEventChance: 0.35,
     vehicleEventChance: 0.1,
+    eventReferenceKm: 3,
+    nightEventMultiplier: 1.4,
     maxFootKm: 6,
+    /** A stranded player (nothing reachable) may walk any distance, at this time multiplier. */
+    forcedMarchTimeMultiplier: 1.5,
+  },
+  save: {
+    /** Quest-step autosaves are skipped if the last autosave was more recent than this (real seconds). */
+    autosaveMinIntervalSeconds: 8,
+    /** Autosaves wait until the player is out of danger: above this health and not being hunted. */
+    autosaveMinHp: 25,
+    autosaveHuntRadius: 30,
   },
   progression: {
     xpPerLevelBase: 100,

@@ -6,6 +6,7 @@ import { createGame } from './game/createGame';
 import { mountUI } from './ui/mount';
 import { runCommand } from './dev/console';
 import { devTools } from './dev/devtools';
+import { installSaveBridge } from './systems/persistence';
 
 function fatal(message: string): void {
   const el = document.getElementById('ui') ?? document.body;
@@ -25,6 +26,7 @@ function boot(): void {
     throw e;
   }
   const store = new GameStore(content);
+  installSaveBridge(store);
   const game = createGame(store, document.getElementById('game')!);
   game.registry.set('audio', new AudioManager(store));
   mountUI(store, document.getElementById('ui')!, game);

@@ -176,6 +176,24 @@ export interface VehicleState {
   maxFuel: number;
 }
 
+export type TravelMode = 'foot' | 'vehicle';
+
+/** A journey in progress: set while a travel event is on screen, cleared on arrival. */
+export interface TravelState {
+  from: NodeId;
+  to: NodeId;
+  mode: TravelMode;
+  km: number;
+  minutes: number;
+  fuel: number;
+  eventId?: string;
+  /** Index of the choice taken and the outcome text, once the player has chosen. */
+  choice?: number;
+  outcomeText?: string;
+  /** What the outcome did, for the event screen ("+2 Scrap Metal", "−8 health"). */
+  outcomeSummary?: string[];
+}
+
 export interface WorldState {
   currentNode: NodeId;
   knownNodes: NodeId[];
@@ -214,6 +232,7 @@ export interface GameState {
   base: BaseState;
   vehicle: VehicleState;
   world: WorldState;
+  travel: TravelState | null;
   unlockedRecipes: RecipeId[];
   notesRead: string[];
   broadcastsHeard: string[];

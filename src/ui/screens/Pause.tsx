@@ -1,8 +1,18 @@
+import { useState } from 'preact/hooks';
+import { latestSave } from '@/systems/save';
 import { quitToMenu } from '@/systems/session';
 import { useStore } from '../context';
 
+function sinceSave(): string {
+  const m = latestSave();
+  if (!m) return 'You have no save yet.';
+  const min = Math.floor((Date.now() - m.savedAt) / 60000);
+  return min < 1 ? 'Last saved just now.' : `Last saved ${min} min ago.`;
+}
+
 export function Pause() {
   const store = useStore();
+  const [quitting, setQuitting] = useState(false);
   return (
     <div class="screen dim" data-screen="pause">
       <div class="pause-menu">
@@ -22,9 +32,14 @@ export function Pause() {
         <button class="btn" onClick={() => store.open('skills')}>
           Skills
         </button>
-        <button class="btn btn-danger" onClick={() => quitToMenu(store)}>
-          Quit to main menu
+        <button
+          class="btn btn-danger"
+          data-action="quit"
+          onClick={() => (quitting ? quitToMenu(store) : setQuitting(true))}
+        >
+          {quitting ? 'Quit? Unsaved progress is lost' : 'Quit to main menu'}
         </button>
+        <div class="muted small">{sinceSave()}</div>
         <div class="pause-keys muted">
           <span class="kbd">WASD</span> move · <span class="kbd">Shift</span> sprint ·{' '}
           <span class="kbd">C</span> crouch · <span class="kbd">E</span> interact ·{' '}

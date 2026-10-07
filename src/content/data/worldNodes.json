@@ -38,15 +38,16 @@
   {
     "id": "st_agnes",
     "zoneId": "st_agnes",
-    "x": 10.6,
-    "y": 2.4,
-    "description": "Where Jo was working when the city fell. Too far to walk."
+    "x": 12.8,
+    "y": 2.6,
+    "description": "Where Jo was working when the city fell. Too far to walk.",
+    "entry": "sa_start"
   },
   {
     "id": "northgate_bridge",
     "zoneId": "st_agnes",
-    "x": 11.6,
-    "y": 0.8,
+    "x": 11.7,
+    "y": 0.9,
     "description": "The only bridge across the river to Northgate.",
     "lockedText": "The Tollmen hold the bridge. (Act 2 — coming in a later version.)"
   }
