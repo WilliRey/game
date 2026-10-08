@@ -5,7 +5,7 @@ import { Rng } from './rng';
 import type { GameState, SettingsState } from './types';
 import { DEFAULT_SETTINGS } from './types';
 
-/** What every system receives. Pure modules take a GameContext; nothing in here touches Phaser or the DOM. */
+/** What every system receives. Pure modules take a GameContext; nothing in here touches the renderer or the DOM. */
 export interface GameContext {
   state: GameState;
   content: Content;

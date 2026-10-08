@@ -1,8 +1,9 @@
 /**
- * Keyboard state from DOM events (so we never steal keys from the console's text input) plus mouse state
- * from Phaser's pointer. `read()` produces one frame of PlayerInput with edge flags.
+ * Keyboard and mouse from DOM events (never stealing keys from the console's text input). `read()` builds
+ * one frame of PlayerInput with edge flags; the aim point comes from the view (a raycast onto the ground in
+ * 3D, or straight pixel maths in the 2D fallback).
  */
-import type Phaser from 'phaser';
+import { Vector2 } from 'three';
 import type { WeaponSlot } from '@/core/types';
 import { emptyInput, type PlayerInput } from '@/sim/player';
 
@@ -25,38 +26,77 @@ export class InputTracker {
   private down = new Set<string>();
   private pressed = new Set<string>();
   private wheel = 0;
+  private lmb = false;
+  private rmb = false;
   private lmbWas = false;
-  private onKeyDown = (e: KeyboardEvent) => {
-    if (isTyping()) return;
-    // A key that closes a UI screen must not also act in the world on the next frame.
-    if (!e.repeat && !this.captured()) this.pressed.add(e.code);
-    this.down.add(e.code);
-    if (e.code === 'Space' || e.code.startsWith('Arrow')) e.preventDefault();
-  };
-  private onKeyUp = (e: KeyboardEvent) => {
-    this.down.delete(e.code);
-  };
-  private onBlur = () => {
-    this.down.clear();
-    this.pressed.clear();
-  };
+  /** Cursor in normalised device coordinates of the game view (−1..1). */
+  readonly ndc = new Vector2();
+  private offs: (() => void)[] = [];
 
   constructor(
-    private scene: Phaser.Scene,
+    private canvas: HTMLCanvasElement,
     private captured: () => boolean,
   ) {
-    window.addEventListener('keydown', this.onKeyDown);
-    window.addEventListener('keyup', this.onKeyUp);
-    window.addEventListener('blur', this.onBlur);
-    scene.input.on('wheel', (_p: unknown, _o: unknown, _dx: number, dy: number) => {
-      this.wheel += Math.sign(dy);
+    const on = <K extends keyof WindowEventMap>(
+      target: Window | HTMLElement,
+      type: K,
+      fn: (e: WindowEventMap[K]) => void,
+      opts?: AddEventListenerOptions,
+    ) => {
+      target.addEventListener(type, fn as EventListener, opts);
+      this.offs.push(() => target.removeEventListener(type, fn as EventListener, opts));
+    };
+    on(window, 'keydown', (e) => {
+      if (isTyping()) return;
+      // A key that closes a UI screen must not also act in the world on the next frame.
+      if (!e.repeat && !this.captured()) this.pressed.add(e.code);
+      this.down.add(e.code);
+      if (e.code === 'Space' || e.code.startsWith('Arrow')) e.preventDefault();
     });
+    on(window, 'keyup', (e) => this.down.delete(e.code));
+    on(window, 'blur', () => {
+      this.down.clear();
+      this.pressed.clear();
+      this.lmb = false;
+      this.rmb = false;
+    });
+    on(window, 'mousemove', (e) => this.track(e));
+    // Buttons are taken from the game view only, so clicks on UI panels never swing a weapon.
+    on(canvas, 'mousedown', (e) => {
+      this.track(e);
+      if (e.button === 0) this.lmb = true;
+      if (e.button === 2) this.rmb = true;
+    });
+    on(window, 'mouseup', (e) => {
+      if (e.button === 0) this.lmb = false;
+      if (e.button === 2) this.rmb = false;
+    });
+    on(canvas, 'contextmenu', (e) => e.preventDefault());
+    on(
+      canvas,
+      'wheel',
+      (e) => {
+        this.wheel += Math.sign(e.deltaY);
+        e.preventDefault();
+      },
+      { passive: false },
+    );
+  }
+
+  private track(e: MouseEvent): void {
+    const r = this.canvas.getBoundingClientRect();
+    if (r.width === 0) return;
+    this.ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -(((e.clientY - r.top) / r.height) * 2 - 1));
+  }
+
+  /** The cursor in logical pixels (1280×720). */
+  cursorPx(w: number, h: number): { x: number; y: number } {
+    return { x: ((this.ndc.x + 1) / 2) * w, y: ((1 - this.ndc.y) / 2) * h };
   }
 
   destroy(): void {
-    window.removeEventListener('keydown', this.onKeyDown);
-    window.removeEventListener('keyup', this.onKeyUp);
-    window.removeEventListener('blur', this.onBlur);
+    for (const off of this.offs) off();
+    this.offs = [];
   }
 
   isDown(code: string): boolean {
@@ -70,15 +110,16 @@ export class InputTracker {
     return had;
   }
 
+  get aiming(): boolean {
+    return this.rmb;
+  }
+
   /** Build this frame's input. `captured` = a UI screen is open: movement and actions are ignored. */
-  read(tileSize: number, captured: boolean): PlayerInput {
+  read(aim: { x: number; y: number }, captured: boolean): PlayerInput {
     const inp = emptyInput();
-    const ptr = this.scene.input.activePointer;
-    const cam = this.scene.cameras.main;
-    const world = cam.getWorldPoint(ptr.x, ptr.y);
-    inp.aimX = world.x / tileSize;
-    inp.aimY = world.y / tileSize;
-    const lmb = ptr.leftButtonDown();
+    inp.aimX = aim.x;
+    inp.aimY = aim.y;
+    const lmb = this.lmb;
     if (captured) {
       this.pressed.clear();
       this.wheel = 0;
@@ -90,7 +131,7 @@ export class InputTracker {
     inp.moveY = (d('KeyS') ? 1 : 0) - (d('KeyW') ? 1 : 0);
     inp.sprint = d('ShiftLeft') || d('ShiftRight');
     inp.force = inp.sprint;
-    inp.aim = ptr.rightButtonDown();
+    inp.aim = this.rmb;
     inp.attack = lmb;
     inp.attackPressed = lmb && !this.lmbWas;
     this.lmbWas = lmb;

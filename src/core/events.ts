@@ -73,7 +73,7 @@ export interface GameEvents {
   'travel:zone': { zoneId: string; entry?: string };
   'base:collectWater': Record<string, never>;
   'ui:loadLatest': Record<string, never>;
-  // fx consumed by the Phaser scene
+  // fx consumed by the renderer
   'fx:shake': { intensity: number; durationMs: number };
   'fx:damageNumber': { x: number; y: number; amount: number; crit: boolean };
   /** A flashbang went off: a blinding burst of light at (x, y). */

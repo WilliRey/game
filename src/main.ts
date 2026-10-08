@@ -27,9 +27,12 @@ function boot(): void {
   }
   const store = new GameStore(content);
   installSaveBridge(store);
-  const game = createGame(store, document.getElementById('game')!);
-  game.registry.set('audio', new AudioManager(store));
+  const audio = new AudioManager(store);
+  const game = createGame(store, document.getElementById('game')!, audio);
   mountUI(store, document.getElementById('ui')!, game);
+  game.show('title');
+  store.setPhase('menu');
+  store.open('mainMenu');
   // Exposed for the Playwright tests and the browser console; `cmd` runs debug-console commands.
   (window as unknown as { holdout: unknown }).holdout = {
     store,
