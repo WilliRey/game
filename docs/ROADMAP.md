@@ -5,13 +5,10 @@ Anything stubbed or faked is listed under **Stubs** at the bottom.
 
 ## STATUS
 
-**Session 2 (current):** M0–M6 complete. New Game drops Sam into a real Maple Court map with movement,
-FOV, day/night, HUD and dev tools; zombies see, hear, path, bash doors and attack; melee, guns, shove and
-throwables work with FX and positional synthesized sound. Inventory, loot, survival, crafting, mods,
-repair and the safehouse done. NPCs talk through data-driven dialogue, quests track and reward, the journal
-and markers point the way, and three traders barter. The world map plans walks and drives with travel events,
-fuel and needs costs; saves (3 slots + autosave, export/import) resume exactly where you were, and death
-loads the last save. Working on M7 (slice polish, balance, docs) next.
+**Session 2 (current):** M0–M7 complete — the v1 vertical slice is playable end to end. The prologue, the
+whole Act 1 chain (through the St. Agnes basement boss and "To be continued") and all four side quests have
+been played in the browser with real input; every system in the brief works end to end. Placeholder art and
+synthesized sound throughout. See **Stubs / known gaps** and **Next concrete steps** below.
 
 ## M0 — Scaffold & CI (boots to a menu)
 - [x] package.json with pinned Phaser 4.2.1, Vite, Vitest, Playwright, ESLint, Prettier, zod, Preact
@@ -100,18 +97,33 @@ loads the last save. Working on M7 (slice polish, balance, docs) next.
       load last save; difficulty presets; e2e test saves, reloads the page and continues
 
 ## M7 — Slice content, balance, docs, polish
-- [ ] Prologue "Empty Cupboards" with hints
-- [ ] Act 1 "Firehouse 9" chain (battery, fuel, repair, St. Agnes + boss + "To be continued")
-- [ ] side quests: Medicine Run, Rain Check, The Missing Scout, Kitchen Duty
-- [ ] 6 zones, 5 NPCs, 3 traders, 10+ notes, 4–5 travel events, 20+ recipes
-- [ ] scripted quest test, content validation, Playwright screenshots
-- [ ] docs/CONTENT_GUIDE.md, README with run/play instructions, CREDITS.md
+- [x] Prologue "Empty Cupboards" with hints (search, eat, stairwell walker with a camera pan, depot, nail bat
+      at the workbench, world map to Firehouse 9) — played in the browser
+- [x] Act 1 "Firehouse 9" chain: Ruth's deal → bolt cutters (Gus) → Kessler battery → siphon hose → Route 17
+      fuel → ambulance repair → drive to St. Agnes → keycard → basement → bloater boss → Jo's recorder →
+      "To be continued" — played in the browser
+- [x] side quests: Medicine Run, Rain Check (builds the rain collector), The Missing Scout (save Pike or take
+      his rifle: different rewards, reputation, a new trader), Kitchen Duty (repeatable) — played in the browser
+- [x] 7 zones (6 locations + the St. Agnes basement), 5 NPCs, 4 traders, 14 notes, 6 travel events, 29 recipes
+- [x] scripted quest test, content validation (incl. quest completability), map reachability test for every
+      zone, Playwright smoke + key-screen screenshots (`e2e/screenshots`, uploaded by CI)
+- [x] docs/CONTENT_GUIDE.md, README with run/play instructions and dev tools, CREDITS.md
+- [x] balance and fixes from the playthroughs: bleeding clots, trip health forecast, spawn shuffle, St. Agnes
+      connectivity, Pike appears at camp immediately, quiet autosave indicator, CPU-backed canvases (fast boot
+      without a GPU), UI subscription race (menu sometimes never appeared)
 
 ## Stubs / known gaps
 - All art is procedural placeholder (Canvas2D textures generated at boot); all sound is synthesized WebAudio.
 - The world map background is a generated street grid, not a drawn map.
-- Act 2 (Northgate bridge) is a locked teaser node.
+- Act 2 (the Northgate bridge and the Tollmen) is a locked teaser node; the Tollmen appear only in a travel event.
+- Vehicle trunk storage and upgrades (brief: later) are not in v1; the vehicle travels with the player.
+- No controller support, no rebinding, no localization (all brief non-goals for v1).
+- Headless/software-rendered browsers run at ~30 fps; real GPUs hold 60 fps with ~50 zombies (sim ~0.7 ms).
 
 ## Next concrete steps
-M7: play the slice end to end in the browser (prologue → Firehouse → Act 1 → St. Agnes boss), balance
-needs/loot/prices, polish, Playwright screenshots, CONTENT_GUIDE / README / CREDITS, final report.
+1. Real art: replace placeholder keys in `src/game/art/manifest.ts` with sprites (CC0 packs or commissioned).
+2. Act 2: the Northgate bridge zone, the Tollmen faction (reputation, a toll/bribe/fight choice), the train.
+3. More locations per district so the world map has meaningful route choices; random travel ambushes that
+   drop the player into a small encounter zone.
+4. Vehicle depth: trunk storage, upgrades (armor plating, bigger tank), breakdowns.
+5. Balance with playtest telemetry: loot density per tier, trader prices, needs drain over a multi-day run.

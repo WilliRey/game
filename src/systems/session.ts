@@ -120,8 +120,23 @@ function installNpcRefresh(ctx: GameContext): () => void {
   return () => offs.forEach((off) => off());
 }
 
+/** Tutorial hints for firsts that no single system owns. */
+function installHintTriggers(ctx: GameContext): () => void {
+  const offs = [
+    ctx.bus.on('quest:started', () => {
+      if (Object.keys(ctx.state.quests).length >= 2) showHint(ctx, 'journal');
+    }),
+    ctx.bus.on('item:acquired', ({ itemId, source }) => {
+      if (source === 'start' || source === 'console') return;
+      if (ctx.content.items[itemId]?.category === 'medical') showHint(ctx, 'quickslot');
+    }),
+  ];
+  return () => offs.forEach((off) => off());
+}
+
 /** Install the per-session listeners. */
 export function installSession(store: GameStore): void {
+  store.addSessionDisposer(installHintTriggers(store.ctx));
   store.addSessionDisposer(installQuestListeners(store.ctx));
   store.addSessionDisposer(installBaseListeners(store.ctx));
   store.addSessionDisposer(installNpcRefresh(store.ctx));

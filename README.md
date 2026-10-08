@@ -9,6 +9,14 @@ noise and stealth, zombies, melee and guns, scavenging and weight, survival need
 mods, NPCs with branching dialogue, quests, barter, the safehouse, the world map with travel events and
 fuel, and saves. All art and sound are generated at boot as placeholders.
 
+| | |
+|---|---|
+| ![Night on Depot Street](docs/screenshots/05-night-flashlight.jpg) | ![Molotov](docs/screenshots/06-molotov.jpg) |
+| ![World map](docs/screenshots/11-world-map.jpg) | ![Barter](docs/screenshots/10-barter.jpg) |
+| ![Weapon mods](docs/screenshots/08-weapon-mods.jpg) | ![Dialogue](docs/screenshots/09-dialogue.jpg) |
+
+More in [docs/screenshots](docs/screenshots).
+
 ## Run it
 
 Requires Node 22+.
