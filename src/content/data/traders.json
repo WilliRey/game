@@ -1,0 +1,333 @@
+[
+  {
+    "id": "gus",
+    "npcId": "gus",
+    "name": "Gus",
+    "wants": ["food", "drink", "material"],
+    "junk": ["junk"],
+    "restockDays": 2,
+    "stock": [
+      {
+        "itemId": "water_bottle",
+        "qty": [2, 4]
+      },
+      {
+        "itemId": "dirty_water",
+        "qty": [2, 4]
+      },
+      {
+        "itemId": "canned_beans",
+        "qty": [2, 4]
+      },
+      {
+        "itemId": "crackers",
+        "qty": [1, 3]
+      },
+      {
+        "itemId": "rice",
+        "qty": [1, 2]
+      },
+      {
+        "itemId": "cloth",
+        "qty": [3, 6]
+      },
+      {
+        "itemId": "duct_tape",
+        "qty": [1, 3]
+      },
+      {
+        "itemId": "nails",
+        "qty": [1, 3]
+      },
+      {
+        "itemId": "scrap_metal",
+        "qty": [3, 6]
+      },
+      {
+        "itemId": "wood_plank",
+        "qty": [2, 4]
+      },
+      {
+        "itemId": "rubber_tube",
+        "qty": [1, 2]
+      },
+      {
+        "itemId": "glass_bottle",
+        "qty": [2, 4]
+      },
+      {
+        "itemId": "alcohol",
+        "qty": [1, 2]
+      },
+      {
+        "itemId": "lockpick",
+        "qty": [1, 3]
+      },
+      {
+        "itemId": "batteries",
+        "qty": [1, 2]
+      },
+      {
+        "itemId": "bolt_cutters",
+        "qty": [1, 1]
+      },
+      {
+        "itemId": "mechanical_parts",
+        "qty": [1, 2],
+        "minRep": 10
+      },
+      {
+        "itemId": "spring",
+        "qty": [1, 2],
+        "chance": 0.6,
+        "minRep": 10
+      },
+      {
+        "itemId": "school_backpack",
+        "qty": [1, 1],
+        "chance": 0.5
+      },
+      {
+        "itemId": "fuel_can",
+        "qty": [1, 1],
+        "chance": 0.6,
+        "minRep": 15
+      },
+      {
+        "itemId": "hiking_pack",
+        "qty": [1, 1],
+        "chance": 0.5,
+        "minRep": 30
+      },
+      {
+        "itemId": "activated_charcoal",
+        "qty": [1, 2],
+        "chance": 0.5
+      }
+    ]
+  },
+  {
+    "id": "vera",
+    "npcId": "vera",
+    "name": "Vera",
+    "wants": ["weapon", "ammo", "mod"],
+    "junk": ["junk", "food"],
+    "restockDays": 3,
+    "stock": [
+      {
+        "itemId": "ammo_9mm",
+        "qty": [10, 24]
+      },
+      {
+        "itemId": "ammo_shell",
+        "qty": [4, 10]
+      },
+      {
+        "itemId": "scrap_rounds",
+        "qty": [10, 20]
+      },
+      {
+        "itemId": "gunpowder",
+        "qty": [2, 6]
+      },
+      {
+        "itemId": "crossbow_bolt",
+        "qty": [4, 8],
+        "chance": 0.5
+      },
+      {
+        "itemId": "knife",
+        "qty": [1, 1]
+      },
+      {
+        "itemId": "bat",
+        "qty": [1, 1]
+      },
+      {
+        "itemId": "crowbar",
+        "qty": [1, 1]
+      },
+      {
+        "itemId": "machete",
+        "qty": [1, 1],
+        "minRep": 20
+      },
+      {
+        "itemId": "fire_axe",
+        "qty": [1, 1],
+        "chance": 0.5,
+        "minRep": 35
+      },
+      {
+        "itemId": "pistol_9mm",
+        "qty": [1, 1],
+        "chance": 0.8
+      },
+      {
+        "itemId": "pump_shotgun",
+        "qty": [1, 1],
+        "chance": 0.5,
+        "minRep": 30
+      },
+      {
+        "itemId": "bp_bolt_cutters",
+        "qty": [1, 1]
+      },
+      {
+        "itemId": "bp_pipe_pistol",
+        "qty": [1, 1]
+      },
+      {
+        "itemId": "bp_spiked_head",
+        "qty": [1, 1]
+      },
+      {
+        "itemId": "bp_machete",
+        "qty": [1, 1],
+        "minRep": 15
+      },
+      {
+        "itemId": "bp_pipe_bomb",
+        "qty": [1, 1],
+        "minRep": 25
+      },
+      {
+        "itemId": "reinforced_grip",
+        "qty": [1, 1]
+      },
+      {
+        "itemId": "extended_mag",
+        "qty": [1, 1],
+        "minRep": 20
+      },
+      {
+        "itemId": "choke",
+        "qty": [1, 1],
+        "chance": 0.5,
+        "minRep": 20
+      },
+      {
+        "itemId": "padded_jacket",
+        "qty": [1, 1],
+        "minRep": 15
+      },
+      {
+        "itemId": "bike_helmet",
+        "qty": [1, 1]
+      },
+      {
+        "itemId": "bp_suppressor",
+        "qty": [1, 1],
+        "flag": "vera_trusts"
+      },
+      {
+        "itemId": "bp_crossbow",
+        "qty": [1, 1],
+        "flag": "vera_trusts"
+      },
+      {
+        "itemId": "suppressor",
+        "qty": [1, 1],
+        "chance": 0.5,
+        "minRep": 40
+      }
+    ]
+  },
+  {
+    "id": "doc",
+    "npcId": "doc_ama",
+    "name": "Doc Ama",
+    "wants": ["medical"],
+    "junk": ["junk", "weapon"],
+    "restockDays": 3,
+    "startUnlocked": false,
+    "stock": [
+      {
+        "itemId": "bandage",
+        "qty": [3, 6]
+      },
+      {
+        "itemId": "painkillers",
+        "qty": [2, 4]
+      },
+      {
+        "itemId": "first_aid_kit",
+        "qty": [1, 2]
+      },
+      {
+        "itemId": "activated_charcoal",
+        "qty": [2, 4]
+      },
+      {
+        "itemId": "alcohol",
+        "qty": [1, 3]
+      },
+      {
+        "itemId": "antibiotics",
+        "qty": [1, 1],
+        "chance": 0.6,
+        "minRep": 20
+      },
+      {
+        "itemId": "bp_first_aid",
+        "qty": [1, 1]
+      },
+      {
+        "itemId": "energy_bar",
+        "qty": [1, 3]
+      }
+    ]
+  },
+  {
+    "id": "pike",
+    "npcId": "pike",
+    "name": "Pike",
+    "wants": ["food", "drink"],
+    "junk": ["junk"],
+    "restockDays": 3,
+    "startUnlocked": false,
+    "stock": [
+      {
+        "itemId": "hunting_rifle",
+        "qty": [1, 1]
+      },
+      {
+        "itemId": "ammo_rifle",
+        "qty": [6, 12]
+      },
+      {
+        "itemId": "crossbow",
+        "qty": [1, 1],
+        "chance": 0.5,
+        "minRep": 30
+      },
+      {
+        "itemId": "crossbow_bolt",
+        "qty": [6, 12]
+      },
+      {
+        "itemId": "scope",
+        "qty": [1, 1],
+        "chance": 0.5
+      },
+      {
+        "itemId": "mre",
+        "qty": [1, 3]
+      },
+      {
+        "itemId": "energy_bar",
+        "qty": [2, 4]
+      },
+      {
+        "itemId": "hiking_pack",
+        "qty": [1, 1],
+        "chance": 0.6
+      },
+      {
+        "itemId": "padded_stock",
+        "qty": [1, 1],
+        "chance": 0.5
+      }
+    ]
+  }
+]

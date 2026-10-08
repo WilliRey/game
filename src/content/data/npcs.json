@@ -1,0 +1,36 @@
+[
+  {
+    "id": "ruth",
+    "dialogue": "ruth",
+    "color": "#c9a26b",
+    "role": "Camp leader"
+  },
+  {
+    "id": "gus",
+    "dialogue": "gus",
+    "trader": "gus",
+    "color": "#8fae6f",
+    "role": "General goods"
+  },
+  {
+    "id": "vera",
+    "dialogue": "vera",
+    "trader": "vera",
+    "color": "#b86a5a",
+    "role": "Weapons & watch"
+  },
+  {
+    "id": "doc_ama",
+    "dialogue": "doc",
+    "trader": "doc",
+    "color": "#d8d8e8",
+    "role": "Medic"
+  },
+  {
+    "id": "pike",
+    "dialogue": "pike",
+    "trader": "pike",
+    "color": "#7a9ac8",
+    "role": "Scout"
+  }
+]

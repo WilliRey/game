@@ -1,0 +1,86 @@
+[
+  {
+    "id": "melee",
+    "name": "Melee",
+    "description": "Hit harder and tire less with hand weapons.",
+    "ranks": [
+      "+8% melee damage, −5% swing stamina",
+      "+16% melee damage, −10% swing stamina",
+      "+24% melee damage, −15% swing stamina",
+      "+32% melee damage, −20% swing stamina",
+      "+40% melee damage, −25% swing stamina"
+    ]
+  },
+  {
+    "id": "firearms",
+    "name": "Firearms",
+    "description": "Steadier aim and faster reloads.",
+    "ranks": [
+      "−8% spread, +8% reload speed",
+      "−16% spread, +16% reload speed",
+      "−24% spread, +24% reload speed",
+      "−32% spread, +32% reload speed",
+      "−40% spread, +40% reload speed"
+    ]
+  },
+  {
+    "id": "scavenging",
+    "name": "Scavenging",
+    "description": "Search faster and turn up a little more.",
+    "ranks": [
+      "−8% search time, 5% chance of a bonus find",
+      "−16% search time, 10% bonus find",
+      "−24% search time, 15% bonus find",
+      "−32% search time, 20% bonus find",
+      "−40% search time, 25% bonus find"
+    ]
+  },
+  {
+    "id": "crafting",
+    "name": "Crafting",
+    "description": "Better crafted gear and gentler repairs.",
+    "ranks": [
+      "+4% crafted quality, −15% repair wear",
+      "+8% crafted quality, −30% repair wear",
+      "+12% crafted quality, −45% repair wear",
+      "+16% crafted quality, −60% repair wear",
+      "+20% crafted quality, −75% repair wear"
+    ]
+  },
+  {
+    "id": "survival",
+    "name": "Survival",
+    "description": "Need less, get more out of food and medicine.",
+    "ranks": [
+      "−6% hunger and thirst drain, +10% healing",
+      "−12% drain, +20% healing",
+      "−18% drain, +30% healing",
+      "−24% drain, +40% healing",
+      "−30% drain, +50% healing"
+    ]
+  },
+  {
+    "id": "barter",
+    "name": "Barter",
+    "description": "Traders give you a fairer deal.",
+    "ranks": [
+      "2% better prices",
+      "4% better prices",
+      "6% better prices",
+      "8% better prices",
+      "10% better prices"
+    ]
+  },
+  {
+    "id": "stealth",
+    "name": "Stealth",
+    "description": "Move quieter and stay unseen longer.",
+    "ranks": [
+      "−8% noise, zombies spot you 5% closer",
+      "−16% noise, 10% closer",
+      "−24% noise, 15% closer",
+      "−32% noise, 20% closer",
+      "−40% noise, 25% closer"
+    ]
+  }
+]

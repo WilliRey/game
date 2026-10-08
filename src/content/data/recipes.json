@@ -1,0 +1,707 @@
+[
+  {
+    "id": "bandage",
+    "station": "inventory",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "cloth",
+        "qty": 3
+      }
+    ],
+    "output": {
+      "itemId": "bandage",
+      "qty": 1
+    },
+    "timeMinutes": 2,
+    "xp": 2,
+    "category": "medical"
+  },
+  {
+    "id": "molotov",
+    "station": "inventory",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "glass_bottle",
+        "qty": 1
+      },
+      {
+        "itemId": "alcohol",
+        "qty": 1
+      },
+      {
+        "itemId": "cloth",
+        "qty": 1
+      }
+    ],
+    "output": {
+      "itemId": "molotov",
+      "qty": 1
+    },
+    "timeMinutes": 2,
+    "xp": 4,
+    "category": "throwable"
+  },
+  {
+    "id": "lockpick",
+    "station": "inventory",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "scrap_metal",
+        "qty": 1
+      },
+      {
+        "itemId": "wire",
+        "qty": 1
+      }
+    ],
+    "output": {
+      "itemId": "lockpick",
+      "qty": 2
+    },
+    "timeMinutes": 4,
+    "xp": 3,
+    "category": "tool"
+  },
+  {
+    "id": "first_aid_kit",
+    "station": "inventory",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "bandage",
+        "qty": 2
+      },
+      {
+        "itemId": "alcohol",
+        "qty": 1
+      },
+      {
+        "itemId": "painkillers",
+        "qty": 1
+      }
+    ],
+    "output": {
+      "itemId": "first_aid_kit",
+      "qty": 1
+    },
+    "requiresBlueprint": true,
+    "timeMinutes": 6,
+    "xp": 8,
+    "category": "medical"
+  },
+  {
+    "id": "nail_bat",
+    "station": "workbench",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "bat",
+        "qty": 1
+      },
+      {
+        "itemId": "nails",
+        "qty": 2
+      }
+    ],
+    "output": {
+      "itemId": "nail_bat",
+      "qty": 1
+    },
+    "requiresBlueprint": true,
+    "timeMinutes": 15,
+    "xp": 12,
+    "category": "weapon"
+  },
+  {
+    "id": "bolt_cutters",
+    "station": "workbench",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "scrap_metal",
+        "qty": 4
+      },
+      {
+        "itemId": "pipe_section",
+        "qty": 1
+      },
+      {
+        "itemId": "duct_tape",
+        "qty": 1
+      }
+    ],
+    "output": {
+      "itemId": "bolt_cutters",
+      "qty": 1
+    },
+    "requiresBlueprint": true,
+    "timeMinutes": 30,
+    "xp": 15,
+    "category": "tool"
+  },
+  {
+    "id": "siphon_hose",
+    "station": "workbench",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "rubber_tube",
+        "qty": 2
+      },
+      {
+        "itemId": "duct_tape",
+        "qty": 1
+      }
+    ],
+    "output": {
+      "itemId": "siphon_hose",
+      "qty": 1
+    },
+    "requiresBlueprint": true,
+    "timeMinutes": 15,
+    "xp": 10,
+    "category": "tool"
+  },
+  {
+    "id": "rain_collector_kit",
+    "station": "workbench",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "wood_plank",
+        "qty": 3
+      },
+      {
+        "itemId": "scrap_metal",
+        "qty": 2
+      },
+      {
+        "itemId": "rubber_tube",
+        "qty": 1
+      },
+      {
+        "itemId": "duct_tape",
+        "qty": 1
+      }
+    ],
+    "output": {
+      "itemId": "rain_collector_kit",
+      "qty": 1
+    },
+    "requiresBlueprint": true,
+    "timeMinutes": 45,
+    "xp": 20,
+    "category": "base"
+  },
+  {
+    "id": "pipe_pistol",
+    "station": "workbench",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "pipe_section",
+        "qty": 1
+      },
+      {
+        "itemId": "scrap_metal",
+        "qty": 2
+      },
+      {
+        "itemId": "spring",
+        "qty": 1
+      },
+      {
+        "itemId": "duct_tape",
+        "qty": 1
+      }
+    ],
+    "output": {
+      "itemId": "pipe_pistol",
+      "qty": 1
+    },
+    "requiresBlueprint": true,
+    "timeMinutes": 40,
+    "xp": 20,
+    "category": "weapon"
+  },
+  {
+    "id": "scrap_rounds",
+    "station": "workbench",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "scrap_metal",
+        "qty": 1
+      },
+      {
+        "itemId": "gunpowder",
+        "qty": 1
+      }
+    ],
+    "output": {
+      "itemId": "scrap_rounds",
+      "qty": 10
+    },
+    "timeMinutes": 15,
+    "xp": 5,
+    "category": "ammo"
+  },
+  {
+    "id": "crossbow_bolt",
+    "station": "workbench",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "wood_plank",
+        "qty": 1
+      },
+      {
+        "itemId": "scrap_metal",
+        "qty": 1
+      }
+    ],
+    "output": {
+      "itemId": "crossbow_bolt",
+      "qty": 4
+    },
+    "timeMinutes": 15,
+    "xp": 5,
+    "category": "ammo"
+  },
+  {
+    "id": "pipe_bomb",
+    "station": "workbench",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "pipe_section",
+        "qty": 1
+      },
+      {
+        "itemId": "gunpowder",
+        "qty": 3
+      },
+      {
+        "itemId": "duct_tape",
+        "qty": 1
+      }
+    ],
+    "output": {
+      "itemId": "pipe_bomb",
+      "qty": 1
+    },
+    "requiresBlueprint": true,
+    "timeMinutes": 20,
+    "xp": 12,
+    "category": "throwable"
+  },
+  {
+    "id": "spiked_head",
+    "station": "workbench",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "nails",
+        "qty": 2
+      },
+      {
+        "itemId": "scrap_metal",
+        "qty": 2
+      },
+      {
+        "itemId": "wire",
+        "qty": 1
+      }
+    ],
+    "output": {
+      "itemId": "spiked_head",
+      "qty": 1
+    },
+    "requiresBlueprint": true,
+    "timeMinutes": 20,
+    "xp": 10,
+    "category": "mod"
+  },
+  {
+    "id": "reinforced_grip",
+    "station": "workbench",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "duct_tape",
+        "qty": 2
+      },
+      {
+        "itemId": "cloth",
+        "qty": 2
+      }
+    ],
+    "output": {
+      "itemId": "reinforced_grip",
+      "qty": 1
+    },
+    "timeMinutes": 10,
+    "xp": 6,
+    "category": "mod"
+  },
+  {
+    "id": "padded_stock",
+    "station": "workbench",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "wood_plank",
+        "qty": 2
+      },
+      {
+        "itemId": "cloth",
+        "qty": 2
+      },
+      {
+        "itemId": "duct_tape",
+        "qty": 1
+      }
+    ],
+    "output": {
+      "itemId": "padded_stock",
+      "qty": 1
+    },
+    "timeMinutes": 20,
+    "xp": 8,
+    "category": "mod"
+  },
+  {
+    "id": "padded_jacket",
+    "station": "workbench",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "cloth",
+        "qty": 6
+      },
+      {
+        "itemId": "duct_tape",
+        "qty": 2
+      }
+    ],
+    "output": {
+      "itemId": "padded_jacket",
+      "qty": 1
+    },
+    "timeMinutes": 40,
+    "xp": 12,
+    "category": "armor"
+  },
+  {
+    "id": "suppressor",
+    "station": "workbench",
+    "tier": 2,
+    "inputs": [
+      {
+        "itemId": "pipe_section",
+        "qty": 1
+      },
+      {
+        "itemId": "scrap_metal",
+        "qty": 2
+      },
+      {
+        "itemId": "cloth",
+        "qty": 2
+      }
+    ],
+    "output": {
+      "itemId": "suppressor",
+      "qty": 1
+    },
+    "requiresBlueprint": true,
+    "timeMinutes": 40,
+    "xp": 20,
+    "category": "mod"
+  },
+  {
+    "id": "machete",
+    "station": "workbench",
+    "tier": 2,
+    "inputs": [
+      {
+        "itemId": "scrap_metal",
+        "qty": 4
+      },
+      {
+        "itemId": "duct_tape",
+        "qty": 1
+      },
+      {
+        "itemId": "wood_plank",
+        "qty": 1
+      }
+    ],
+    "output": {
+      "itemId": "machete",
+      "qty": 1
+    },
+    "requiresBlueprint": true,
+    "timeMinutes": 40,
+    "xp": 18,
+    "category": "weapon"
+  },
+  {
+    "id": "crossbow",
+    "station": "workbench",
+    "tier": 2,
+    "inputs": [
+      {
+        "itemId": "wood_plank",
+        "qty": 3
+      },
+      {
+        "itemId": "spring",
+        "qty": 2
+      },
+      {
+        "itemId": "wire",
+        "qty": 2
+      },
+      {
+        "itemId": "scrap_metal",
+        "qty": 2
+      }
+    ],
+    "output": {
+      "itemId": "crossbow",
+      "qty": 1
+    },
+    "requiresBlueprint": true,
+    "timeMinutes": 60,
+    "xp": 30,
+    "category": "weapon"
+  },
+  {
+    "id": "extended_mag",
+    "station": "workbench",
+    "tier": 2,
+    "inputs": [
+      {
+        "itemId": "spring",
+        "qty": 2
+      },
+      {
+        "itemId": "scrap_metal",
+        "qty": 2
+      }
+    ],
+    "output": {
+      "itemId": "extended_mag",
+      "qty": 1
+    },
+    "timeMinutes": 30,
+    "xp": 12,
+    "category": "mod"
+  },
+  {
+    "id": "choke",
+    "station": "workbench",
+    "tier": 2,
+    "inputs": [
+      {
+        "itemId": "scrap_metal",
+        "qty": 3
+      },
+      {
+        "itemId": "pipe_section",
+        "qty": 1
+      }
+    ],
+    "output": {
+      "itemId": "choke",
+      "qty": 1
+    },
+    "timeMinutes": 30,
+    "xp": 12,
+    "category": "mod"
+  },
+  {
+    "id": "scope",
+    "station": "workbench",
+    "tier": 3,
+    "inputs": [
+      {
+        "itemId": "lens",
+        "qty": 1
+      },
+      {
+        "itemId": "pipe_section",
+        "qty": 1
+      },
+      {
+        "itemId": "duct_tape",
+        "qty": 1
+      }
+    ],
+    "output": {
+      "itemId": "scope",
+      "qty": 1
+    },
+    "timeMinutes": 45,
+    "xp": 20,
+    "category": "mod"
+  },
+  {
+    "id": "cooked_meat",
+    "station": "stove",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "raw_meat",
+        "qty": 1
+      }
+    ],
+    "output": {
+      "itemId": "cooked_meat",
+      "qty": 1
+    },
+    "timeMinutes": 10,
+    "xp": 3,
+    "category": "food"
+  },
+  {
+    "id": "boiled_water",
+    "station": "stove",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "dirty_water",
+        "qty": 1
+      }
+    ],
+    "output": {
+      "itemId": "boiled_water",
+      "qty": 1
+    },
+    "timeMinutes": 10,
+    "xp": 2,
+    "category": "drink"
+  },
+  {
+    "id": "rice_porridge",
+    "station": "stove",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "rice",
+        "qty": 1
+      },
+      {
+        "itemId": "dirty_water",
+        "qty": 1
+      }
+    ],
+    "output": {
+      "itemId": "rice_porridge",
+      "qty": 1
+    },
+    "timeMinutes": 20,
+    "xp": 4,
+    "category": "food"
+  },
+  {
+    "id": "stew",
+    "station": "stove",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "raw_meat",
+        "qty": 1
+      },
+      {
+        "itemId": "canned_beans",
+        "qty": 1
+      },
+      {
+        "itemId": "dirty_water",
+        "qty": 1
+      }
+    ],
+    "output": {
+      "itemId": "stew",
+      "qty": 2
+    },
+    "timeMinutes": 30,
+    "xp": 8,
+    "category": "food"
+  },
+  {
+    "id": "ammo_9mm",
+    "station": "reloading",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "scrap_metal",
+        "qty": 1
+      },
+      {
+        "itemId": "gunpowder",
+        "qty": 1
+      }
+    ],
+    "output": {
+      "itemId": "ammo_9mm",
+      "qty": 8
+    },
+    "timeMinutes": 20,
+    "xp": 6,
+    "category": "ammo"
+  },
+  {
+    "id": "ammo_shell",
+    "station": "reloading",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "scrap_metal",
+        "qty": 1
+      },
+      {
+        "itemId": "gunpowder",
+        "qty": 2
+      },
+      {
+        "itemId": "cloth",
+        "qty": 1
+      }
+    ],
+    "output": {
+      "itemId": "ammo_shell",
+      "qty": 4
+    },
+    "timeMinutes": 20,
+    "xp": 6,
+    "category": "ammo"
+  },
+  {
+    "id": "ammo_rifle",
+    "station": "reloading",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "scrap_metal",
+        "qty": 1
+      },
+      {
+        "itemId": "gunpowder",
+        "qty": 2
+      }
+    ],
+    "output": {
+      "itemId": "ammo_rifle",
+      "qty": 3
+    },
+    "timeMinutes": 25,
+    "xp": 8,
+    "category": "ammo"
+  }
+]

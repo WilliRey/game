@@ -1,0 +1,54 @@
+[
+  {
+    "id": "maple_court",
+    "zoneId": "maple_court",
+    "x": 2.0,
+    "y": 7.0,
+    "startKnown": true,
+    "description": "Sam's apartment block above the transit depot."
+  },
+  {
+    "id": "firehouse9",
+    "zoneId": "firehouse9",
+    "x": 3.5,
+    "y": 5.5,
+    "description": "Ruth's camp on Alder Street. Safe, fenced, and short on everything."
+  },
+  {
+    "id": "kessler_auto",
+    "zoneId": "kessler_auto",
+    "x": 5.0,
+    "y": 6.6,
+    "description": "A repair shop and a residential street. The garage is chained shut."
+  },
+  {
+    "id": "route17",
+    "zoneId": "route17",
+    "x": 6.6,
+    "y": 3.9,
+    "description": "A jammed highway overpass and the Gas-N-Go below it."
+  },
+  {
+    "id": "westside_mall",
+    "zoneId": "westside_mall",
+    "x": 1.4,
+    "y": 3.4,
+    "description": "Pharmacy, laundromat and a discount store."
+  },
+  {
+    "id": "st_agnes",
+    "zoneId": "st_agnes",
+    "x": 12.8,
+    "y": 2.6,
+    "description": "Where Jo was working when the city fell. Too far to walk.",
+    "entry": "sa_start"
+  },
+  {
+    "id": "northgate_bridge",
+    "zoneId": "st_agnes",
+    "x": 11.7,
+    "y": 0.9,
+    "description": "The only bridge across the river to Northgate.",
+    "lockedText": "The Tollmen hold the bridge. (Act 2 — coming in a later version.)"
+  }
+]
