@@ -3,14 +3,23 @@ import { expect, test, type Page } from '@playwright/test';
 /** Console noise from software WebGL in headless Chromium is not a game error. */
 const IGNORED = [/GPU stall/, /swiftshader/i, /GroupMarkerNotSet/, /Automatic fallback to software WebGL/];
 
+/** Console errors of the running test, printed if it fails (CI keeps no traces; see playwright.config). */
+let lastErrors: string[] = [];
+
 function collectErrors(page: Page): string[] {
   const errors: string[] = [];
+  lastErrors = errors;
   page.on('console', (msg) => {
     if (msg.type() === 'error' && !IGNORED.some((r) => r.test(msg.text()))) errors.push(msg.text());
   });
   page.on('pageerror', (err) => errors.push(err.message));
   return errors;
 }
+
+test.afterEach(({}, testInfo) => {
+  if (testInfo.status !== testInfo.expectedStatus && lastErrors.length)
+    console.error(`Console errors in "${testInfo.title}":\n${lastErrors.join('\n')}`);
+});
 
 test('boots, starts a new game, and plays without console errors', async ({ page }) => {
   const errors = collectErrors(page);

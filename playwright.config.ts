@@ -8,7 +8,9 @@ export default defineConfig({
     baseURL: 'http://localhost:4173',
     viewport: { width: 1280, height: 720 },
     screenshot: 'only-on-failure',
-    trace: 'retain-on-failure',
+    // No tracing: recording a trace of a software-rendered WebGL page starves small CI runners badly enough
+    // to time the tests out. A failure screenshot plus the console errors the tests collect are enough.
+    trace: 'off',
     // CI machines have no GPU: opt in to SwiftShader explicitly (Chrome deprecated the silent fallback).
     launchOptions: { args: ['--enable-unsafe-swiftshader'] },
   },
