@@ -41,9 +41,25 @@ export function zombieSightRange(ctx: GameContext, zone: ZoneState, rt: ZoneRunt
   return r * SKILL.spotted(rank(ctx, 'stealth'));
 }
 
+/** True when a smoke cloud lies on the segment between two points (or either end is inside one). */
+export function smokeBetween(zone: ZoneState, x0: number, y0: number, x1: number, y1: number): boolean {
+  for (const h of zone.hazards) {
+    if (h.kind !== 'smoke') continue;
+    // The cloud thins out over its last two seconds.
+    const r = h.radius * Math.min(1, h.ttl / 2);
+    const dx = x1 - x0;
+    const dy = y1 - y0;
+    const len2 = dx * dx + dy * dy || 1;
+    const t = Math.max(0, Math.min(1, ((h.x - x0) * dx + (h.y - y0) * dy) / len2));
+    if (Math.hypot(x0 + dx * t - h.x, y0 + dy * t - h.y) < r) return true;
+  }
+  return false;
+}
+
 export function canSeePlayer(ctx: GameContext, zone: ZoneState, rt: ZoneRuntime, z: Zombie): boolean {
   const p = zone.player;
   const d = Math.hypot(p.x - z.x, p.y - z.y);
+  if (d > 0.9 && smokeBetween(zone, z.x, z.y, p.x, p.y)) return false;
   const hunting = z.mode === 'chase' || z.mode === 'attack';
   if (d < 1.3) return lineOfSight(rt, z.x, z.y, p.x, p.y);
   const range = zombieSightRange(ctx, zone, rt, enemyDef(ctx, z));

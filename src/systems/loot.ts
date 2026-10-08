@@ -7,6 +7,7 @@ import { difficultyOf } from '@/config/balance';
 import { Rng } from '@/core/rng';
 import type { GameContext } from '@/core/store';
 import type { ItemStack } from '@/core/types';
+import { perk } from './classes';
 import { createStack } from './items';
 import { SKILL, rank } from './progression';
 
@@ -68,5 +69,6 @@ export function rollContainer(
   const table = tableOverride ?? ctx.content.containerTypes[containerType]?.lootTable;
   if (!table) return [];
   const rng = lootRng(ctx.state.seed, zoneId, containerId);
-  return rollTable(ctx, table, Math.max(1, danger), rng, SKILL.bonusFindChance(rank(ctx, 'scavenging')));
+  const bonus = SKILL.bonusFindChance(rank(ctx, 'scavenging')) + perk(ctx).bonusFind;
+  return rollTable(ctx, table, Math.max(1, danger), rng, bonus);
 }

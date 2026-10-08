@@ -31,6 +31,11 @@ test('boots, starts a new game, and plays without console errors', async ({ page
   await page.click('[data-action="new-game"]');
   await expect(page.locator('[data-screen="newGame"]')).toBeVisible();
   await page.screenshot({ path: 'e2e/screenshots/02-new-game.png' });
+  await page.click('[data-action="next"]');
+  await page.click('[data-class="scavenger"]');
+  await expect(page.locator('[data-class-details="scavenger"]')).toBeVisible();
+  await page.screenshot({ path: 'e2e/screenshots/02b-class-picker.png' });
+  await page.click('[data-class="mechanic"]');
   await page.click('[data-action="start"]');
   await expect(page.locator('[data-hud]')).toBeVisible({ timeout: 20_000 });
   for (let i = 0; i < 6 && (await page.locator('[data-screen="textCard"]').count()); i++) {
@@ -69,6 +74,7 @@ test('opens the world map, saves, reloads the page and continues where it left o
   const errors = collectErrors(page);
   await page.goto('/game/');
   await page.click('[data-action="new-game"]');
+  await page.click('[data-action="next"]');
   await page.click('[data-action="start"]');
   await expect(page.locator('[data-hud]')).toBeVisible({ timeout: 20_000 });
   while (await page.locator('[data-screen="textCard"]').count()) await page.click('[data-action="continue"]');

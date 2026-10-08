@@ -7,6 +7,7 @@ import { BALANCE } from '@/config/balance';
 import type { RecipeDef } from '@/content/schemas';
 import type { GameContext } from '@/core/store';
 import type { ItemStack, ModSlot, Uid } from '@/core/types';
+import { perk, recipeAllowed } from './classes';
 import { passTime } from './clock';
 import { knowsRecipe } from './conditions';
 import { addItem, addStack, countIn, countItem, findStack, removeStack, takeFromList } from './inventory';
@@ -62,6 +63,7 @@ export function recipeStatus(ctx: GameContext, r: RecipeDef, cc: CraftContext): 
 export function recipesAt(ctx: GameContext, cc: CraftContext): RecipeStatus[] {
   return ctx.content.lists.recipes
     .filter((r) => r.station === cc.station || r.station === 'inventory')
+    .filter((r) => recipeAllowed(ctx, r.class))
     .map((r) => recipeStatus(ctx, r, cc))
     .sort(
       (a, b) =>
@@ -121,7 +123,8 @@ export function craft(
     quality !== undefined ? { quality } : {},
   );
   const added = addStack(ctx, stack, 'craft');
-  const minutes = r.station === 'stove' && cc.tier >= 2 ? r.timeMinutes / 2 : r.timeMinutes;
+  const minutes =
+    (r.station === 'stove' && cc.tier >= 2 ? r.timeMinutes / 2 : r.timeMinutes) * perk(ctx).craftTime;
   passTime(ctx, minutes, 'active');
   ctx.state.stats.crafted += 1;
   grantXp(ctx, r.xp + BALANCE.progression.craftXp, `craft:${r.id}`);
@@ -202,6 +205,15 @@ export function detachMod(ctx: GameContext, weaponUid: Uid, slot: ModSlot): { ok
 // ---------------------------------------------------------------- repair & dismantle
 
 export function repairCost(ctx: GameContext, s: ItemStack): { itemId: string; qty: number }[] {
+  const base = baseRepairCost(ctx, s);
+  const m = perk(ctx).repairCost;
+  if (m >= 1 || base.length === 0) return base;
+  // A cheaper repair drops materials (rounding down), but always costs at least one of the first.
+  const cut = base.map((c) => ({ itemId: c.itemId, qty: Math.floor(c.qty * m) })).filter((c) => c.qty > 0);
+  return cut.length ? cut : [{ itemId: base[0]!.itemId, qty: 1 }];
+}
+
+function baseRepairCost(ctx: GameContext, s: ItemStack): { itemId: string; qty: number }[] {
   const def = ctx.content.items[s.itemId];
   if (!def) return [];
   if (def.repair) return def.repair;
@@ -214,7 +226,8 @@ export function repairCost(ctx: GameContext, s: ItemStack): { itemId: string; qt
 
 /** Max durability after one more repair. */
 export function repairedMax(ctx: GameContext, s: ItemStack): number {
-  const loss = BALANCE.crafting.repairMaxDurabilityLoss * SKILL.repairWear(rank(ctx, 'crafting'));
+  const loss =
+    BALANCE.crafting.repairMaxDurabilityLoss * SKILL.repairWear(rank(ctx, 'crafting')) * perk(ctx).repairWear;
   return Math.max(1, Math.round((s.maxDurability ?? 0) * (1 - loss)));
 }
 

@@ -26,6 +26,7 @@ import {
   type MeleeStats,
   type ThrowStats,
 } from '@/systems/items';
+import { perk } from '@/systems/classes';
 import { SKILL, grantXp, rank } from '@/systems/progression';
 import { showHint } from '@/systems/story';
 import { damagePlayer, useItem } from '@/systems/survival';
@@ -167,7 +168,7 @@ function startMelee(ctx: GameContext, zone: ZoneState, s: ItemStack | null): voi
   const p = zone.player;
   const pl = ctx.state.player;
   const st = meleeStats(ctx, s);
-  const cost = st.stamina * SKILL.meleeStamina(rank(ctx, 'melee'));
+  const cost = p.adrenaline > 0 ? 0 : st.stamina * SKILL.meleeStamina(rank(ctx, 'melee'));
   const tired = pl.stamina < cost;
   pl.stamina = Math.max(0, pl.stamina - cost);
   p.staminaIdle = 0;
@@ -278,7 +279,8 @@ function fire(ctx: GameContext, zone: ZoneState, rt: ZoneRuntime, s: ItemStack, 
   let spread =
     (st.spreadBaseDeg + p.bloom) *
     (p.aiming ? C.aimBloomFactor : 1) *
-    SKILL.firearmSpread(rank(ctx, 'firearms'));
+    SKILL.firearmSpread(rank(ctx, 'firearms')) *
+    perk(ctx).firearmSpread;
   spread = Math.min(spread, st.spreadMaxDeg);
   const mx = p.x + Math.cos(p.facing) * 0.45;
   const my = p.y + Math.sin(p.facing) * 0.45;
@@ -339,7 +341,7 @@ function shootRay(
   if (best) {
     const falloff = bestT > st.range * 0.6 && st.pellets > 1 ? 0.6 : 1;
     const sneak = st.ammoType === 'bolt' && isSneakAttack(best, zone.player.x, zone.player.y);
-    let dmg = st.damage * falloff * ctx.rng.range(0.92, 1.08);
+    let dmg = st.damage * falloff * ctx.rng.range(0.92, 1.08) * perk(ctx).firearmDamage;
     if (sneak) dmg *= BALANCE.combat.sneakMultiplier;
     damageZombie(ctx, zone, best, dmg, {
       angle,
@@ -375,7 +377,7 @@ function startReload(ctx: GameContext, zone: ZoneState, s: ItemStack, st: Firear
     if (reserve <= 0 && !full) ctx.bus.emit('ui:toast', { text: 'No ammo for this weapon.', kind: 'warn' });
     return;
   }
-  const speed = SKILL.reloadSpeed(rank(ctx, 'firearms'));
+  const speed = SKILL.reloadSpeed(rank(ctx, 'firearms')) * perk(ctx).reloadSpeed;
   const base = s.jammed ? st.reloadMs * 0.7 : st.reloadMs;
   p.action = { kind: 'reload', t: 0, duration: base / 1000 / speed, uid: s.uid };
   ctx.bus.emit('sfx:play', { key: s.jammed ? 'unjam' : 'reload', x: p.x, y: p.y, volume: 0.6 });
@@ -398,7 +400,7 @@ function finishReload(ctx: GameContext, zone: ZoneState, s: ItemStack, st: Firea
     p.action = {
       kind: 'reload',
       t: 0,
-      duration: st.reloadMs / 1000 / SKILL.reloadSpeed(rank(ctx, 'firearms')),
+      duration: st.reloadMs / 1000 / (SKILL.reloadSpeed(rank(ctx, 'firearms')) * perk(ctx).reloadSpeed),
       uid: s.uid,
     };
     ctx.bus.emit('sfx:play', { key: 'shell', x: p.x, y: p.y, volume: 0.5 });
@@ -411,8 +413,9 @@ function shove(ctx: GameContext, zone: ZoneState): void {
   const p = zone.player;
   const pl = ctx.state.player;
   const C = BALANCE.combat;
-  if (p.shoveCooldown > 0 || pl.stamina < C.shoveStamina * 0.5) return;
-  pl.stamina = Math.max(0, pl.stamina - C.shoveStamina);
+  const cost = p.adrenaline > 0 ? 0 : C.shoveStamina;
+  if (p.shoveCooldown > 0 || pl.stamina < cost * 0.5) return;
+  pl.stamina = Math.max(0, pl.stamina - cost);
   p.staminaIdle = 0;
   p.shoveCooldown = 0.6;
   let n = 0;
@@ -444,9 +447,27 @@ function throwItem(
   aimX: number,
   aimY: number,
 ): void {
+  if (zone.player.action) return;
+  const itemId = s.itemId;
+  removeStack(ctx, s.uid, 1, 'thrown');
+  launch(ctx, zone, rt, itemId, st.throwRange, aimX, aimY);
+}
+
+/**
+ * Send a throwable flying toward the aim point (clamped to its range, stopped short of walls). Used by
+ * thrown items and by class abilities that throw a gadget without spending one.
+ */
+export function launch(
+  ctx: GameContext,
+  zone: ZoneState,
+  rt: ZoneRuntime,
+  itemId: string,
+  range: number,
+  aimX: number,
+  aimY: number,
+): void {
   const p = zone.player;
-  if (p.action) return;
-  let dist = Math.min(st.throwRange, Math.hypot(aimX - p.x, aimY - p.y));
+  let dist = Math.min(range, Math.hypot(aimX - p.x, aimY - p.y));
   dist = Math.max(1.2, dist);
   const a = p.facing;
   const tx = p.x + Math.cos(a) * dist;
@@ -454,8 +475,6 @@ function throwItem(
   const hit = raycast(rt, p.x, p.y, tx, ty, (i) => rt.solid[i] === 1 && rt.opaque[i] === 1);
   const ex = hit.hit ? hit.x - Math.cos(a) * 0.3 : tx;
   const ey = hit.hit ? hit.y - Math.sin(a) * 0.3 : ty;
-  const itemId = s.itemId;
-  removeStack(ctx, s.uid, 1, 'thrown');
   zone.thrown.push({
     id: `t${zone.nextId++}`,
     itemId,
@@ -470,9 +489,57 @@ function throwItem(
   ctx.state.player.lastCombatAt = ctx.state.time.minutes;
 }
 
-function land(ctx: GameContext, zone: ZoneState, itemId: string, x: number, y: number): void {
+function land(
+  ctx: GameContext,
+  zone: ZoneState,
+  rt: ZoneRuntime,
+  itemId: string,
+  x: number,
+  y: number,
+): void {
   const st = weaponStats(ctx.content, { uid: '', itemId, qty: 1 });
   if (st?.kind !== 'throwable') return;
+  if (st.effect === 'decoy') {
+    zone.hazards.push({
+      id: `h${zone.nextId++}`,
+      kind: 'decoy',
+      x,
+      y,
+      radius: st.radius,
+      ttl: st.durationSec,
+      ttl0: st.durationSec,
+      dps: 0,
+      byPlayer: true,
+      itemId,
+      pulseIn: 0,
+      noise: st.noise,
+    });
+    return;
+  }
+  if (st.effect === 'smoke') {
+    zone.hazards.push({
+      id: `h${zone.nextId++}`,
+      kind: 'smoke',
+      x,
+      y,
+      radius: st.radius,
+      ttl: st.durationSec,
+      ttl0: st.durationSec,
+      dps: 0,
+      byPlayer: true,
+      itemId,
+      pulseIn: 0,
+    });
+    ctx.bus.emit('sfx:play', { key: 'smoke', x, y });
+    emitNoise(ctx, zone, x, y, st.noise, 'smoke', true);
+    // Zombies inside the cloud lose you at once.
+    for (const z of zone.zombies) if (Math.hypot(z.x - x, z.y - y) < st.radius) loseTrack(z);
+    return;
+  }
+  if (st.effect === 'flash') {
+    flashbang(ctx, zone, rt, x, y, st.radius, st.durationSec, st.noise);
+    return;
+  }
   if (st.effect === 'noise') {
     zone.decals.push({ x, y, kind: 'glass', rot: ctx.rng.range(0, 6.28), scale: 1 });
     ctx.bus.emit('sfx:play', { key: 'glass_smash', x, y });
@@ -537,12 +604,22 @@ function explode(ctx: GameContext, zone: ZoneState, rt: ZoneRuntime, h: Hazard):
 export function updateProjectiles(ctx: GameContext, zone: ZoneState, rt: ZoneRuntime, dt: number): void {
   for (const t of zone.thrown) {
     t.t += dt;
-    if (t.t >= t.duration) land(ctx, zone, t.itemId, t.x1, t.y1);
+    if (t.t >= t.duration) land(ctx, zone, rt, t.itemId, t.x1, t.y1);
   }
   zone.thrown = zone.thrown.filter((t) => t.t < t.duration);
   const p = zone.player;
   for (const h of zone.hazards) {
     h.ttl -= dt;
+    if (h.kind === 'decoy') {
+      h.pulseIn -= dt;
+      if (h.pulseIn <= 0) {
+        h.pulseIn = 0.8;
+        ctx.bus.emit('sfx:play', { key: 'decoy', x: h.x, y: h.y, volume: 0.7 });
+        emitNoise(ctx, zone, h.x, h.y, h.noise ?? 12, 'decoy', false);
+      }
+      continue;
+    }
+    if (h.kind === 'smoke') continue;
     if (h.kind === 'fuse') {
       h.pulseIn -= dt;
       if (h.pulseIn <= 0) {
@@ -580,6 +657,40 @@ export function updateProjectiles(ctx: GameContext, zone: ZoneState, rt: ZoneRun
   zone.tracers = zone.tracers.filter((tr) => tr.ttl > 0);
   if (zone.decals.length > BALANCE.combat.bloodDecalCap)
     zone.decals.splice(0, zone.decals.length - BALANCE.combat.bloodDecalCap);
+}
+
+/** A zombie that can't see you any more stops homing in and goes to search where it last saw you. */
+function loseTrack(z: Zombie): void {
+  if (z.mode !== 'chase' && z.mode !== 'attack') return;
+  z.mode = 'search';
+  z.modeTime = 0;
+  z.windup = 0;
+  z.path = null;
+}
+
+/** Stun every zombie near (x, y) that has line of sight to the blast. Bosses shrug most of it off. */
+export function flashbang(
+  ctx: GameContext,
+  zone: ZoneState,
+  rt: ZoneRuntime,
+  x: number,
+  y: number,
+  radius: number,
+  seconds: number,
+  noise: number,
+): void {
+  ctx.bus.emit('sfx:play', { key: 'flashbang', x, y, volume: 1 });
+  ctx.bus.emit('fx:flashbang', { x, y, radius });
+  ctx.bus.emit('fx:shake', { intensity: 0.008, durationMs: 220 });
+  emitNoise(ctx, zone, x, y, noise, 'flashbang', true);
+  for (const z of zone.zombies) {
+    if (z.hp <= 0 || Math.hypot(z.x - x, z.y - y) > radius || !lineOfSight(rt, x, y, z.x, z.y)) continue;
+    const resist = enemyDef(ctx, z).staggerResist;
+    z.stagger = Math.max(z.stagger, seconds * (1 - resist * 0.7));
+    z.windup = 0;
+    z.hitFlash = 0.2;
+    loseTrack(z);
+  }
 }
 
 // ---------------------------------------------------------------- per-frame

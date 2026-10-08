@@ -42,6 +42,7 @@ test('every key screen renders', async ({ page }) => {
 
   await page.goto('/game/?debug=1');
   await page.click('[data-action="new-game"]');
+  await page.click('[data-action="next"]');
   await page.click('[data-action="start"]');
   await expect(page.locator('[data-hud]')).toBeVisible({ timeout: 20_000 });
   while (await page.locator('[data-screen="textCard"]').count()) await page.click('[data-action="continue"]');

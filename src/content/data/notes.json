@@ -2,7 +2,7 @@
   {
     "id": "note_phone_log",
     "title": "Phone: last message from {jo_short}",
-    "body": "Day 1, 23:12 — Jo: \"They're keeping all of us at {st_agnes}. Don't come here, it's bad. I love you, grease monkey. Stay inside.\"\n\nThe phone died on day 6. You've read it a hundred times since."
+    "body": "Day 1, 23:12 — Jo: \"They're keeping all of us at {st_agnes}. Don't come here, it's bad. I love you, {jo_nickname}. Stay inside.\"\n\nThe phone died on day 6. You've read it a hundred times since."
   },
   {
     "id": "note_neighbor",

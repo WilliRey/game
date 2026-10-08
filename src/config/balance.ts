@@ -5,10 +5,9 @@
 export type Difficulty = 'story' | 'survivor' | 'hardcore';
 
 export const BALANCE = {
-  /** Sam's kit on a new game. Equipped automatically where it fits a slot. */
+  /** Sam's kit on a new game, for every class (classes.json adds each class's own kit). */
   start: {
     items: [
-      { itemId: 'wrench', qty: 1 },
       { itemId: 'flashlight', qty: 1 },
       { itemId: 'glass_bottle', qty: 2 },
       { itemId: 'bandage', qty: 1 },

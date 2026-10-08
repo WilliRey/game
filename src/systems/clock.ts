@@ -1,3 +1,4 @@
+import { BALANCE } from '@/config/balance';
 /** Advances the game clock and everything that ticks with it (needs, effects, hour/night events). */
 import type { GameContext } from '@/core/store';
 import { dayOf, hourOf, isNight } from '@/core/time';
@@ -16,6 +17,10 @@ export function passTime(
 ): void {
   if (!(minutes > 0)) return;
   const t = ctx.state.time;
+  // The class ability recharges in game time (sleeping or travelling recharges it too).
+  const pl = ctx.state.player;
+  if (pl.abilityCooldown > 0)
+    pl.abilityCooldown = Math.max(0, pl.abilityCooldown - minutes / BALANCE.time.gameMinutesPerRealSecond);
   let left = minutes;
   while (left > 1e-9) {
     const step = Math.min(left, 1);

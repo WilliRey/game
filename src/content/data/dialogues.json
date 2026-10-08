@@ -28,8 +28,48 @@
     ],
     "nodes": {
       "deal": {
-        "text": "So you're the one who walked in from Depot Street. I'm Ruth. I run this place, which mostly means I decide who eats.\n\nYou're a mechanic? Then I have a deal for you. There's an ambulance in the bay with a dead battery and a dry tank. Get it running and it's yours to use. St. Agnes is too far to walk, and I hear you have someone there.",
+        "text": "So you're the one who walked in from Depot Street. I'm Ruth. I run this place, which mostly means I decide who eats.\n\n{ruth_deal_intro} There's an ambulance in the bay with a dead battery and a dry tank. Get it running and it's yours to use. St. Agnes is too far to walk, and I hear you have someone there.",
         "choices": [
+          {
+            "text": "A dead battery and a dry tank? That's a Tuesday.",
+            "if": [
+              {
+                "type": "class",
+                "classId": "mechanic"
+              }
+            ],
+            "next": "deal_mechanic"
+          },
+          {
+            "text": "I drove one of these for six years. I know the rig.",
+            "if": [
+              {
+                "type": "class",
+                "classId": "paramedic"
+              }
+            ],
+            "next": "deal_paramedic"
+          },
+          {
+            "text": "Who else knows it runs? Keep it off the radio.",
+            "if": [
+              {
+                "type": "class",
+                "classId": "excop"
+              }
+            ],
+            "next": "deal_excop"
+          },
+          {
+            "text": "Batteries and gas. I'll find them by tonight.",
+            "if": [
+              {
+                "type": "class",
+                "classId": "scavenger"
+              }
+            ],
+            "next": "deal_scavenger"
+          },
           {
             "text": "My sister. Jo. She's an ER nurse at St. Agnes.",
             "next": "deal2"
@@ -177,7 +217,23 @@
       },
       "train": {
         "text": "Northgate. Everyone's heard the broadcast. One train, across the river, and the only bridge is held by a crew who call themselves the Tollmen. We'll talk about the bridge when you have wheels.",
-        "next": "hub"
+        "choices": [
+          {
+            "text": "The Tollmen. I booked a few of them, before.",
+            "if": [
+              {
+                "type": "class",
+                "classId": "excop"
+              }
+            ],
+            "once": true,
+            "next": "train_excop"
+          },
+          {
+            "text": "Got it.",
+            "next": "hub"
+          }
+        ]
       },
       "jo_news": {
         "text": "Ruth listens to the whole recording without blinking. When it ends she sets the recorder down very gently.\n\n\"She made it out. Northgate. Of course she did.\"\n\n\"The bridge is the Tollmen's. They'll want a fortune, or a fight, or a fool who knows the storm drains. We'll plan it. Rest first, {sam_short}. You look like hell.\"",
@@ -194,6 +250,70 @@
             "next": null
           }
         ]
+      },
+      "deal_mechanic": {
+        "text": "Ruth almost smiles. \"Our last mechanic said that. Then he went out for a fan belt and didn't come back.\" She taps her clipboard. \"Prove me wrong, {sam_short}.\"",
+        "effects": [
+          {
+            "type": "reputation",
+            "delta": 3
+          }
+        ],
+        "next": "deal2"
+      },
+      "deal_paramedic": {
+        "text": "\"Then you'll treat her right.\" Ruth looks at you a beat longer. \"Doc will want to meet you. We could use another pair of hands that know where the arteries are.\"",
+        "effects": [
+          {
+            "type": "reputation",
+            "delta": 3
+          }
+        ],
+        "next": "deal2"
+      },
+      "deal_excop": {
+        "text": "\"Cop habits,\" Ruth says, but she's nodding. \"Fine. Nobody hears it from me. Half this camp would try to drive it to the coast.\" She writes something down and underlines it twice.",
+        "effects": [
+          {
+            "type": "reputation",
+            "delta": 3
+          },
+          {
+            "type": "setFlag",
+            "key": "ambulance_secret",
+            "value": true
+          }
+        ],
+        "next": "deal2"
+      },
+      "deal_scavenger": {
+        "text": "\"Everybody says tonight.\" She considers you anyway. \"The overpass wrecks were picked over from the south ramp. Nobody's bothered with the ones on the northbound side.\"",
+        "effects": [
+          {
+            "type": "reputation",
+            "delta": 2
+          },
+          {
+            "type": "xp",
+            "amount": 15
+          }
+        ],
+        "next": "deal2"
+      },
+      "train_excop": {
+        "text": "Ruth's pen stops. \"Then they'll know your face. That could be very good or very bad.\" She caps the pen. \"Tell me everything you remember about them. Later. Not in front of the others.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "key": "tollmen_know_sam",
+            "value": true
+          },
+          {
+            "type": "xp",
+            "amount": 25
+          }
+        ],
+        "next": "hub"
       }
     }
   },
@@ -258,6 +378,40 @@
             "next": "rain_remind"
           },
           {
+            "text": "That generator of yours is knocking. Want me to look at it?",
+            "if": [
+              {
+                "type": "class",
+                "classId": "mechanic"
+              },
+              {
+                "type": "not",
+                "cond": {
+                  "type": "flag",
+                  "key": "gus_generator"
+                }
+              }
+            ],
+            "next": "generator"
+          },
+          {
+            "text": "I'll trade you a stash for a stash.",
+            "if": [
+              {
+                "type": "class",
+                "classId": "scavenger"
+              },
+              {
+                "type": "not",
+                "cond": {
+                  "type": "flag",
+                  "key": "gus_stash_tip"
+                }
+              }
+            ],
+            "next": "stash_tip"
+          },
+          {
             "text": "Heard anything useful?",
             "next": "rumors"
           },
@@ -311,6 +465,59 @@
           {
             "type": "unlockNode",
             "nodeId": "westside_mall"
+          }
+        ],
+        "next": "hub"
+      },
+      "generator": {
+        "text": "\"You'd do that?\" Twenty minutes, a cleaned plug and a new fuel line later, the generator purrs. Gus pushes a lumpy bag into your hands. \"Payment. Don't argue with me.\"",
+        "effects": [
+          {
+            "type": "time",
+            "minutes": 20
+          },
+          {
+            "type": "giveItem",
+            "itemId": "mechanical_parts",
+            "qty": 2
+          },
+          {
+            "type": "giveItem",
+            "itemId": "electronics",
+            "qty": 1
+          },
+          {
+            "type": "reputation",
+            "delta": 4
+          },
+          {
+            "type": "setFlag",
+            "key": "gus_generator",
+            "value": true
+          }
+        ],
+        "next": "hub"
+      },
+      "stash_tip": {
+        "text": "You tell him about the sporting-goods back room off Fifth. Gus whistles, then leans in. \"Elm Street. A crate behind number fourteen, combination zero-four-one-seven. Kessler kept his emergency supplies there. He won't be needing them.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "key": "key:elm_stash",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "key": "gus_stash_tip",
+            "value": true
+          },
+          {
+            "type": "unlockNode",
+            "nodeId": "kessler_auto"
+          },
+          {
+            "type": "toast",
+            "text": "Gus gave you the combination to a crate behind #14 on Elm Street."
           }
         ],
         "next": "hub"
@@ -396,6 +603,23 @@
             "next": "scout_remind"
           },
           {
+            "text": "Nine years on patrol. Need a hand with the night watch?",
+            "if": [
+              {
+                "type": "class",
+                "classId": "excop"
+              },
+              {
+                "type": "not",
+                "cond": {
+                  "type": "flag",
+                  "key": "vera_watch"
+                }
+              }
+            ],
+            "next": "watch"
+          },
+          {
             "text": "How do you keep this place safe?",
             "next": "safety"
           },
@@ -471,6 +695,26 @@
       },
       "safety": {
         "text": "Noise. Every gunshot brings the street. Use a blade when you can and the gun when you must. Close doors behind you; they buy time. And never fight in the dark if you can wait for morning.",
+        "next": "hub"
+      },
+      "watch": {
+        "text": "Vera finally looks up. \"A cop. Huh.\" She slides a box of nine-mil across the table. \"Don't make me regret it. And if you see orange vests by the river, count them before you shoot.\"",
+        "effects": [
+          {
+            "type": "giveItem",
+            "itemId": "ammo_9mm",
+            "qty": 10
+          },
+          {
+            "type": "reputation",
+            "delta": 3
+          },
+          {
+            "type": "setFlag",
+            "key": "vera_watch",
+            "value": true
+          }
+        ],
         "next": "hub"
       }
     }
@@ -574,6 +818,27 @@
         "text": "Antibiotics. I have two people with bites that are turning and nothing to give them. The pharmacy at the Westside Strip Mall locked its controlled stock in a back room. If nobody's broken in yet, it's still full.",
         "choices": [
           {
+            "text": "I did pharmacy pickups for the ambulance service. Who held the back-room key?",
+            "if": [
+              {
+                "type": "class",
+                "classId": "paramedic"
+              }
+            ],
+            "effects": [
+              {
+                "type": "startQuest",
+                "questId": "medicine_run"
+              },
+              {
+                "type": "giveItem",
+                "itemId": "pharmacy_key",
+                "qty": 1
+              }
+            ],
+            "next": "med_paramedic"
+          },
+          {
             "text": "I'll get them.",
             "effects": [
               {
@@ -632,6 +897,10 @@
             "key": "doc_heal"
           }
         ],
+        "next": "hub"
+      },
+      "med_paramedic": {
+        "text": "Doc studies you for a second. \"Then you know what controlled stock looks like.\" She digs in her coat and presses a small key into your palm. \"Dennis left me his spare before he went looking for his wife. I can't leave my patients, and I wouldn't send just anyone in there with it.\"",
         "next": "hub"
       }
     }
@@ -755,7 +1024,7 @@
         "text": "\"Go on. Vera's waiting.\""
       },
       "hub": {
-        "text": "Pike is alive and insufferable about it. \"My favorite mechanic. Want to see what I picked up out there?\"",
+        "text": "Pike is alive and insufferable about it. \"{pike_greeting} Want to see what I picked up out there?\"",
         "choices": [
           {
             "text": "Let's trade.",

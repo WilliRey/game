@@ -136,6 +136,10 @@ export interface PlayerEntity {
   noise: number;
   damagedAt: number;
   hurtFlash: number;
+  /** Seconds left of the Paramedic's adrenaline (stamina costs nothing). */
+  adrenaline: number;
+  /** Seconds left of the Scavenger's scouting sense (containers and zombies show through walls). */
+  scout: number;
 }
 
 export interface ThrownObject {
@@ -151,7 +155,8 @@ export interface ThrownObject {
 
 export interface Hazard {
   id: string;
-  kind: 'fire' | 'gas' | 'fuse';
+  /** fire/gas hurt; fuse explodes; decoy beeps and draws zombies; smoke blocks zombie sight. */
+  kind: 'fire' | 'gas' | 'fuse' | 'decoy' | 'smoke';
   x: number;
   y: number;
   radius: number;
@@ -159,9 +164,13 @@ export interface Hazard {
   /** Damage per second to anything inside (fire/gas); explosion damage for fuses. */
   dps: number;
   byPlayer: boolean;
-  /** For fuses: the throwable item that explodes. */
+  /** For fuses and decoys: the throwable item that made it. */
   itemId?: string;
   pulseIn: number;
+  /** Decoys: noise radius of each beep. */
+  noise?: number;
+  /** Starting ttl (for fades). */
+  ttl0?: number;
 }
 
 export interface Tracer {

@@ -170,6 +170,18 @@ export const COMMANDS: Record<string, Cmd> = {
       return [`${id} = ${store.state.player.skills[id as SkillId]}`];
     },
   },
+  class: {
+    help: "class [id] — show or switch Sam's class (perks, ability; the kit is not changed); recharges Q",
+    run: (store, [id]) => {
+      const ids = store.content.lists.classes.map((c) => c.id);
+      if (!id) return [`class ${store.state.player.classId} (${ids.join(', ')})`];
+      if (!ids.includes(id)) return [`classes: ${ids.join(', ')}`];
+      store.state.player.classId = id;
+      store.state.player.abilityCooldown = 0;
+      store.notify();
+      return [`class = ${id}`];
+    },
+  },
   flag: {
     help: 'flag <key> [value] — set a story flag',
     run: (store, [k, v]) => {

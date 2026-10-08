@@ -6,6 +6,7 @@
 import { BALANCE, difficultyOf } from '@/config/balance';
 import type { GameContext } from '@/core/store';
 import type { EffectId, StatusEffect, Uid } from '@/core/types';
+import { perk } from './classes';
 import { equippedIn, findStack, isEncumbered, removeStack } from './inventory';
 import { SKILL, rank } from './progression';
 import { learnRecipe, readNote, showHint } from './story';
@@ -154,7 +155,7 @@ export function survivalTick(ctx: GameContext, minutes: number, mode: TimeMode, 
   }
   const inf = getEffect(ctx, 'infection');
   if (inf) {
-    inf.value += (100 / (h.infectionHoursToDeath * 60)) * minutes;
+    inf.value += (100 / (h.infectionHoursToDeath * 60)) * minutes * perk(ctx).infectionRate;
     if (inf.value >= 75) hpDelta -= 0.05 * minutes;
     if (inf.value >= 100) {
       killPlayer(ctx, 'infection');
@@ -223,7 +224,7 @@ export function useItem(ctx: GameContext, uid: Uid): string | null {
   const msgs: string[] = [];
   if (u.hunger) p.hunger = Math.max(0, Math.min(100, p.hunger + u.hunger));
   if (u.thirst) p.thirst = Math.max(0, Math.min(100, p.thirst + u.thirst));
-  if (u.hp) healPlayer(ctx, u.hp);
+  if (u.hp) healPlayer(ctx, u.hp * perk(ctx).healing);
   if (u.stamina) p.stamina = Math.min(maxStamina(ctx), p.stamina + u.stamina);
   if (u.cureBleeding && hasEffect(ctx, 'bleeding')) {
     removeEffect(ctx, 'bleeding');

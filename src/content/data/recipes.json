@@ -703,5 +703,110 @@
     "timeMinutes": 25,
     "xp": 8,
     "category": "ammo"
+  },
+  {
+    "id": "noisemaker",
+    "station": "inventory",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "electronics",
+        "qty": 1
+      },
+      {
+        "itemId": "batteries",
+        "qty": 1
+      },
+      {
+        "itemId": "scrap_metal",
+        "qty": 1
+      }
+    ],
+    "output": {
+      "itemId": "noisemaker",
+      "qty": 1
+    },
+    "tool": "toolbox",
+    "timeMinutes": 8,
+    "xp": 6,
+    "category": "throwable",
+    "class": "mechanic"
+  },
+  {
+    "id": "trauma_kit",
+    "station": "inventory",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "bandage",
+        "qty": 1
+      },
+      {
+        "itemId": "cloth",
+        "qty": 2
+      },
+      {
+        "itemId": "alcohol",
+        "qty": 1
+      }
+    ],
+    "output": {
+      "itemId": "trauma_kit",
+      "qty": 1
+    },
+    "timeMinutes": 4,
+    "xp": 5,
+    "category": "medical",
+    "class": "paramedic"
+  },
+  {
+    "id": "flashbang",
+    "station": "inventory",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "chemicals",
+        "qty": 1
+      },
+      {
+        "itemId": "gunpowder",
+        "qty": 1
+      },
+      {
+        "itemId": "scrap_metal",
+        "qty": 1
+      }
+    ],
+    "output": {
+      "itemId": "flashbang",
+      "qty": 1
+    },
+    "timeMinutes": 6,
+    "xp": 6,
+    "category": "throwable",
+    "class": "excop"
+  },
+  {
+    "id": "smoke_bomb",
+    "station": "inventory",
+    "tier": 1,
+    "inputs": [
+      {
+        "itemId": "chemicals",
+        "qty": 1
+      },
+      {
+        "itemId": "cloth",
+        "qty": 2
+      }
+    ],
+    "output": {
+      "itemId": "smoke_bomb",
+      "qty": 1
+    },
+    "timeMinutes": 4,
+    "xp": 5,
+    "category": "throwable",
+    "class": "scavenger"
   }
 ]

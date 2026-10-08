@@ -87,4 +87,4 @@ export const ITEM_ICON_CATEGORIES = [
   'fuel',
   'junk',
 ];
-export const THROWN_ITEMS = ['glass_bottle', 'molotov', 'pipe_bomb'];
+export const THROWN_ITEMS = ['glass_bottle', 'molotov', 'pipe_bomb', 'noisemaker', 'flashbang', 'smoke_bomb'];

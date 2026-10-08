@@ -101,6 +101,7 @@ export class InputTracker {
     inp.throwPressed = this.consume('KeyG');
     inp.crouchToggle = this.consume('KeyC');
     inp.flashlightToggle = this.consume('KeyF');
+    inp.abilityPressed = this.consume('KeyQ');
     for (const [code, slot] of Object.entries(SLOT_KEYS)) if (this.consume(code)) inp.slot = slot;
     for (const [code, q] of Object.entries(QUICK_KEYS)) if (this.consume(code)) inp.quick = q;
     inp.wheel = this.wheel;

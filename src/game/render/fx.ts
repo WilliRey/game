@@ -203,13 +203,13 @@ export class FxLayer {
             .setScale(1.2),
         );
       }
-    } else if (h.kind === 'gas') {
-      c.add(
-        this.scene.add
-          .image(0, 0, ART.gas)
-          .setScale((h.radius * 2 * S) / 64)
-          .setAlpha(0.8),
-      );
+    } else if (h.kind === 'gas' || h.kind === 'smoke') {
+      const img = this.scene.add
+        .image(0, 0, ART.gas)
+        .setScale((h.radius * 2 * S) / 64)
+        .setAlpha(0.8);
+      if (h.kind === 'smoke') img.setTint(0x9a9a9a);
+      c.add(img);
     } else {
       c.add(this.scene.add.image(0, 0, ART.thrown(h.itemId ?? 'pipe_bomb')));
       c.add(this.scene.add.circle(0, -6, 3, 0xff3020).setBlendMode(Phaser.BlendModes.ADD));
@@ -229,7 +229,7 @@ export class FxLayer {
           img.setScale(1 + Math.sin(this.t * 11 + i) * 0.25);
         }
       });
-    } else if (h.kind === 'gas') {
+    } else if (h.kind === 'gas' || h.kind === 'smoke') {
       const img = c.list[0] as Phaser.GameObjects.Image;
       img.setAlpha(0.75 * fade).setRotation(this.t * 0.4);
     } else {

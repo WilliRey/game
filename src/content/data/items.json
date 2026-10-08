@@ -270,6 +270,21 @@
     }
   },
   {
+    "id": "trauma_kit",
+    "name": "Trauma Kit",
+    "description": "Pressure dressing and a tourniquet, packed the way they taught you on the ambulance.",
+    "category": "medical",
+    "weight": 0.3,
+    "value": 32,
+    "rarity": "uncommon",
+    "stack": 3,
+    "use": {
+      "hp": 30,
+      "cureBleeding": true,
+      "useTimeMs": 1800
+    }
+  },
+  {
     "id": "antibiotics",
     "name": "Antibiotics",
     "description": "Knocks an infection back hard.",
@@ -491,6 +506,16 @@
     }
   },
   {
+    "id": "toolbox",
+    "name": "Mechanic's Toolbox",
+    "description": "Sockets, pliers, a multimeter with one working lead. Needed to build gadgets like the noise-maker.",
+    "category": "tool",
+    "weight": 2.5,
+    "value": 45,
+    "rarity": "uncommon",
+    "tags": ["toolbox"]
+  },
+  {
     "id": "ammo_9mm",
     "name": "9mm Rounds",
     "description": "Pistol ammunition.",
@@ -582,9 +607,39 @@
     ]
   },
   {
+    "id": "scalpel",
+    "name": "Scalpel",
+    "description": "Surgical steel. Fast and precise; lethal from behind, flimsy otherwise.",
+    "category": "weapon",
+    "weight": 0.1,
+    "value": 20,
+    "rarity": "uncommon",
+    "durability": 45,
+    "weapon": {
+      "kind": "melee",
+      "damage": 11,
+      "melee": {
+        "arcDeg": 55,
+        "range": 1.15,
+        "windupMs": 70,
+        "recoveryMs": 170,
+        "stamina": 4,
+        "knockback": 0.15,
+        "staggerChance": 0.1
+      },
+      "modSlots": []
+    },
+    "dismantle": [
+      {
+        "itemId": "scrap_metal",
+        "qty": 1
+      }
+    ]
+  },
+  {
     "id": "wrench",
     "name": "Pipe Wrench",
-    "description": "Sam's wrench from the depot. Heavy, reliable.",
+    "description": "A heavy pipe wrench from the depot. Reliable.",
     "category": "weapon",
     "weight": 1.4,
     "value": 18,
@@ -608,6 +663,36 @@
       {
         "itemId": "scrap_metal",
         "qty": 2
+      }
+    ]
+  },
+  {
+    "id": "police_baton",
+    "name": "Police Baton",
+    "description": "Expandable steel baton. Light, quick, and it rocks them back on their heels.",
+    "category": "weapon",
+    "weight": 0.6,
+    "value": 30,
+    "rarity": "uncommon",
+    "durability": 160,
+    "weapon": {
+      "kind": "melee",
+      "damage": 13,
+      "melee": {
+        "arcDeg": 75,
+        "range": 1.35,
+        "windupMs": 110,
+        "recoveryMs": 230,
+        "stamina": 7,
+        "knockback": 0.8,
+        "staggerChance": 0.45
+      },
+      "modSlots": ["grip"]
+    },
+    "dismantle": [
+      {
+        "itemId": "scrap_metal",
+        "qty": 1
       }
     ]
   },
@@ -1054,6 +1139,66 @@
         "noise": 40,
         "fuseMs": 3000,
         "throwRange": 9
+      }
+    }
+  },
+  {
+    "id": "noisemaker",
+    "name": "Noise-maker",
+    "description": "A kitchen timer, a speaker and a battery. Throw it (G) and it rattles and beeps for ten seconds, pulling every walker in earshot.",
+    "category": "throwable",
+    "weight": 0.4,
+    "value": 20,
+    "rarity": "uncommon",
+    "stack": 3,
+    "weapon": {
+      "kind": "throwable",
+      "throwable": {
+        "effect": "decoy",
+        "radius": 0.5,
+        "noise": 13,
+        "durationSec": 10,
+        "throwRange": 10
+      }
+    }
+  },
+  {
+    "id": "flashbang",
+    "name": "Flashbang",
+    "description": "Homemade stun grenade. Zombies near the blast are dazed for a few seconds. Loud.",
+    "category": "throwable",
+    "weight": 0.4,
+    "value": 30,
+    "rarity": "uncommon",
+    "stack": 3,
+    "weapon": {
+      "kind": "throwable",
+      "throwable": {
+        "effect": "flash",
+        "radius": 4,
+        "noise": 22,
+        "durationSec": 3,
+        "throwRange": 10
+      }
+    }
+  },
+  {
+    "id": "smoke_bomb",
+    "name": "Smoke Bomb",
+    "description": "A thick grey cloud for ten seconds. Zombies can't see you through it, or inside it.",
+    "category": "throwable",
+    "weight": 0.35,
+    "value": 22,
+    "rarity": "uncommon",
+    "stack": 3,
+    "weapon": {
+      "kind": "throwable",
+      "throwable": {
+        "effect": "smoke",
+        "radius": 3,
+        "noise": 3,
+        "durationSec": 10,
+        "throwRange": 10
       }
     }
   },

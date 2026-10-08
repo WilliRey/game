@@ -130,7 +130,7 @@ export interface FirearmStats {
 export interface ThrowStats {
   kind: 'throwable';
   damage: number;
-  effect: 'noise' | 'fire' | 'explosion';
+  effect: 'noise' | 'fire' | 'explosion' | 'decoy' | 'flash' | 'smoke';
   radius: number;
   noise: number;
   durationSec: number;
@@ -296,7 +296,14 @@ export function statRows(content: Content, s: ItemStack): StatRow[] {
         fmt: n0,
         better: 'higher',
       });
-    rows.push({ label: 'Radius', value: st.radius, fmt: n1, better: 'higher' });
+    if (st.effect !== 'decoy') rows.push({ label: 'Radius', value: st.radius, fmt: n1, better: 'higher' });
+    if (st.effect === 'decoy' || st.effect === 'smoke' || st.effect === 'flash')
+      rows.push({
+        label: st.effect === 'flash' ? 'Stun s' : 'Lasts s',
+        value: st.durationSec,
+        fmt: n0,
+        better: 'higher',
+      });
     rows.push({ label: 'Noise radius', value: st.noise, fmt: n0 });
   }
   if (def.armor) {

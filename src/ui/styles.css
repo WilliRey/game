@@ -1581,3 +1581,134 @@ input[type='range'] {
     opacity: 0;
   }
 }
+
+/* ---------- new game: class picker (v2) ---------- */
+.class-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.class-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+.class-card .diff-desc {
+  min-height: 2.6em;
+  font-size: 0.9em;
+}
+.class-card-ability {
+  font-size: 0.85em;
+  color: var(--muted);
+}
+.class-details {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 12px 14px;
+}
+.class-blurb {
+  margin: 0 0 8px;
+}
+.class-cols {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 18px;
+}
+.class-cols h4 {
+  margin: 8px 0 4px;
+  font-size: 0.95em;
+  color: var(--text);
+}
+.class-cols p {
+  margin: 0 0 6px;
+  font-size: 0.92em;
+}
+.class-kit {
+  list-style: none;
+  margin: 0 0 4px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.class-kit li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.92em;
+}
+.class-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.accent {
+  color: var(--accent);
+}
+
+/* ---------- HUD: class ability (Q) ---------- */
+.hud-ability {
+  position: absolute;
+  right: 12px;
+  bottom: 136px;
+  width: 210px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px 6px 6px;
+  font-size: 13px;
+}
+.hud-ability .ability-key {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  border-radius: 4px;
+  border: 1px solid var(--line-2);
+  background: var(--panel-3);
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: var(--accent);
+  overflow: hidden;
+}
+.hud-ability.ready .ability-key {
+  border-color: var(--accent);
+  box-shadow: 0 0 8px rgba(217, 164, 65, 0.45);
+}
+.hud-ability .ability-fill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.62);
+}
+.hud-ability .ability-key span {
+  position: relative;
+}
+.hud-ability .ability-name {
+  font-weight: 600;
+}
+.hud-ability .ability-state {
+  font-size: 11px;
+  color: var(--muted);
+}
+.hud-ability.ready .ability-state {
+  color: var(--good);
+}
+.hud-ability.active .ability-state {
+  color: var(--accent-2);
+}
+
+kbd.kbd {
+  display: inline-block;
+  min-width: 18px;
+  padding: 0 4px;
+  border: 1px solid var(--line-2);
+  border-bottom-width: 2px;
+  border-radius: 3px;
+  background: var(--panel-3);
+  color: var(--accent);
+  font: 600 11px/16px var(--mono);
+  text-align: center;
+}

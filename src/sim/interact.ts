@@ -6,6 +6,7 @@
 import { BALANCE } from '@/config/balance';
 import type { ZoneObjectT } from '@/content/schemas';
 import type { GameContext } from '@/core/store';
+import { perk } from '@/systems/classes';
 import { checkAll } from '@/systems/conditions';
 import { applyEffects } from '@/systems/effects';
 import { addItem, addStack, countItem, hasKey, hasTool, removeItem } from '@/systems/inventory';
@@ -237,7 +238,11 @@ function objectInteractable(ctx: GameContext, zone: ZoneState, o: ZoneObjectT): 
   }
   if (o.type === 'vehicle') {
     const v = ctx.state.vehicle;
-    if (!v.owned) return { ...base, label: o.label ?? 'Vehicle', verb: o.text ?? 'Repair', hold: false };
+    if (!v.owned) {
+      // Getting it running takes a while (hold E) once you have what it needs.
+      const ready = checkAll(ctx, o.if) && (o.hold ?? 0) > 0;
+      return { ...base, label: o.label ?? 'Vehicle', verb: o.text ?? 'Repair', hold: ready };
+    }
     const cans = countItem(ctx, 'fuel_can');
     return {
       ...base,
@@ -276,7 +281,8 @@ function holdDuration(
     if (it.kind === 'container') {
       const c = zone.containers[it.id]!;
       const size = ctx.content.containerTypes[c.type]?.size ?? 'medium';
-      return { verb: 'search', duration: BALANCE.search[size] * SKILL.searchTime(rank(ctx, 'scavenging')) };
+      const t = BALANCE.search[size] * SKILL.searchTime(rank(ctx, 'scavenging')) * perk(ctx).searchTime;
+      return { verb: 'search', duration: t };
     }
   }
   if (it.kind === 'object') {
@@ -285,6 +291,8 @@ function holdDuration(
     if (o.type === 'blocker') return { verb: 'cut', duration: o.hold ?? I.cutSeconds };
     if (o.type === 'siphon') return { verb: 'siphon', duration: o.hold ?? I.siphonSeconds };
     if (o.type === 'interact') return { verb: 'use', duration: o.hold ?? 1 };
+    if (o.type === 'vehicle')
+      return { verb: 'repair', duration: (o.hold ?? 0) * perk(ctx).vehicleRepairTime };
   }
   return null;
 }
@@ -418,6 +426,7 @@ function completeTimed(ctx: GameContext, zone: ZoneState, rt: ZoneRuntime, a: Ti
       return;
     case 'cut':
     case 'siphon':
+    case 'repair':
     case 'use': {
       const o = objectDef(ctx, zone, a.targetId);
       if (o) completeObject(ctx, zone, rt, o);

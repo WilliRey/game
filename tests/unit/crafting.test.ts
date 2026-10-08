@@ -66,12 +66,17 @@ describe('crafting', () => {
     expect(countItem(ctx, 'boiled_water')).toBe(1);
   });
 
-  it('crafting time passes on the clock', () => {
+  it('crafting time passes on the clock (40% less for a mechanic)', () => {
     const { ctx } = makeCtx();
-    addItem(ctx, 'cloth', 3);
-    const t = ctx.state.time.minutes;
+    ctx.state.player.classId = 'scavenger';
+    addItem(ctx, 'cloth', 6);
+    let t = ctx.state.time.minutes;
     craft(ctx, 'bandage', craftContext(ctx, 'inventory'));
     expect(ctx.state.time.minutes - t).toBeCloseTo(ctx.content.recipes.bandage!.timeMinutes);
+    ctx.state.player.classId = 'mechanic';
+    t = ctx.state.time.minutes;
+    craft(ctx, 'bandage', craftContext(ctx, 'inventory'));
+    expect(ctx.state.time.minutes - t).toBeCloseTo(ctx.content.recipes.bandage!.timeMinutes * 0.6);
   });
 });
 

@@ -19,6 +19,8 @@ export interface GameEvents {
   'player:died': { cause: string };
   'weapon:fired': { itemId: string; x: number; y: number };
   'weapon:broken': { itemId: string };
+  /** The class ability (Q) was used. */
+  'ability:used': { classId: string; kind: string };
   'noise:emitted': { x: number; y: number; radius: number; source: string; byPlayer: boolean };
   // items
   'item:acquired': { itemId: string; qty: number; source: string };
@@ -74,9 +76,8 @@ export interface GameEvents {
   // fx consumed by the Phaser scene
   'fx:shake': { intensity: number; durationMs: number };
   'fx:damageNumber': { x: number; y: number; amount: number; crit: boolean };
-  'fx:ping': { x: number; y: number; radius: number };
-  'fx:flash': { entityId: string };
-  'fx:camPan': { x: number; y: number; durationMs: number };
+  /** A flashbang went off: a blinding burst of light at (x, y). */
+  'fx:flashbang': { x: number; y: number; radius: number };
   'fx:hitstop': { ms: number };
   'fx:pan': { objectId?: string; x?: number; y?: number; seconds: number; caption?: string };
   'fx:muzzle': { x: number; y: number; angle: number; small: boolean };

@@ -151,10 +151,11 @@
         {
           "type": "textCard",
           "title": "It turns over",
-          "body": "Battery in, ten liters of stolen gas in the tank. You crank it once, twice, and the old engine coughs itself awake. Somebody in the yard actually cheers.\n\nThe ambulance is yours. Leave the camp and pick a destination on the world map to drive there. Driving is fast, but it burns fuel."
+          "body": "Battery in, ten liters of stolen gas in the tank. You crank it once, twice, and the old engine coughs itself awake. Somebody in the yard actually cheers. {ambulance_quip}\n\nThe ambulance is yours. Leave the camp and pick a destination on the world map to drive there. Driving is fast, but it burns fuel."
         }
       ],
-      "failText": "Dead battery, empty tank. Ruth wants it running: a car battery and two cans of fuel."
+      "failText": "Dead battery, empty tank. Ruth wants it running: a car battery and two cans of fuel.",
+      "hold": 6
     },
     {
       "id": "fh_board",
@@ -234,14 +235,14 @@
       "type": "label",
       "x": 15,
       "y": 29,
-      "text": "GUS \u00b7 GOODS"
+      "text": "GUS · GOODS"
     },
     {
       "id": "fh_sign_vera",
       "type": "label",
       "x": 46,
       "y": 29,
-      "text": "VERA \u00b7 ARMS"
+      "text": "VERA · ARMS"
     }
   ],
   "lootTypes": [],

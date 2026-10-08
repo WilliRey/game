@@ -8,6 +8,7 @@ import { passTime } from '@/systems/clock';
 import { applyEffects } from '@/systems/effects';
 import { checkAll } from '@/systems/conditions';
 import { showHint } from '@/systems/story';
+import { updateAbility } from './abilities';
 import { updateCombat, updateProjectiles } from './combat';
 import { isVisible, updatePlayerFov, type DynamicLight } from './fov';
 import { updateInteraction, type Interactable } from './interact';
@@ -40,6 +41,7 @@ export function stepZone(ctx: GameContext, input: PlayerInput, realDt: number): 
   updatePlayerMovement(ctx, zone, rt, input, dt);
   const target = updateInteraction(ctx, zone, rt, input, dt);
   updateCombat(ctx, zone, rt, input, dt);
+  updateAbility(ctx, zone, rt, input, dt);
   updateProjectiles(ctx, zone, rt, dt);
   updateZombies(ctx, zone, rt, dt);
   updateTrickle(ctx, zone, dt);

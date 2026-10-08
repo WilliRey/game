@@ -88,7 +88,9 @@ export const FirearmDef = z
 
 export const ThrowableDef = z
   .object({
-    effect: z.enum(['noise', 'fire', 'explosion']),
+    /** noise: smash lure · fire: burning area · explosion: fused blast · decoy: beeps for `durationSec` ·
+     *  flash: stuns zombies in `radius` for `durationSec` · smoke: a cloud zombies can't see through. */
+    effect: z.enum(['noise', 'fire', 'explosion', 'decoy', 'flash', 'smoke']),
     radius: z.number().default(2),
     noise: z.number().default(10),
     durationSec: z.number().default(0),
@@ -194,6 +196,8 @@ export const RecipeDef = z
     timeMinutes: z.number().default(5),
     xp: z.number().default(5),
     category: z.string().default('misc'),
+    /** Only this class can craft it (class gadgets); known from the start by that class. */
+    class: id.optional(),
   })
   .strict();
 export type RecipeDef = z.infer<typeof RecipeDef>;
@@ -288,6 +292,8 @@ export const Condition: z.ZodType<ConditionT> = z.lazy(() =>
     z.object({ type: z.literal('day'), min: z.number() }).strict(),
     /** True if `stamp` hasn't set this key within the last `minutes` of game time. */
     z.object({ type: z.literal('cooldown'), key: z.string(), minutes: z.number() }).strict(),
+    /** Sam's background (classes.json). */
+    z.object({ type: z.literal('class'), classId: id }).strict(),
     z.object({ type: z.literal('not'), cond: Condition }).strict(),
     z.object({ type: z.literal('any'), conds: z.array(Condition) }).strict(),
   ]),
@@ -310,6 +316,7 @@ export type ConditionT =
   | { type: 'vehicle'; owned: boolean }
   | { type: 'day'; min: number }
   | { type: 'cooldown'; key: string; minutes: number }
+  | { type: 'class'; classId: string }
   | { type: 'not'; cond: ConditionT }
   | { type: 'any'; conds: ConditionT[] };
 
@@ -750,6 +757,91 @@ export const SkillDef = z
   .object({ id, name: z.string(), description: z.string(), ranks: z.array(z.string()).length(5) })
   .strict();
 
+// ---------- classes (Sam's background, BRIEF_V2 §4) ----------
+export const SkillIdSchema = z.enum([
+  'melee',
+  'firearms',
+  'scavenging',
+  'crafting',
+  'survival',
+  'barter',
+  'stealth',
+]);
+
+/** A class's passive perk as multipliers (1 = no change) and bonuses read by the systems. */
+export const PerkMods = z
+  .object({
+    /** × materials per repair. */
+    repairCost: z.number().positive().optional(),
+    /** × max durability lost per repair. */
+    repairWear: z.number().min(0).optional(),
+    /** × game time crafting takes. */
+    craftTime: z.number().positive().optional(),
+    /** × time to get a vehicle running. */
+    vehicleRepairTime: z.number().positive().optional(),
+    /** × health restored by healing items. */
+    healing: z.number().positive().optional(),
+    /** × how fast an infection progresses. */
+    infectionRate: z.number().min(0).optional(),
+    /** × firearm damage. */
+    firearmDamage: z.number().positive().optional(),
+    /** × reload speed (higher is faster). */
+    reloadSpeed: z.number().positive().optional(),
+    /** × firearm spread. */
+    firearmSpread: z.number().positive().optional(),
+    /** × search time. */
+    searchTime: z.number().positive().optional(),
+    /** × footstep noise. */
+    footstepNoise: z.number().positive().optional(),
+    /** + chance of an extra loot roll per container. */
+    bonusFind: z.number().min(0).max(1).optional(),
+  })
+  .strict();
+export type PerkModsT = z.infer<typeof PerkMods>;
+
+export const AbilityDef = z
+  .object({
+    /** decoy: throw a noise-maker · adrenaline: heal + stamina burst · flashbang: throw a stun grenade ·
+     *  scout: briefly see containers and zombies nearby through walls. */
+    kind: z.enum(['decoy', 'adrenaline', 'flashbang', 'scout']),
+    name: z.string(),
+    description: z.string(),
+    cooldownSec: z.number().positive(),
+    /** Thrown abilities use this throwable's stats (the item isn't consumed). */
+    itemId: id.optional(),
+    heal: z.number().optional(),
+    durationSec: z.number().optional(),
+    radius: z.number().optional(),
+  })
+  .strict();
+export type AbilityDefT = z.infer<typeof AbilityDef>;
+
+export const ClassDef = z
+  .object({
+    id,
+    name: z.string(),
+    /** One line under the name on the new-game card. */
+    tagline: z.string(),
+    description: z.string(),
+    /** Starting kit on top of balance.start.items; weapons, armor and backpacks are equipped. */
+    kit: z.array(
+      z
+        .object({ itemId: id, qty: z.number().int().min(1).default(1), mag: z.number().int().optional() })
+        .strict(),
+    ),
+    /** Starting skill ranks. */
+    skills: z.partialRecord(SkillIdSchema, z.number().int().min(0).max(5)).default({}),
+    perk: z.object({ name: z.string(), description: z.string(), mods: PerkMods }).strict(),
+    /** The active ability on Q. */
+    ability: AbilityDef,
+    /** Recipes known from the start (blueprints in the kit are learned too). */
+    recipes: z.array(id).default([]),
+    /** Overrides for names.json tokens in story text ({sam_job}, {jo_nickname}, ...). */
+    names: z.record(z.string(), z.string()).default({}),
+  })
+  .strict();
+export type ClassDef = z.infer<typeof ClassDef>;
+
 export const ContentFiles = {
   names: z.record(z.string(), z.string()),
   items: z.array(ItemDef),
@@ -770,5 +862,6 @@ export const ContentFiles = {
   hints: z.array(HintDef),
   stationUpgrades: z.array(StationUpgradeDef),
   skills: z.array(SkillDef),
+  classes: z.array(ClassDef).min(1),
 };
 export type SkillDefT = z.infer<typeof SkillDef>;

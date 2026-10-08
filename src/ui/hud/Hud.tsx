@@ -8,6 +8,7 @@ import {
   equippedIn,
   findStack,
 } from '@/systems/inventory';
+import { classOf } from '@/systems/classes';
 import { currentObjectives, questDef } from '@/systems/quests';
 import { useHeartbeat, useStore } from '../context';
 import {
@@ -201,8 +202,44 @@ export function Hud() {
         </div>
       </div>
 
+      <AbilityChip />
       <HintPanel />
       <SaveIndicator />
+    </div>
+  );
+}
+
+/** The class ability on Q: name, and a fill that drains as it recharges. */
+function AbilityChip() {
+  const store = useStore();
+  const s = store.state;
+  const zone = s.zone;
+  if (!zone) return null;
+  const cls = classOf(store.ctx);
+  const ab = cls.ability;
+  const cd = s.player.abilityCooldown;
+  const active = zone.player.adrenaline > 0 || zone.player.scout > 0;
+  const state = zone.safe
+    ? 'Not in the camp'
+    : active
+      ? 'Active'
+      : cd > 0
+        ? `Recharging ${Math.ceil(cd)} s`
+        : 'Ready';
+  return (
+    <div
+      class={`hud-ability panel-lite ${cd <= 0 && !zone.safe ? 'ready' : ''} ${active ? 'active' : ''}`}
+      title={`${cls.name}: ${ab.description}`}
+      data-ability={ab.kind}
+    >
+      <div class="ability-key">
+        <div class="ability-fill" style={{ height: `${Math.min(1, cd / ab.cooldownSec) * 100}%` }} />
+        <span>Q</span>
+      </div>
+      <div>
+        <div class="ability-name">{ab.name}</div>
+        <div class="ability-state">{state}</div>
+      </div>
     </div>
   );
 }
