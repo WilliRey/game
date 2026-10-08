@@ -162,10 +162,11 @@ export const BALANCE = {
     siphonLitersPerCan: 5,
     alarmChance: 0.35,
   },
+  /** Seconds to search an unlocked container (v2: was 2 / 3.5 / 5 s and needed E held throughout). */
   search: {
-    small: 2,
-    medium: 3.5,
-    large: 5,
+    small: 0.4,
+    medium: 0.7,
+    large: 1,
     scavengingRankReduction: 0.08,
   },
   carry: {

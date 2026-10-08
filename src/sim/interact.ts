@@ -30,6 +30,8 @@ export interface Interactable {
   verb: string;
   /** Hold E (timed) rather than tap. */
   hold: boolean;
+  /** A tap starts a short timed action that runs on its own (searching); moving or a hit stops it. */
+  timed?: boolean;
   /** Shift+E alternative, e.g. forcing a lock. */
   alt?: string;
   /** Why it can't be used right now. */
@@ -131,7 +133,7 @@ export function interactablesNear(ctx: GameContext, zone: ZoneState, rt: ZoneRun
     const base = { kind: 'container' as const, id: c.id, x: c.x + c.w / 2, y: c.y + c.h / 2, label: name };
     if (c.locked) consider({ ...base, ...lockDescription(ctx, c.keyId, c.keyOnly) }, c);
     else if (c.searched) consider({ ...base, verb: c.items.length ? 'Loot' : 'Empty', hold: false }, c);
-    else consider({ ...base, verb: 'Search', hold: true }, c);
+    else consider({ ...base, verb: 'Search', hold: false, timed: true }, c);
   }
   for (const s of rt.layout.stations) {
     if (s.kind === 'rainCollector' && zone.safe && !ctx.state.base.rainCollector.built) continue;
@@ -342,17 +344,22 @@ export function updateInteraction(
     return target;
   }
   const hold = holdDuration(ctx, zone, target, input.force);
-  if (target.hold && hold) {
+  if ((target.hold || target.timed) && hold) {
     p.action = {
       kind: 'timed',
       verb: hold.verb,
       targetId: target.id,
       t: 0,
       duration: hold.duration,
-      hold: true,
-      noiseIn: 0.5,
+      hold: target.hold,
+      noiseIn: hold.verb === 'search' ? 1 : 0.5,
     };
-    if (hold.verb === 'search') showHint(ctx, 'search');
+    if (hold.verb === 'search') {
+      // Searching rustles from the first moment (it's over in under a second now).
+      emitNoise(ctx, zone, p.x, p.y, BALANCE.noise.search, 'search', true);
+      ctx.bus.emit('sfx:play', { key: 'rustle', x: p.x, y: p.y, volume: 0.5 });
+      showHint(ctx, 'search');
+    }
     return target;
   }
   tap(ctx, zone, rt, target);

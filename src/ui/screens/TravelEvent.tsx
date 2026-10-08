@@ -26,6 +26,7 @@ export function TravelEvent() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (e.repeat) return;
       if (resolved) {
         if (e.code === 'Enter' || e.code === 'Space' || e.code === 'KeyE') {
           e.preventDefault();
