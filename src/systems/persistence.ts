@@ -68,6 +68,7 @@ export function loadGame(store: GameStore, slot: SlotId): boolean {
   resumeGame(store, state);
   if (!store.state.zone) {
     // A save without a live zone (made by an older build, or the map changed): arrive at its node.
+    store.state.travel = null;
     const node = store.content.worldNodes[store.state.world.currentNode];
     enterZone(store.ctx, node?.zoneId ?? BALANCE.start.zone, node?.entry);
   }

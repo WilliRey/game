@@ -160,7 +160,9 @@ export function travelPlan(ctx: GameContext, fromId: string, toId: string): Trav
       (!v.owned
         ? 'No vehicle'
         : v.fuel + 1e-9 < fuel
-          ? `Not enough fuel (needs ${fuel} L, tank has ${Math.floor(v.fuel * 10) / 10} L)`
+          ? fuelAvailable(ctx) + 1e-9 >= fuel
+            ? `Needs ${fuel} L: pour your fuel cans into the tank first`
+            : `Not enough fuel (needs ${fuel} L, tank has ${Math.floor(v.fuel * 10) / 10} L)`
           : undefined),
     minutes: vehicleMinutes,
     fuel,

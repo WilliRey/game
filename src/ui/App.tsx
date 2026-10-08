@@ -1,8 +1,9 @@
 import type { JSX } from 'preact';
 import type { ScreenEntry, ScreenId } from '@/core/store';
-import { useStore, useStoreVersion } from './context';
+import { useHeartbeat, useStore, useStoreVersion } from './context';
 import { DebugPanel } from './hud/DebugPanel';
 import { Hud } from './hud/Hud';
+import { Toasts } from './hud/Toasts';
 import { Console } from './screens/Console';
 import { Crafting } from './screens/Crafting';
 import { Death } from './screens/Death';
@@ -56,14 +57,22 @@ export function App() {
   const store = useStore();
   useStoreVersion(store);
   const settings = store.settings;
+  const hud = store.phase === 'playing' && !store.isOpen('death') && !store.cinematic;
   return (
     <div class="ui-root" style={{ '--ui-scale': String(settings.uiScale) } as JSX.CSSProperties}>
-      {store.phase === 'playing' && !store.isOpen('death') && !store.cinematic ? <Hud /> : null}
+      {hud ? <Hud /> : null}
       {store.phase === 'playing' ? <DebugPanel /> : null}
       {store.screens.map((entry) => {
         const C = SCREENS[entry.id];
         return C ? <C key={entry.id} entry={entry} /> : null;
       })}
+      {hud ? null : <OverlayToasts />}
     </div>
   );
+}
+
+/** Toasts when the HUD isn't showing (main menu, death screen): save/load and import messages. */
+function OverlayToasts() {
+  useHeartbeat(4);
+  return <Toasts />;
 }
