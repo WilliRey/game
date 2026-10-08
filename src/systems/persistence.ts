@@ -51,7 +51,8 @@ export function saveGame(store: GameStore, slot: SlotId, auto = false): boolean 
     return false;
   }
   store.bus.emit('save:written', { slot, auto });
-  toast(store, auto ? 'Autosaved' : 'Game saved', 'good');
+  // Autosaves show a small HUD indicator (ui/hud/SaveIndicator) instead of a toast.
+  if (!auto) toast(store, 'Game saved', 'good');
   return true;
 }
 

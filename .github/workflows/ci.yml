@@ -25,5 +25,7 @@ jobs:
         if: always()
         with:
           name: e2e-screenshots
-          path: e2e/screenshots
+          path: |
+            e2e/screenshots
+            e2e/.results
           if-no-files-found: ignore

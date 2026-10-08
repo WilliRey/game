@@ -73,10 +73,20 @@ test('opens the world map, saves, reloads the page and continues where it left o
   // Only Maple Court is known at the start: travelling isn't possible yet, so stay.
   await page.keyboard.press('Escape');
 
+  // Saving is refused while zombies are hunting you, and spawns are random per save: keep the street
+  // quiet so this test checks the save flow, not the AI.
+  await page.evaluate(() => {
+    const s = (window as unknown as { holdout: { store: { state: { zone: { zombies: unknown[] } } } } })
+      .holdout.store.state;
+    s.zone.zombies = [];
+  });
   await page.keyboard.press('Escape');
   await expect(page.locator('[data-screen="pause"]')).toBeVisible();
   await page.click('text=Save game');
   await page.click('[data-action="save-slot1"]');
+  await expect
+    .poll(() => page.evaluate(() => localStorage.getItem('holdout.meta.slot1') !== null))
+    .toBe(true);
   await page.keyboard.press('Escape');
   await page.keyboard.press('Escape');
   const before = await holdout(page);

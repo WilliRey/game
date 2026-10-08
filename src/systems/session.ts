@@ -9,6 +9,7 @@ import type { GameContext, GameStore } from '@/core/store';
 import { startTime } from '@/core/time';
 import type { GameState, TraderState } from '@/core/types';
 import { SKILL_IDS } from '@/core/types';
+import { refreshNpcs } from '@/sim/build';
 import { installBaseListeners } from './base';
 import { addItem, equip } from './inventory';
 import { installQuestListeners, startQuest } from './quests';
@@ -104,10 +105,26 @@ export function setupNewGame(ctx: GameContext): void {
   showHint(ctx, 'move');
 }
 
+/** NPCs whose presence depends on story state (Pike at the camp) appear or leave as it changes. */
+function installNpcRefresh(ctx: GameContext): () => void {
+  const refresh = () => {
+    if (ctx.state.zone) refreshNpcs(ctx, ctx.state.zone);
+  };
+  const offs = [
+    ctx.bus.on('quest:started', refresh),
+    ctx.bus.on('quest:advanced', refresh),
+    ctx.bus.on('quest:completed', refresh),
+    ctx.bus.on('quest:failed', refresh),
+    ctx.bus.on('flag:set', refresh),
+  ];
+  return () => offs.forEach((off) => off());
+}
+
 /** Install the per-session listeners. */
 export function installSession(store: GameStore): void {
   store.addSessionDisposer(installQuestListeners(store.ctx));
   store.addSessionDisposer(installBaseListeners(store.ctx));
+  store.addSessionDisposer(installNpcRefresh(store.ctx));
   for (const install of sessionInstallers) {
     const off = install(store);
     if (off) store.addSessionDisposer(off);

@@ -57,7 +57,7 @@ export function renderMap(scene: Phaser.Scene, zone: ZoneState, depth: number): 
       const canvas = document.createElement('canvas');
       canvas.width = tw * S;
       canvas.height = th * S;
-      const g = canvas.getContext('2d')!;
+      const g = canvas.getContext('2d', { willReadFrequently: true })!;
       for (let ty = 0; ty < th; ty++) {
         for (let tx = 0; tx < tw; tx++) {
           const x = cx * CHUNK + tx;

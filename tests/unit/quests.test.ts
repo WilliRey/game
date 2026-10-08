@@ -159,6 +159,9 @@ describe('side quests', () => {
     expect(ctx.state.quests.missing_scout!.outcome).toBe('saved');
     expect(ctx.state.traders.pike!.unlocked).toBe(true);
     expect(ctx.state.flags.vera_trusts).toBe(true);
+    // finishPrologue left us at the camp: Pike shows up there without re-entering the zone.
+    expect(ctx.state.zone?.zoneId).toBe('firehouse9');
+    expect(ctx.state.zone!.npcs.some((n) => n.npcId === 'pike')).toBe(true);
   });
 
   it('The Missing Scout, abandoned: you get the rifle, the camp thinks less of you', () => {

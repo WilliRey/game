@@ -25,6 +25,7 @@ import {
 import { ItemIcon } from '../components/ItemIcon';
 import { EffectChips } from './EffectChips';
 import { HintPanel } from './HintPanel';
+import { SaveIndicator } from './SaveIndicator';
 import { Toasts } from './Toasts';
 
 const SLOT_LABEL: Record<WeaponSlot, string> = { firearm1: '1', firearm2: '2', melee: '3', throwable: '4' };
@@ -201,6 +202,7 @@ export function Hud() {
       </div>
 
       <HintPanel />
+      <SaveIndicator />
     </div>
   );
 }

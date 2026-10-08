@@ -35,7 +35,9 @@ function canvas(w: number, h: number): [HTMLCanvasElement, Ctx] {
   const c = document.createElement('canvas');
   c.width = w;
   c.height = h;
-  const g = c.getContext('2d');
+  // CPU-backed canvases: they're painted once and uploaded as textures, and a GPU-backed 2D canvas would
+  // need a slow GPU readback per upload (minutes of boot under software WebGL).
+  const g = c.getContext('2d', { willReadFrequently: true });
   if (!g) throw new Error('2D canvas unavailable');
   return [c, g];
 }

@@ -8,6 +8,9 @@ export default defineConfig({
     baseURL: 'http://localhost:4173',
     viewport: { width: 1280, height: 720 },
     screenshot: 'only-on-failure',
+    trace: 'retain-on-failure',
+    // CI machines have no GPU: opt in to SwiftShader explicitly (Chrome deprecated the silent fallback).
+    launchOptions: { args: ['--enable-unsafe-swiftshader'] },
   },
   webServer: {
     command: 'npx vite preview --port 4173 --strictPort',
