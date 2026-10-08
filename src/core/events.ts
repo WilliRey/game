@@ -81,6 +81,10 @@ export interface GameEvents {
   'fx:pan': { objectId?: string; x?: number; y?: number; seconds: number; caption?: string };
   'fx:muzzle': { x: number; y: number; angle: number; small: boolean };
   'fx:spark': { x: number; y: number };
+  /** A melee swing connected: impact sparks/blood, camera nudge along `angle` (player → target). */
+  'fx:meleeHit': { x: number; y: number; angle: number; heavy: boolean; count: number };
+  /** A melee swing started (the renderer animates wind-up → follow-through over `windup + recovery`). */
+  'fx:swing': { angle: number; windup: number; recovery: number; heavy: boolean };
   'fx:explosion': { x: number; y: number; radius: number };
   'sfx:play': { key: string; x?: number; y?: number; volume?: number };
 }

@@ -225,9 +225,21 @@ function onSpotted(ctx: GameContext, zone: ZoneState, z: Zombie): void {
   }
 }
 
+/** Reach of a zombie's swing, centre to centre (tiles). */
+export function zombieReach(def: EnemyDef): number {
+  return (def.reach ?? BALANCE.zombies.attackReach) + def.radius;
+}
+
+/** Length of a zombie's telegraphed wind-up (seconds). */
+export function zombieWindup(def: EnemyDef): number {
+  return def.windupSec ?? BALANCE.zombies.windupSeconds;
+}
+
 function attackPlayer(ctx: GameContext, zone: ZoneState, z: Zombie): void {
   const def = enemyDef(ctx, z);
   const p = zone.player;
+  // A short invulnerability window after each hit, so a crowd can't land three swings in one instant.
+  if (zone.time - p.damagedAt < BALANCE.health.hitInvulnerabilitySeconds) return;
   const dmg = ctx.rng.int(def.damage[0], def.damage[1]);
   const taken = damagePlayer(ctx, dmg, z.type, {
     infectionChance: def.infectionChance ?? BALANCE.health.infectionChancePerHit,
@@ -311,7 +323,7 @@ export function updateZombies(ctx: GameContext, zone: ZoneState, rt: ZoneRuntime
           Math.max(baseSpeed, BALANCE.speed.sprint - 0.25),
         )
       : baseSpeed;
-    const attackRange = BALANCE.zombies.attackRange + def.radius;
+    const attackRange = zombieReach(def);
 
     switch (z.mode) {
       case 'idle':
@@ -360,13 +372,14 @@ export function updateZombies(ctx: GameContext, zone: ZoneState, rt: ZoneRuntime
           z.windup -= dt;
           if (z.windup <= 0) {
             z.attackCooldown = def.attackCooldown;
-            if (!dead && d <= attackRange + 0.35 && lineOfSight(rt, z.x, z.y, p.x, p.y))
+            const slack = BALANCE.zombies.attackLandSlack;
+            if (!dead && d <= attackRange + slack && lineOfSight(rt, z.x, z.y, p.x, p.y))
               attackPlayer(ctx, zone, z);
           }
-        } else if (dead || d > attackRange + 0.3) {
+        } else if (dead || d > attackRange + BALANCE.zombies.attackLandSlack) {
           setMode(z, 'chase');
         } else if (z.attackCooldown <= 0) {
-          z.windup = 0.38;
+          z.windup = zombieWindup(def);
           ctx.bus.emit('sfx:play', { key: 'zombie_attack', x: z.x, y: z.y, volume: 0.7 });
         }
         break;

@@ -242,6 +242,10 @@ export const EnemyDef = z
     sightMultiplier: z.number().default(1),
     hearingMultiplier: z.number().default(1),
     attackCooldown: z.number().default(1.1),
+    /** Telegraphed wind-up before a swing lands (seconds); defaults to balance.zombies.windupSeconds. */
+    windupSec: z.number().positive().optional(),
+    /** Reach past its own radius (tiles); defaults to balance.zombies.attackReach. */
+    reach: z.number().positive().optional(),
     xp: z.number().default(10),
     special: z.enum(['none', 'burst', 'scream']).default('none'),
     burst: z.object({ damage: z.number(), radius: z.number(), durationSec: z.number() }).strict().optional(),

@@ -74,6 +74,8 @@ export interface DamageOpts {
   crit: boolean;
   weaponId?: string;
   silent?: boolean;
+  /** Melee hits interrupt the wind-up and stun the zombie (scaled down by its stagger resistance). */
+  melee?: boolean;
 }
 
 /** Damage a zombie, with knockback, stagger, hit flash, numbers and death handling. */
@@ -90,9 +92,15 @@ export function damageZombie(
   z.hitFlash = 0.1;
   z.damagedAt = zone.time;
   const resist = 1 - def.staggerResist;
+  const C = BALANCE.combat;
   z.kx += Math.cos(o.angle) * o.knockback * 5 * resist;
   z.ky += Math.sin(o.angle) * o.knockback * 5 * resist;
-  if (ctx.rng.chance(o.staggerChance * resist)) z.stagger = Math.max(z.stagger, 0.55);
+  if (ctx.rng.chance(o.staggerChance * resist)) z.stagger = Math.max(z.stagger, C.staggerSeconds * resist);
+  // Every melee hit cuts a wind-up short; tough zombies (bloaters, the boss) mostly shrug it off.
+  if (o.melee && ctx.rng.chance(resist)) {
+    z.windup = 0;
+    z.stagger = Math.max(z.stagger, C.meleeHitStunSeconds * resist);
+  }
   if (z.mode !== 'chase' && z.mode !== 'attack' && z.hp > 0) {
     z.mode = 'chase';
     z.modeTime = 0;
@@ -175,6 +183,12 @@ function startMelee(ctx: GameContext, zone: ZoneState, s: ItemStack | null): voi
   };
   pl.lastCombatAt = ctx.state.time.minutes;
   ctx.bus.emit('sfx:play', { key: st.heavy ? 'swing_heavy' : 'swing', x: p.x, y: p.y, volume: 0.6 });
+  ctx.bus.emit('fx:swing', {
+    angle: p.facing,
+    windup: p.action.windup,
+    recovery: p.action.recovery,
+    heavy: st.heavy,
+  });
 }
 
 function strike(ctx: GameContext, zone: ZoneState, rt: ZoneRuntime, uid: string | null, angle: number): void {
@@ -206,15 +220,22 @@ function strike(ctx: GameContext, zone: ZoneState, rt: ZoneRuntime, uid: string 
       staggerChance: st.staggerChance,
       crit: sneak,
       weaponId: s?.itemId,
+      melee: true,
     });
   }
   wear(ctx, s, ctx.content.items[s?.itemId ?? '']?.weapon?.wearPerUse ?? 1);
   emitNoise(ctx, zone, p.x, p.y, BALANCE.noise.meleeHit, 'melee', true);
-  ctx.bus.emit('sfx:play', { key: st.heavy ? 'hit_heavy' : 'hit', x: hits[0]!.x, y: hits[0]!.y });
-  if (st.heavy) {
-    ctx.bus.emit('fx:hitstop', { ms: BALANCE.combat.hitStopMs });
-    ctx.bus.emit('fx:shake', { intensity: 0.006, durationMs: 120 });
-  }
+  const first = hits[0]!;
+  ctx.bus.emit('sfx:play', { key: st.heavy ? 'hit_heavy' : 'hit', x: first.x, y: first.y });
+  ctx.bus.emit('fx:meleeHit', {
+    x: first.x,
+    y: first.y,
+    angle: Math.atan2(first.y - p.y, first.x - p.x),
+    heavy: st.heavy,
+    count: hits.length,
+  });
+  ctx.bus.emit('fx:hitstop', { ms: st.heavy ? BALANCE.combat.hitStopHeavyMs : BALANCE.combat.hitStopMs });
+  ctx.bus.emit('fx:shake', { intensity: st.heavy ? 0.006 : 0.003, durationMs: st.heavy ? 120 : 70 });
 }
 
 // ---------------------------------------------------------------- firearms

@@ -565,7 +565,7 @@
       "damage": 10,
       "melee": {
         "arcDeg": 60,
-        "range": 1.1,
+        "range": 1.2,
         "windupMs": 80,
         "recoveryMs": 180,
         "stamina": 5,

@@ -144,7 +144,7 @@ export const FISTS: MeleeStats = {
   kind: 'melee',
   damage: 5,
   arcDeg: 60,
-  range: 1.0,
+  range: 1.05,
   windupMs: 90,
   recoveryMs: 260,
   stamina: 6,
