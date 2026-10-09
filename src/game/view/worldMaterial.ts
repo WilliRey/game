@@ -35,6 +35,13 @@ export const worldUniforms = {
   uCutDir: { value: new Vector2(0, -1) },
   uCutOn: { value: 1 },
   uCutStub: { value: 0.22 },
+  /**
+   * A soft glow around the player (eyes adjusting to the dark): visible surfaces near Sam are never lost
+   * in the night, so the character and whatever is in arm's reach stay readable.
+   */
+  uGlowPos: { value: new Vector3() },
+  uGlow: { value: new Color(0, 0, 0) },
+  uGlowR: { value: 5 },
 };
 
 /** A per-tile RGBA texture: R visible now, G explored, B brightness (sim FOV), A unused. */
@@ -132,21 +139,28 @@ uniform float uFogOn;
 uniform vec3 uFill;
 uniform float uMemory;
 uniform float uEdge;
+uniform vec3 uGlowPos;
+uniform vec3 uGlow;
+uniform float uGlowR;
 `;
 
 const FRAG_APPLY = /* glsl */ `
+vec3 worldGlow = diffuseColor.rgb * uGlow
+	* ( 1.0 - smoothstep( uGlowR * 0.3, uGlowR, distance( vFogPos.xz, uGlowPos.xz ) ) );
 #ifndef WORLD_NOFOG
 {
 	vec4 fs = texture2D( uFog, vFogPos.xz / uFogSize );
 	float vis = mix( 1.0, fs.r, uFogOn );
 	float mem = mix( 1.0, fs.g, uFogOn );
 	float bri = mix( 1.0, fs.b, uFogOn );
-	outgoingLight += diffuseColor.rgb * uFill * bri;
+	outgoingLight += diffuseColor.rgb * uFill * bri + worldGlow;
 	outgoingLight *= mix( 1.0 - uEdge, 1.0, smoothstep( 0.2, 0.85, bri ) );
 	float lum = dot( diffuseColor.rgb, vec3( 0.299, 0.587, 0.114 ) );
 	vec3 remembered = mix( vec3( lum ), diffuseColor.rgb, 0.3 ) * uMemory * mem;
 	outgoingLight = mix( remembered, outgoingLight, vis );
 }
+#else
+outgoingLight += worldGlow;
 #endif
 #include <opaque_fragment>
 `;

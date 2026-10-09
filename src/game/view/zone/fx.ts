@@ -76,6 +76,9 @@ export class FxLayer {
   private thrown = new Map<string, Mesh>();
   private hazards = new Map<string, HazardView>();
   private scoutRings: Mesh[] = [];
+  private ping: Mesh | null = null;
+  private pingT = 1;
+  private scoutWas = 0;
   private t = 0;
   private mats: Material[] = [];
   private muzzleMat: MeshBasicMaterial;
@@ -382,7 +385,8 @@ export class FxLayer {
 
   // ---------------------------------------------------------------- per frame
 
-  update(zone: ZoneState, rt: ZoneRuntime, dt: number, camScale: number): void {
+  update(zone: ZoneState, rt: ZoneRuntime, dt: number, camScale: number, dark = 0): void {
+    this.soft.setLight(1 - dark * 0.62);
     this.t += dt;
     this.glow.setScale(camScale);
     this.soft.setScale(camScale);
@@ -411,7 +415,7 @@ export class FxLayer {
 
     this.updateThrown(zone, dt);
     this.updateHazards(zone, rt, dt);
-    this.updateScout(zone);
+    this.updateScout(zone, dt);
     this.glow.update(dt);
     this.soft.update(dt);
   }
@@ -581,7 +585,7 @@ export class FxLayer {
         );
       } else if (h.kind === 'gas' || h.kind === 'smoke') {
         const smoke = h.kind === 'smoke';
-        const rate = smoke ? 26 : 14;
+        const rate = smoke ? 34 : 14;
         if (vis || smoke) {
           const n = Math.ceil(dt * rate * h.radius);
           for (let i = 0; i < n; i++) {
@@ -595,12 +599,12 @@ export class FxLayer {
               vy: smoke ? 0.15 : 0.05,
               vz: (Math.random() - 0.5) * 0.3,
               life: smoke ? 2.2 : 1.6,
-              size: smoke ? 1.0 : 0.8,
-              size1: smoke ? 1.9 : 1.4,
-              r: smoke ? 0.52 : 0.4,
-              g: smoke ? 0.53 : 0.52,
-              b: smoke ? 0.5 : 0.2,
-              alpha: (smoke ? 0.5 : 0.32) * fade,
+              size: smoke ? 1.4 : 0.8,
+              size1: smoke ? 2.8 : 1.4,
+              r: smoke ? 0.46 : 0.4,
+              g: smoke ? 0.47 : 0.52,
+              b: smoke ? 0.46 : 0.2,
+              alpha: (smoke ? 0.34 : 0.32) * fade,
             });
           }
         }
@@ -670,26 +674,30 @@ export class FxLayer {
     return v;
   }
 
-  /** The Scavenger's scouting sense: rings on unsearched containers and on zombies, through walls. */
-  private updateScout(zone: ZoneState): void {
+  /**
+   * The Scavenger's scouting sense: a sonar ping sweeping out from Sam when it fires, then a small pulsing
+   * ring on every unsearched container and every zombie in range, seen through walls.
+   */
+  private updateScout(zone: ZoneState, dt: number): void {
     const p = zone.player;
+    const R = 20;
+    if (p.scout > this.scoutWas + 0.5) this.pingT = 0;
+    this.scoutWas = p.scout;
     const want: { x: number; z: number; r: number; color: number }[] = [];
     if (p.scout > 0) {
-      const R = 20;
       for (const c of Object.values(zone.containers)) {
         if (c.searched) continue;
         const cx = c.x + c.w / 2;
         const cz = c.y + c.h / 2;
-        if (Math.hypot(cx - p.x, cz - p.y) <= R)
-          want.push({ x: cx, z: cz, r: Math.max(c.w, c.h) * 0.75, color: 0xe0b040 });
+        if (Math.hypot(cx - p.x, cz - p.y) <= R) want.push({ x: cx, z: cz, r: 0.5, color: 0xe0b040 });
       }
       for (const z of zone.zombies)
         if (z.hp > 0 && Math.hypot(z.x - p.x, z.y - p.y) <= R)
-          want.push({ x: z.x, z: z.y, r: 0.55, color: 0xff4030 });
+          want.push({ x: z.x, z: z.y, r: 0.45, color: 0xff4030 });
     }
-    while (this.scoutRings.length < want.length) {
-      const ring = new Mesh(
-        new RingGeometry(0.8, 1, 28).rotateX(-Math.PI / 2),
+    const ring = (inner = 0.8): Mesh => {
+      const m = new Mesh(
+        new RingGeometry(inner, 1, inner > 0.9 ? 96 : 32).rotateX(-Math.PI / 2),
         new MeshBasicMaterial({
           color: 0xffffff,
           transparent: true,
@@ -698,24 +706,40 @@ export class FxLayer {
           blending: AdditiveBlending,
         }),
       );
-      ring.renderOrder = 9;
-      this.group.add(ring);
-      this.scoutRings.push(ring);
-    }
+      m.renderOrder = 9;
+      this.group.add(m);
+      return m;
+    };
+    while (this.scoutRings.length < want.length) this.scoutRings.push(ring());
+    this.ping ??= ring(0.975);
+    this.pingT += dt;
+    const pk = Math.min(1, this.pingT / 0.9);
+    this.ping.visible = pk < 1;
+    this.ping.position.set(p.x, 0.05, p.y);
+    this.ping.scale.setScalar(0.5 + pk * R);
+    const pm = this.ping.material as MeshBasicMaterial;
+    pm.color.setHex(0xe0b040);
+    pm.opacity = (1 - pk) * 0.5;
     const fade = Math.min(1, p.scout / 1.2);
-    this.scoutRings.forEach((ring, i) => {
+    this.scoutRings.forEach((m, i) => {
       const w = want[i];
-      ring.visible = !!w;
-      if (!w) return;
-      ring.position.set(w.x, 0.05, w.z);
-      ring.scale.setScalar(w.r * (1 + Math.sin(this.t * 5 + i) * 0.08));
-      const mat = ring.material as MeshBasicMaterial;
+      // Each marker lights up as the ping passes over it.
+      const reached = w ? pk >= 1 || Math.hypot(w.x - p.x, w.z - p.y) <= 0.5 + pk * R : false;
+      m.visible = !!w && reached;
+      if (!w || !reached) return;
+      m.position.set(w.x, 0.05, w.z);
+      m.scale.setScalar(w.r * (1 + Math.sin(this.t * 5 + i) * 0.12));
+      const mat = m.material as MeshBasicMaterial;
       mat.color.setHex(w.color);
-      mat.opacity = 0.75 * fade;
+      mat.opacity = 0.8 * fade;
     });
   }
 
   dispose(): void {
+    for (const m of this.ping ? [...this.scoutRings, this.ping] : this.scoutRings) {
+      m.geometry.dispose();
+      (m.material as Material).dispose();
+    }
     this.glow.dispose();
     this.soft.dispose();
     for (const m of this.mats) m.dispose();

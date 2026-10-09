@@ -22,8 +22,8 @@ import type { QualityTier } from '../../quality';
 
 const DAY_SKY = new Color('#c9cdd4');
 const DAY_GROUND = new Color('#4a4238');
-const NIGHT_SKY = new Color('#28324a');
-const NIGHT_GROUND = new Color('#0e0d0c');
+const NIGHT_SKY = new Color('#3e4d72');
+const NIGHT_GROUND = new Color('#17161b');
 const SUN = new Color('#f0dcc0');
 const MOON = new Color('#6f84b8');
 const tmpC = new Color();
@@ -79,14 +79,17 @@ export class LightRig {
     const day = 1 - dark;
     this.hemi.color.copy(NIGHT_SKY).lerp(DAY_SKY, day);
     this.hemi.groundColor.copy(NIGHT_GROUND).lerp(DAY_GROUND, day);
-    this.hemi.intensity = 0.38 + 1.35 * day;
+    this.hemi.intensity = 0.95 + 0.78 * day;
     this.sun.color.copy(MOON).lerp(SUN, day);
-    this.sun.intensity = 0.2 + 1.25 * day;
+    this.sun.intensity = 0.6 + 0.85 * day;
     this.sun.position.set(px - 12, 30, pz + 18);
     this.sun.target.position.set(px, 0, pz);
     // What you can see is never pitch black: a cool fill that grows at night.
     worldUniforms.uFill.value.copy(tmpC.setRGB(0.07, 0.075, 0.09)).multiplyScalar(0.6 + dark * 1.4);
-    worldUniforms.uEdge.value = 0.25 + dark * 0.45;
+    worldUniforms.uEdge.value = 0.25 + dark * 0.4;
+    // Eyes adjusting to the dark: a soft cool glow around Sam that grows with the darkness.
+    worldUniforms.uGlowPos.value.set(px, 0, pz);
+    worldUniforms.uGlow.value.copy(tmpC.setRGB(0.5, 0.55, 0.7)).multiplyScalar(dark * dark * 0.9);
 
     this.flashlight.intensity = torchOn ? 26 : 0;
     this.flashlight.position.copy(lens);

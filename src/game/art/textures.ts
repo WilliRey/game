@@ -316,12 +316,16 @@ export function skylineWindows(): HTMLCanvasElement {
   return paint(64, 128, (g, w, h) => {
     const r = rand(7);
     rect(g, 0, 0, w, h, '#000');
+    // Twenty-three days in, the grid is down: a rare candle or generator here and there.
     for (let y = 6; y < h - 6; y += 12)
       for (let x = 5; x < w - 5; x += 11) {
-        const lit = r() < 0.12;
-        g.fillStyle = lit
-          ? `rgba(255,${190 + Math.floor(r() * 50)},120,${0.6 + r() * 0.4})`
-          : 'rgba(40,45,55,0.5)';
+        const roll = r();
+        g.fillStyle =
+          roll < 0.035
+            ? `rgba(255,${180 + Math.floor(r() * 60)},110,${0.65 + r() * 0.35})`
+            : roll < 0.06
+              ? `rgba(255,150,70,${0.25 + r() * 0.2})`
+              : 'rgba(30,34,42,0.35)';
         g.fillRect(x, y, 6, 7);
       }
   });

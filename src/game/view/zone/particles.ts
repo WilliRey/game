@@ -49,10 +49,11 @@ void main() {
 `;
 const FRAG = /* glsl */ `
 uniform sampler2D uMap;
+uniform float uLight;
 varying vec4 vColor;
 void main() {
 	vec4 t = texture2D( uMap, gl_PointCoord );
-	gl_FragColor = vec4( vColor.rgb * t.rgb, vColor.a * t.a );
+	gl_FragColor = vec4( vColor.rgb * t.rgb * uLight, vColor.a * t.a );
 	if ( gl_FragColor.a < 0.01 ) discard;
 }
 `;
@@ -78,7 +79,7 @@ export class Particles {
     this.geom.setAttribute('aSize', new BufferAttribute(this.size, 1));
     this.geom.setAttribute('aColor', new BufferAttribute(this.color, 4));
     this.material = new ShaderMaterial({
-      uniforms: { uMap: { value: map }, uScale: { value: 400 } },
+      uniforms: { uMap: { value: map }, uScale: { value: 400 }, uLight: { value: 1 } },
       vertexShader: VERT,
       fragmentShader: FRAG,
       transparent: true,
@@ -93,6 +94,11 @@ export class Particles {
   /** Pixels per world unit at distance 1 (set from the camera each frame). */
   setScale(s: number): void {
     this.material.uniforms.uScale!.value = s;
+  }
+
+  /** Scene light on unlit particles (smoke, dust, blood mist are dimmer at night); 1 = as authored. */
+  setLight(k: number): void {
+    this.material.uniforms.uLight!.value = k;
   }
 
   emit(s: ParticleSpec): void {

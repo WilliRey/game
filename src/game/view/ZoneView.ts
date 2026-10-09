@@ -220,7 +220,7 @@ export class ZoneView {
     this.npcs.update(zone, this.rt, animDt);
     this.zombies.update(zone, this.rt, animDt);
     const bufH = this.vc.renderer.getDrawingBufferSize(TMP2).y;
-    this.fx.update(zone, this.rt, store.clockStopped ? 0 : dt, this.rig.spriteScale(bufH));
+    this.fx.update(zone, this.rt, store.clockStopped ? 0 : dt, this.rig.spriteScale(bufH), dark);
     this.lights.update(
       dt,
       dark,
