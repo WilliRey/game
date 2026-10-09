@@ -254,10 +254,15 @@ export class ZoneView {
         )
         .map((z) => ({ id: z.id, x: z.x, y: z.y, frac: z.hp / z.maxHp, boss: z.maxHp > 200 })),
     );
+    // The prompt already names whoever you're about to talk to, so their floating name steps aside.
+    const talkingTo =
+      !store.inputCaptured && !this.pan && this.target?.kind === 'npc' ? this.target.id : null;
     this.ui.npcNames(
       this.project,
       zone.npcs
-        .filter((n) => Math.hypot(n.x - p.x, n.y - p.y) < 6 && isVisible(this.rt, n.x, n.y))
+        .filter(
+          (n) => n.id !== talkingTo && Math.hypot(n.x - p.x, n.y - p.y) < 6 && isVisible(this.rt, n.x, n.y),
+        )
         .map((n) => ({
           id: n.id,
           name: store.content.npcs[n.npcId]?.name?.split(' ')[0] ?? n.npcId,

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "HOLDOUT: a top-down zombie survival RPG for desktop browsers.",
+  "description": "HOLDOUT: a zombie survival RPG for desktop browsers, seen from a 3D angled camera.",
   "scripts": {
     "dev": "vite",
     "build": "tsc -p tsconfig.json --noEmit && vite build",
