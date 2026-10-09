@@ -87,7 +87,7 @@ class SlashTrail {
   private pos = new Float32Array(TRAIL_MAX * 2 * 3);
   private col = new Float32Array(TRAIL_MAX * 2 * 3);
   private geom = new BufferGeometry();
-  tint = { r: 1, g: 0.93, b: 0.8 };
+  tint = { r: 0.9, g: 0.82, b: 0.66 };
 
   constructor() {
     this.geom.setAttribute('position', new BufferAttribute(this.pos, 3));
@@ -219,9 +219,9 @@ export class PlayerView {
     this.grip.add(this.weapon);
   }
 
-  /** Called when a melee swing connects: the trail flashes blood-red. */
+  /** Called when a melee swing connects: the trail flares hot. */
   onHit(): void {
-    this.trail.tint = { r: 1, g: 0.45, b: 0.35 };
+    this.trail.tint = { r: 1.2, g: 0.86, b: 0.62 };
   }
 
   update(ctx: GameContext, zone: ZoneState, dt: number, safe: boolean): void {
@@ -281,7 +281,7 @@ export class PlayerView {
         this.swingIndex++;
         this.lastStage = null;
         this.lastK = 0;
-        this.trail.tint = { r: 1, g: 0.93, b: 0.8 };
+        this.trail.tint = { r: 0.9, g: 0.82, b: 0.66 };
       }
       const cur = swingStage(a.phase, a.t, a.windup, a.recovery);
       // The sweep is fast (a fifth of a second): at low frame rates a whole arc can fall between two frames,
@@ -444,25 +444,25 @@ export class PlayerView {
       }
       return;
     }
-    const cocked = -1.6 * side;
-    const through = 1.25 * side;
+    const cocked = -1.35 * side;
+    const through = 1.05 * side;
     if (stage === 'windup') {
       const k = easeInOut(k0);
       r.shoulderR.rotation.y = cocked * k;
       r.armR.rotation.z = 0.45 + 0.85 * k;
-      r.torso.rotation.y = -0.4 * side * k;
+      r.torso.rotation.y = -0.3 * side * k;
       this.grip.rotation.z = carry + (along - carry) * Math.sqrt(k);
     } else if (stage === 'sweep') {
       const k = easeOut(k0);
       r.shoulderR.rotation.y = cocked + (through - cocked) * k;
       r.armR.rotation.z = 1.3;
-      r.torso.rotation.y = -0.4 * side + 0.85 * side * k;
+      r.torso.rotation.y = -0.3 * side + 0.65 * side * k;
       this.grip.rotation.z = along;
     } else {
       const k = easeInOut(k0);
       r.shoulderR.rotation.y = through * (1 - k);
       r.armR.rotation.z = 1.3 - 0.85 * k;
-      r.torso.rotation.y = 0.45 * side * (1 - k);
+      r.torso.rotation.y = 0.35 * side * (1 - k);
       this.grip.rotation.z = along + (carry - along) * k;
     }
   }

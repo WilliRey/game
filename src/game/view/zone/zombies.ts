@@ -5,11 +5,24 @@
  * while staggered — and its part matrices are copied into the instances. Zombies outside the player's line
  * of sight are not drawn. Killed zombies fall and stay down as corpses for as long as their gore decal.
  */
-import { Color, Group, InstancedMesh, Matrix4, MeshLambertMaterial, type Material } from 'three';
+import {
+  AdditiveBlending,
+  BufferAttribute,
+  Color,
+  Group,
+  InstancedMesh,
+  Matrix4,
+  MeshBasicMaterial,
+  MeshLambertMaterial,
+  Object3D,
+  RingGeometry,
+  type Material,
+} from 'three';
 import type { Content } from '@/content';
 import { isVisible } from '@/sim/fov';
 import type { ZoneRuntime } from '@/sim/runtime';
 import type { Decal, Zombie, ZoneState } from '@/sim/types';
+import { zombieReach } from '@/sim/zombies';
 import { geometry } from '../../art/assets';
 import { MODELS, ZOMBIE_TYPES } from '../../art/manifest';
 import { RIG_PARTS, ZOMBIE_COLORS, bodyParts, type BodyStyle, type RigPart } from '../../art/models';
@@ -65,6 +78,8 @@ export class ZombieLayer {
   /** Recent kills (from enemy:killed) so a new gore decal knows what died and which way it faced. */
   private kills: { type: string; x: number; y: number; yaw: number; t: number }[] = [];
   private mat: Material;
+  /** Red arcs on the ground in front of zombies winding up a swing: the telegraph. */
+  private tells: InstancedMesh;
   private t = 0;
   /** Debug: draw zombies even when the player can't see them. */
   showAll = false;
@@ -75,6 +90,34 @@ export class ZombieLayer {
   ) {
     this.group.name = 'zombies';
     this.mat = patchWorld(new MeshLambertMaterial({ vertexColors: true, flatShading: true }));
+    // The wind-up tell: a fan on the ground out to the zombie's reach, faint near the body and brightest at
+    // the edge, so "step back past the line" reads at a glance.
+    const arc = (100 * Math.PI) / 180;
+    const tellGeom = new RingGeometry(0.3, 1, 18, 5, -arc / 2, arc).rotateX(-Math.PI / 2);
+    const pos = tellGeom.getAttribute('position');
+    const shade = new Float32Array(pos.count * 3);
+    for (let i = 0; i < pos.count; i++) {
+      const r = Math.hypot(pos.getX(i), pos.getZ(i));
+      const v = 0.08 + 0.92 * Math.pow(Math.max(0, (r - 0.3) / 0.7), 3);
+      shade.fill(v, i * 3, i * 3 + 3);
+    }
+    tellGeom.setAttribute('color', new BufferAttribute(shade, 3));
+    this.tells = new InstancedMesh(
+      tellGeom,
+      new MeshBasicMaterial({
+        color: 0xffffff,
+        vertexColors: true,
+        transparent: true,
+        blending: AdditiveBlending,
+        depthWrite: false,
+      }),
+      24,
+    );
+    this.tells.setColorAt(0, WHITE);
+    this.tells.count = 0;
+    this.tells.frustumCulled = false;
+    this.tells.renderOrder = 2;
+    this.group.add(this.tells);
     // Corpses already lying in a remembered zone don't fall again.
     for (const d of zone.decals) {
       if (d.kind !== 'gore') continue;
@@ -150,6 +193,7 @@ export class ZombieLayer {
     this.t += dt;
     for (const b of this.batches.values()) b.count = 0;
     this.kills = this.kills.filter((k) => this.t - k.t < 2);
+    let tells = 0;
 
     for (const z of zone.zombies) {
       if (z.hp <= 0) continue;
@@ -174,7 +218,21 @@ export class ZombieLayer {
       const b = this.batch(z.type);
       this.pose(b.rig, z, a);
       this.write(b, z.hitFlash > 0 ? FLASH : this.windTint(z, a));
+      if (z.windup > 0 && z.stagger <= 0 && tells < this.tells.instanceMatrix.count) {
+        const k = 1 - z.windup / Math.max(a.windTotal, 0.01);
+        const def = this.content.enemies[z.type];
+        TELL.position.set(z.x, 0.03, z.y);
+        TELL.rotation.set(0, a.yaw, 0);
+        TELL.scale.setScalar(def ? zombieReach(def) + 0.15 : 1.2);
+        TELL.updateMatrix();
+        this.tells.setMatrixAt(tells, TELL.matrix);
+        this.tells.setColorAt(tells, tint.setRGB(0.75, 0.07, 0.03).multiplyScalar(0.25 + 0.55 * k * k));
+        tells++;
+      }
     }
+    this.tells.count = tells;
+    this.tells.instanceMatrix.needsUpdate = true;
+    if (this.tells.instanceColor) this.tells.instanceColor.needsUpdate = true;
     // Forget zombies that left (killed ones were handled by onKilled).
     if (this.anim.size > zone.zombies.length + 8) {
       const live = new Set(zone.zombies.map((z) => z.id));
@@ -209,7 +267,7 @@ export class ZombieLayer {
   private windTint(z: Zombie, a: ZAnim): Color {
     if (z.windup <= 0 || z.stagger > 0) return WHITE;
     const k = 1 - z.windup / Math.max(a.windTotal, 0.01);
-    return tint.setRGB(1 + 0.9 * k, 1 - 0.3 * k, 1 - 0.38 * k);
+    return tint.setRGB(1 + 1.4 * k, 1 - 0.35 * k, 1 - 0.45 * k);
   }
 
   private animate(z: Zombie, a: ZAnim, dt: number): void {
@@ -336,6 +394,9 @@ export class ZombieLayer {
   dispose(): void {
     for (const b of this.batches.values()) for (const p of RIG_PARTS) b.meshes[p].dispose();
     this.mat.dispose();
+    this.tells.geometry.dispose();
+    (this.tells.material as Material).dispose();
+    this.tells.dispose();
   }
 
   /** Content is kept for future per-type tweaks (enemy radius scale). */
@@ -345,3 +406,4 @@ export class ZombieLayer {
 }
 
 const M = new Matrix4();
+const TELL = new Object3D();
