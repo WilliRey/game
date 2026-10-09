@@ -270,6 +270,11 @@ try {
     'crackers',
     'bandage',
     'toolbox',
+    // Other classes' kits: spare ammo, a spare weapon, medicine.
+    'ammo_9mm',
+    'crowbar',
+    'antibiotics',
+    'first_aid_kit',
   ];
 
   await stage('a1-ruth', async () => {

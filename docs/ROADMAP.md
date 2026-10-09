@@ -56,7 +56,9 @@ Mechanic on the LOW tier under software WebGL: the prologue and Act 1 completed 
 "To be continued") in about 12½ minutes of wall time without dying — 22 kills over 16 fights, 69 HP lost to
 zombies (49 of it in the basement, where the boss caught Sam on the way to the recorder), no console errors.
 The run before it lost 13 HP over 25 kills; the Kessler garage (four walkers and a runner woken by the bolt
-cutters) cost 5 HP there with the noise-maker and 14 HP in the last run.
+cutters) cost 5 HP there with the noise-maker and 14 HP in the last run. The same script as the **Ex-cop**
+(baton, flashbang): Act 1 completed without dying, 28 kills, 29 HP lost (the flashbang cleared the Kessler
+garage for 0 HP; the boss cost 20), no console errors.
 
 Found and fixed while checking the 3D view and playing:
 - quick clicks were lost when a frame took longer than the click (decision 69);
