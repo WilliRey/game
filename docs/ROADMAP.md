@@ -5,10 +5,73 @@ Anything stubbed or faked is listed under **Stubs** at the bottom.
 
 ## STATUS
 
-**Session 2 (current):** M0–M7 complete — the v1 vertical slice is playable end to end. The prologue, the
-whole Act 1 chain (through the St. Agnes basement boss and "To be continued") and all four side quests have
-been played in the browser with real input; every system in the brief works end to end. Placeholder art and
-synthesized sound throughout. See **Stubs / known gaps** and **Next concrete steps** below.
+**Session 3 (current): v2 pass (`docs/BRIEF_V2.md`)** on branch `claude/game-v2`. The presentation moved
+from Phaser to a three.js 3D angled view; melee is visible and rebalanced; four classes with abilities;
+faster searching. The prologue and Act 1 were played in the browser with real keyboard and mouse input on
+the 3D view (a scripted player, see **v2** below). v1 (sessions 1–2, M0–M7) is merged on `main`.
+
+## v2 — BRIEF_V2
+- [x] **3D view (three.js 0.186.1 replaces Phaser).** Sim stays the source of truth (tile-based); saves,
+      content and tests unchanged. Perspective camera pitched 56° with look-ahead (further when aiming) and
+      mouse aim by raycast onto the ground; extruded textured walls, textured floors (atlas, corner AO),
+      3D props, no roofs, walls between camera and player cut down in the vertex shader; tree canopies near
+      the player hide
+- [x] lighting: hemisphere + sun/moon by time of day, flashlight spotlight with shadows from Sam's hand, a
+      fixed pool of point lights for lamps, fire barrels, molotov fires, muzzle flashes, explosions and
+      flashbangs; LOS rules kept exactly (sim FOV → per-tile texture: unseen black, remembered dim and
+      desaturated, zombies/NPCs out of sight hidden); a soft personal glow at night
+- [x] low-poly procedural characters (Sam per class, each zombie type, NPCs) with procedural animation
+      (walk cycle, idle sway, wind-up, swing, hit flinch, stagger wobble, death fall, corpses stay)
+- [x] particles (sparks, blood, flames, smoke, gas, dust), decals, tracers, muzzle flashes, thrown objects,
+      decoy/flashbang/smoke/scout visuals; HTML world UI (prompts, progress, damage numbers, health bars,
+      NPC names, objective arrow) projected from 3D
+- [x] everything behind the asset manifest: model/texture overrides by key (props with their own
+      materials, characters per rig part, any geometry key), loaded before the renderer starts; no
+      third-party assets ship
+- [x] performance: zombies instanced per body part per type (62 zombies ≈ 80 draw calls, ~60k triangles);
+      HIGH/LOW quality tiers chosen from the GPU (`?quality=`), Canvas2D fallback for no-WebGL (`?renderer=2d`)
+- [x] title screen in three.js (rainy street, sparse lit windows, flickering lamp); HUD, every Preact screen,
+      zone map and world map unchanged
+- [x] **visible melee:** weapon in hand, cocked wind-up, sweep and recovery (alternating sides, overhead
+      chop for the axe), slash trail sampled along the arc, sparks/blood/hit star, hit flash, hit-stop,
+      camera nudge, zombie flinch and knockback; misses swing too; zombies show a red wind-up fan
+- [x] **melee balance:** reproduced with a scripted fight harness in the real sim (lone walker cost >10 HP in
+      up to a third of fights; three walkers 25–54 HP), fixed (decisions 53–56), pinned by
+      `tests/unit/meleeBalance.test.ts`
+- [x] **classes:** Mechanic, Paramedic, Ex-cop, Scavenger in `classes.json` (zod + validator incl.
+      per-class quest completability); picked after difficulty with kit, skills, perk and ability shown; Q
+      abilities with cooldown + HUD chip; class-only gadget recipes; class dialogue options in Act 1 and
+      class-specific story lines (`{sam_job}`...); saves v2 store the class, v1 saves migrate to Mechanic
+- [x] **faster searching:** tap E, 0.4 / 0.7 / 1.0 s by size (Scavenging and the Scavenger perk shorten it),
+      loot window opens the moment it finishes, locks keep their hold actions, searching still makes noise
+- [x] e2e: smoke + key screens + 3D view screenshots (`e2e/view3d.spec.ts`: interior, wind-up, swing, night,
+      50-zombie horde under 250 draw calls, camp, 2D fallback)
+- [x] prologue + Act 1 played in the browser with real input on the 3D view (see the playthrough notes below)
+
+### v2 playthrough notes
+`scripts/playthrough/play.mjs` plays the prologue and the whole Act 1 chain with keyboard and mouse only
+(WASD, mouse aim and clicks, E / Space / Tab / Q / Esc, clicks on UI buttons; it reads the game state to
+decide where to go, the way a player reads the screen, and uses no debug commands). Last full run, as the
+Mechanic on the LOW tier under software WebGL: the prologue and Act 1 completed (Ruth hears Jo's recording,
+"To be continued") in about 12½ minutes of wall time without dying — 22 kills over 16 fights, 69 HP lost to
+zombies (49 of it in the basement, where the boss caught Sam on the way to the recorder), no console errors.
+The run before it lost 13 HP over 25 kills; the Kessler garage (four walkers and a runner woken by the bolt
+cutters) cost 5 HP there with the noise-maker and 14 HP in the last run.
+
+Found and fixed while checking the 3D view and playing:
+- quick clicks were lost when a frame took longer than the click (decision 69);
+- night scenes were nearly black and smoke glowed white at night (decision 62);
+- the Scavenger's scout rings scaled with the container (a bus got a 7-tile ring) — now a sonar ping plus
+  small markers;
+- an NPC's floating name sat on top of the "[E] Talk" prompt;
+- an empty barter said "Short by 0" in red;
+- the title skyline was lit like a working city on day 23;
+- a bot playing like a turret (standing still, wrench, no ability) died to the Kessler garage (4 walkers and
+  a runner woken by the chain cutter); with footwork, the nail bat and the noise-maker the same fight cost
+  5 HP. That is the intended curve, so the encounter is unchanged.
+
+Not bugs: the drive to St. Agnes leaves about 2 L in the tank, so the way home needs the fuel at the hospital
+(a can by the ambulance bay and a siphonable wreck, decision 39) or a forced march.
 
 ## M0 — Scaffold & CI (boots to a menu)
 - [x] package.json with pinned Phaser 4.2.1, Vite, Vitest, Playwright, ESLint, Prettier, zod, Preact
@@ -113,17 +176,23 @@ synthesized sound throughout. See **Stubs / known gaps** and **Next concrete ste
       without a GPU), UI subscription race (menu sometimes never appeared)
 
 ## Stubs / known gaps
-- All art is procedural placeholder (Canvas2D textures generated at boot); all sound is synthesized WebAudio.
+- All art is procedural placeholder: low-poly vertex-coloured models and canvas-painted textures built in code;
+  all sound is synthesized WebAudio. Real models/textures can be dropped in by asset key (CONTENT_GUIDE).
+- Performance was measured only on software WebGL in this environment: SwiftShader runs the LOW tier at
+  ~25–30 fps (HIGH at ~5) with dozens of zombies; with 62 zombies a frame is ~80 draw calls and ~60k
+  triangles, comfortably inside a real GPU's 60 fps budget, but it hasn't been profiled on one.
+- Characters are rigid-part rigs (no skinning); animation is procedural.
 - The world map background is a generated street grid, not a drawn map.
 - Act 2 (the Northgate bridge and the Tollmen) is a locked teaser node; the Tollmen appear only in a travel event.
 - Vehicle trunk storage and upgrades (brief: later) are not in v1; the vehicle travels with the player.
 - No controller support, no rebinding, no localization (all brief non-goals for v1).
-- Headless/software-rendered browsers run at ~30 fps; real GPUs hold 60 fps with ~50 zombies (sim ~0.7 ms).
 
 ## Next concrete steps
-1. Real art: replace placeholder keys in `src/game/art/manifest.ts` with sprites (CC0 packs or commissioned).
-2. Act 2: the Northgate bridge zone, the Tollmen faction (reputation, a toll/bribe/fight choice), the train.
-3. More locations per district so the world map has meaningful route choices; random travel ambushes that
+1. Real art through the overrides: a CC0 character pack (rigged per part), props, and floor textures (the
+   floor atlas is painted in code today).
+2. Profile on real GPUs (integrated and discrete) and tune the HIGH tier (shadow map size, light count).
+3. Act 2: the Northgate bridge zone, the Tollmen faction (reputation, a toll/bribe/fight choice), the train.
+4. More locations per district so the world map has meaningful route choices; random travel ambushes that
    drop the player into a small encounter zone.
-4. Vehicle depth: trunk storage, upgrades (armor plating, bigger tank), breakdowns.
-5. Balance with playtest telemetry: loot density per tier, trader prices, needs drain over a multi-day run.
+5. Vehicle depth: trunk storage, upgrades (armor plating, bigger tank), breakdowns.
+6. Balance with playtest telemetry: loot density per tier, trader prices, needs drain over a multi-day run.

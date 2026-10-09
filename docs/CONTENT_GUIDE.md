@@ -168,6 +168,8 @@ before/after stats.
   `unlockRecipe` effect. Recipes without it are known from the start.
 - Crafted weapons, tools and armor get a quality multiplier from the bench tier and the Crafting skill.
 - At the safehouse, crafting also draws materials from the stash.
+- `class`: only that class can craft it (class gadgets like the Mechanic's noise-maker). It's known from the
+  start by that class and never shows for the others. List it in the class's `recipes` too.
 
 ## Add an enemy
 
@@ -179,7 +181,7 @@ before/after stats.
   "name": "Walker",
   "hp": 40,
   "speed": 1.5,
-  "damage": [8, 12],
+  "damage": [5, 8],
   "radius": 0.38,
   "attackCooldown": 1.2,
   "xp": 10,
@@ -191,14 +193,18 @@ before/after stats.
 | Field | Notes |
 |---|---|
 | `speed` | Tiles per second (the player walks 3.5 and sprints 5.5). Night multiplies it (`balance.zombies`). |
+| `windupSec` | The telegraphed wind-up before each swing (default `balance.zombies.windupSeconds`, 0.45). Every melee hit interrupts it, so slower wind-ups make a type easier to fight. |
+| `reach` | How far past its body the swing lands, in tiles (default `balance.zombies.attackReach`, 0.75). Keep it below the shortest melee weapon's reach or melee becomes a trade of hits. |
+| `damage`, `attackCooldown` | Damage range per landed swing and the pause between swings. After any hit the player is invulnerable for `balance.health.hitInvulnerabilitySeconds`. |
 | `sightMultiplier`, `hearingMultiplier` | Scale the base senses. |
 | `special` | `burst` (bloater: a gas cloud on death, with `burst: { damage, radius, durationSec }`) or `scream` (alerts everything nearby on sight). |
 | `boss`, `staggerResist`, `infectionChance` | Bosses get a big health bar; infection chance overrides the default per hit. |
 | `dayWeight`, `nightWeight` | Relative odds when a zone picks ambient types (runners are more common at night). |
 | `corpseLoot` | A loot table rolled into a corpse container when it dies. |
 
-`xp` is the kill reward (`balance.progression.killXp` overrides it per type). Placeholder art is generated per enemy id; give a new type a
-look in `src/game/art/placeholders.ts` (`zombie` palettes) or it falls back to the walker colors.
+`xp` is the kill reward (`balance.progression.killXp` overrides it per type). The 3D model is built per enemy id;
+give a new type a look in `src/game/art/models.ts` (`ZOMBIE_COLORS` for the palette, `BODY` for proportions)
+and list it in `ZOMBIE_TYPES` in `src/game/art/manifest.ts`, or it falls back to the walker's look.
 
 **Putting it in the world:** list it in a zone's `spawns.types` (weights for ambient spawns), place a `nest`
 object (a fixed group that stays dead once cleared) or a `spawn` object, or use a `spawn` effect from a quest
@@ -448,6 +454,89 @@ the world map), `exitNode`, `onEnter`/`onFirstEnter` effects, `description`.
 
 ---
 
+## Add a class
+
+`src/content/data/classes.json` — Sam's background, picked on the New Game screen after the difficulty.
+
+```json
+{
+  "id": "mechanic",
+  "name": "Mechanic",
+  "tagline": "Twelve years keeping Harrow Transit's buses alive.",
+  "description": "Twelve years on the night shift at Depot 3. ...",
+  "kit": [{ "itemId": "wrench" }, { "itemId": "toolbox" }, { "itemId": "duct_tape", "qty": 3 }, { "itemId": "bp_pipe_pistol" }],
+  "skills": { "crafting": 2, "melee": 1 },
+  "perk": {
+    "name": "Grease Monkey",
+    "description": "Repairs cost half the materials and wear the item half as much. ...",
+    "mods": { "repairCost": 0.5, "repairWear": 0.5, "craftTime": 0.6, "vehicleRepairTime": 0.33 }
+  },
+  "ability": {
+    "kind": "decoy",
+    "name": "Noise-maker",
+    "description": "Throw a rattling, beeping decoy at the cursor. ...",
+    "cooldownSec": 60,
+    "itemId": "noisemaker"
+  },
+  "recipes": ["noisemaker"],
+  "names": { "sam_job": "a city bus mechanic", "ambulance_quip": "Twelve years of buses, and this is the engine that matters." }
+}
+```
+
+| Field | Notes |
+|---|---|
+| `kit` | Added on top of `balance.start.items`. Weapons, armor and backpacks are equipped; blueprints in the kit are learned. `mag` fills a firearm's magazine. |
+| `skills` | Starting ranks (0–5) for `melee firearms scavenging crafting survival barter stealth`. |
+| `perk.mods` | Multipliers (1 = no change): `repairCost`, `repairWear`, `craftTime`, `vehicleRepairTime`, `healing`, `infectionRate`, `firearmDamage`, `reloadSpeed` (higher is faster), `firearmSpread`, `searchTime`, `footstepNoise`; plus `bonusFind` (extra loot-roll chance). Systems read them through `perk(ctx)` in `src/systems/classes.ts`. |
+| `ability` | The Q ability. `kind` is one of `decoy` (throws `itemId`'s gadget, not consumed), `flashbang` (same), `adrenaline` (`heal`, `durationSec`) or `scout` (`radius`, `durationSec`). A new kind needs code in `src/sim/abilities.ts`. Abilities can't be used in the safehouse. |
+| `recipes` | Known from the start. Mark class-only recipes with `"class": "<id>"` in `recipes.json`. |
+| `names` | Overrides for `names.json` tokens, so story text can say `{sam_job}` and get "a city bus mechanic" or "a paramedic". Every class must define the same tokens the story uses (the validator checks). |
+
+Class dialogue options are ordinary choices with a `class` condition:
+`{ "text": "A dead battery and a dry tank? That's a Tuesday.", "if": [{ "type": "class", "classId": "mechanic" }], "next": "deal_mechanic" }`.
+Choices gated on a class are hidden (not shown disabled) for the other classes.
+
+The validator checks that kit items, skills, recipes and ability gadgets exist, that every `{token}` in
+story text resolves for every class, and that every quest can still be completed by every class (starting
+items and class recipes count).
+
+## Replace placeholder art
+
+Every model and texture is requested by a key from `src/game/art/manifest.ts`. Without an override the key
+gets procedural placeholder art (low-poly vertex-coloured geometry from `src/game/art/models.ts`, canvas
+textures from `src/game/art/textures.ts`). To use real assets (for example a CC0 pack), put the files under
+`public/` and map keys to URLs in `src/game/art/assets.ts`:
+
+```ts
+export const MODEL_OVERRIDES: Record<string, string> = {
+  'container.fridge': 'models/fridge.glb',
+  'model.body.walker': 'models/walker.glb',
+  'model.weapon.bat': 'models/bat.glb',
+};
+export const TEXTURE_OVERRIDES: Record<string, string> = {
+  'tex.wall': 'textures/brick.png',
+};
+```
+
+| Key | What |
+|---|---|
+| `container.<type>`, `station.<kind>`, `prop.vehicle`, `prop.blocker`, `prop.siphon`, `prop.board`, `prop.lampPost`, ... | Static props. Placed as their own objects with their own materials and textures. |
+| `model.body.player`, `model.body.npc.<npcId>`, `model.body.<zombieType>` | Characters. Need nodes named `torso`, `head`, `armL`, `armR`, `legL`, `legR`; each node's origin is the joint the rig turns it about (hips for the torso, neck, shoulders, hips for the legs). Missing parts stay procedural. |
+| `model.weapon.<itemId>`, `model.item.<category>`, `model.door`, `model.flashlight`, `model.corpse.<type>`, ... | Everything else built through `geometry()`. |
+| `tex.wall`, `tex.fence`, `tex.decal.<kind>`, `tex.dot`, `tex.muzzle`, `tex.skyline` | Textures. |
+
+- Overrides load at boot, before the renderer starts; a missing or broken file logs a warning and keeps the
+  placeholder.
+- Scale: 1 world unit = 1 tile (about 1.2 m); walls are 1.6 units tall. Models face +X, with +Y up, and sit on
+  y = 0.
+- Characters, weapons and other `geometry()` keys are drawn with the game's vertex-coloured materials (so
+  they take the line-of-sight shading and instancing): their material colours are baked into vertex
+  colours and textures are dropped. Props keep their own materials.
+- Floor tiles are painted into one atlas by `drawTile` in `textures.ts`; change floors there.
+- Credit any pack you add in `CREDITS.md` with its license.
+
+---
+
 ## Other content
 
 - **Travel events** (`travelEvents.json`): `title`, `text`, `weight`, `modes` (`foot`, `vehicle`), `once`,
@@ -474,6 +563,7 @@ Used by dialogue choices and starts, travel events, broadcasts, zone objects and
 | `time` | `night` | it's night (or day) |
 | `day` | `min` | the day count ≥ min |
 | `recipeKnown` | `recipeId` | the recipe is known |
+| `class` | `classId` | Sam has this background (`mechanic`, `paramedic`, `excop`, `scavenger`) |
 | `vehicle` | `owned` | the player owns the vehicle (or not) |
 | `cooldown` | `key`, `minutes` | no `stamp` with this key in the last `minutes` |
 | `not` / `any` | `cond` / `conds` | negation / at least one |
