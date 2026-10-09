@@ -6,7 +6,6 @@
 import {
   BufferAttribute,
   BufferGeometry,
-  CanvasTexture,
   Color,
   DoubleSide,
   Group,
@@ -18,7 +17,6 @@ import {
   Object3D,
   PlaneGeometry,
   RepeatWrapping,
-  SRGBColorSpace,
   Vector3,
   type Material,
   type Texture,
@@ -37,6 +35,8 @@ import {
   wallTexture,
   type Atlas,
 } from '../../art/textures';
+import { texture } from '../../art/assets';
+import { TEXTURES } from '../../art/manifest';
 import { patchWorld } from '../worldMaterial';
 
 export const WALL_H = 1.6;
@@ -243,8 +243,7 @@ export function buildWorld(zone: ZoneState, atlas: Texture, atlasInfo: Atlas): W
   disposables.push(floorMat, overlayMat);
 
   // ---------------------------------------------------------------- walls, windows, lintels
-  const wallTex = new CanvasTexture(wallTexture());
-  wallTex.colorSpace = SRGBColorSpace;
+  const wallTex = texture(TEXTURES.wall, wallTexture);
   wallTex.wrapS = wallTex.wrapT = RepeatWrapping;
   const wallSide = patchWorld(new MeshLambertMaterial({ map: wallTex }), { cutaway: true });
   const wallTop = patchWorld(new MeshLambertMaterial({ color: '#45403a' }), { cutaway: true });
@@ -377,8 +376,7 @@ export function buildWorld(zone: ZoneState, atlas: Texture, atlasInfo: Atlas): W
   const propMat = patchWorld(new MeshLambertMaterial({ vertexColors: true, flatShading: true }));
   disposables.push(propMat);
   if (fences.length) {
-    const tex = new CanvasTexture(fenceTexture());
-    tex.colorSpace = SRGBColorSpace;
+    const tex = texture(TEXTURES.fence, fenceTexture);
     tex.magFilter = NearestFilter;
     const mat = patchWorld(new MeshLambertMaterial({ map: tex, alphaTest: 0.4, side: DoubleSide }));
     const panel = new PlaneGeometry(1, FENCE_H).translate(0, FENCE_H / 2, 0);

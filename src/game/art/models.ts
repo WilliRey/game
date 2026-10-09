@@ -20,6 +20,7 @@ import {
   SphereGeometry,
 } from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { overridePart } from './assets';
 
 // ---------------------------------------------------------------- kit
 
@@ -307,6 +308,21 @@ export const RIG_PARTS = ['torso', 'head', 'armL', 'armR', 'legL', 'legR'] as co
 export type RigPart = (typeof RIG_PARTS)[number];
 
 /** The six rig part geometries for a body style, each relative to its joint. */
+/**
+ * The body parts for a character key: parts from a model override when one is loaded (see
+ * `overridePart`), the procedural low-poly parts otherwise.
+ */
+export function characterParts(
+  key: string,
+  style: BodyStyle,
+  col: BodyColors,
+): Record<RigPart, BufferGeometry> {
+  let built: Record<RigPart, BufferGeometry> | null = null;
+  const out = {} as Record<RigPart, BufferGeometry>;
+  for (const p of RIG_PARTS) out[p] = overridePart(key, p) ?? (built ??= bodyParts(style, col))[p];
+  return out;
+}
+
 export function bodyParts(style: BodyStyle, col: BodyColors): Record<RigPart, BufferGeometry> {
   const d = BODY[style];
   const fat = style === 'bloater' || style === 'bloater_boss';

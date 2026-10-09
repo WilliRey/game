@@ -21,7 +21,7 @@ import { classOf } from '@/systems/classes';
 import type { ZoneState } from '@/sim/types';
 import { geometry } from '../../art/assets';
 import { MODELS } from '../../art/manifest';
-import { bodyParts, flashlightModel, weaponModel, weaponReach, type BodyColors } from '../../art/models';
+import { characterParts, flashlightModel, weaponModel, weaponReach, type BodyColors } from '../../art/models';
 import { patchWorld } from '../worldMaterial';
 import { Rig, easeInOut, easeOut, turnToward } from './rig';
 
@@ -196,7 +196,11 @@ export class PlayerView {
     this.classId = classId;
     for (const p of Object.values(this.rig.parts))
       for (const c of [...p.children]) if (c instanceof Mesh) p.remove(c);
-    const parts = bodyParts('survivor', CLASS_COLORS[classId] ?? CLASS_COLORS.mechanic!);
+    const parts = characterParts(
+      MODELS.body('player'),
+      'survivor',
+      CLASS_COLORS[classId] ?? CLASS_COLORS.mechanic!,
+    );
     for (const [name, g] of Object.entries(parts)) {
       const m = new Mesh(g, this.mat);
       m.castShadow = true;

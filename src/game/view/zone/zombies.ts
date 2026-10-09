@@ -25,7 +25,7 @@ import type { Decal, Zombie, ZoneState } from '@/sim/types';
 import { zombieReach } from '@/sim/zombies';
 import { geometry } from '../../art/assets';
 import { MODELS, ZOMBIE_TYPES } from '../../art/manifest';
-import { RIG_PARTS, ZOMBIE_COLORS, bodyParts, type BodyStyle, type RigPart } from '../../art/models';
+import { RIG_PARTS, ZOMBIE_COLORS, characterParts, type BodyStyle, type RigPart } from '../../art/models';
 import { patchWorld } from '../worldMaterial';
 import { Rig, easeOut, turnToward } from './rig';
 
@@ -152,10 +152,10 @@ export class ZombieLayer {
     const style = styleOf(type);
     const rig = b?.rig ?? new Rig(style);
     const geoms = {} as Record<RigPart, ReturnType<typeof geometry>>;
-    let built: ReturnType<typeof bodyParts> | null = null;
+    let built: ReturnType<typeof characterParts> | null = null;
     for (const p of RIG_PARTS)
       geoms[p] = geometry(`${MODELS.body(style)}.${p}`, () => {
-        built ??= bodyParts(style, ZOMBIE_COLORS[style] ?? ZOMBIE_COLORS.walker!);
+        built ??= characterParts(MODELS.body(style), style, ZOMBIE_COLORS[style] ?? ZOMBIE_COLORS.walker!);
         return built[p];
       });
     const meshes = {} as Record<RigPart, InstancedMesh>;

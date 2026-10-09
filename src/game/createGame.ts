@@ -13,7 +13,6 @@ import {
 } from 'three';
 import type { GameStore } from '@/core/store';
 import type { AudioManager } from './audio/AudioManager';
-import { loadOverrides } from './art/assets';
 import { buildTileAtlas, type Atlas } from './art/textures';
 import { VIEW_H, VIEW_W } from './constants';
 import { installDirector } from './director';
@@ -150,7 +149,6 @@ class Engine implements GameHandle {
 
 /** Create the renderer for this browser and install the director that switches views. */
 export function createGame(store: GameStore, parent: HTMLElement, audio?: AudioManager): GameHandle {
-  void loadOverrides();
   let game: GameHandle;
   if (chooseRenderer() === '2d') game = createFallback2D(store, parent, audio);
   else {

@@ -7,7 +7,8 @@ import type { Content } from '@/content';
 import { isVisible } from '@/sim/fov';
 import type { ZoneRuntime } from '@/sim/runtime';
 import type { NpcEntity, ZoneState } from '@/sim/types';
-import { bodyParts } from '../../art/models';
+import { characterParts } from '../../art/models';
+import { MODELS } from '../../art/manifest';
 import { patchWorld } from '../worldMaterial';
 import { Rig, turnToward } from './rig';
 
@@ -31,7 +32,7 @@ export class NpcLayer {
   private make(n: NpcEntity): NpcView {
     const def = this.content.npcs[n.npcId];
     const color = def?.color ?? '#9bbcd1';
-    const parts = bodyParts('survivor', {
+    const parts = characterParts(MODELS.body(`npc.${n.npcId}`), 'survivor', {
       skin: n.npcId === 'doc_ama' || n.npcId === 'ruth' ? '#7a5a42' : '#a98466',
       top: color,
       topDark: color,

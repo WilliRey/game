@@ -29,6 +29,8 @@ export class InputTracker {
   private lmb = false;
   private rmb = false;
   private lmbWas = false;
+  /** A left press since the last read: a click that goes down and up between two frames still counts. */
+  private clicked = false;
   /** Cursor in normalised device coordinates of the game view (−1..1). */
   readonly ndc = new Vector2();
   private offs: (() => void)[] = [];
@@ -64,7 +66,7 @@ export class InputTracker {
     // Buttons are taken from the game view only, so clicks on UI panels never swing a weapon.
     on(canvas, 'mousedown', (e) => {
       this.track(e);
-      if (e.button === 0) this.lmb = true;
+      if (e.button === 0) this.lmb = this.clicked = true;
       if (e.button === 2) this.rmb = true;
     });
     on(window, 'mouseup', (e) => {
@@ -120,6 +122,8 @@ export class InputTracker {
     inp.aimX = aim.x;
     inp.aimY = aim.y;
     const lmb = this.lmb;
+    const clicked = this.clicked;
+    this.clicked = false;
     if (captured) {
       this.pressed.clear();
       this.wheel = 0;
@@ -132,8 +136,8 @@ export class InputTracker {
     inp.sprint = d('ShiftLeft') || d('ShiftRight');
     inp.force = inp.sprint;
     inp.aim = this.rmb;
-    inp.attack = lmb;
-    inp.attackPressed = lmb && !this.lmbWas;
+    inp.attack = lmb || clicked;
+    inp.attackPressed = (lmb && !this.lmbWas) || clicked;
     this.lmbWas = lmb;
     inp.interactHeld = d('KeyE');
     inp.interactPressed = this.consume('KeyE');
