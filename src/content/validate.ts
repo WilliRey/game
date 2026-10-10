@@ -65,6 +65,9 @@ export function validateContent(content: Content): ValidationReport {
         if (!has(content.recipes, c.recipeId))
           err(`${where}: condition recipeKnown unknown recipe '${c.recipeId}'`);
         break;
+      case 'class':
+        if (!has(content.classes, c.classId)) err(`${where}: condition class unknown class '${c.classId}'`);
+        break;
       case 'not':
         checkCond(c.cond, where);
         break;
@@ -168,7 +171,83 @@ export function validateContent(content: Content): ValidationReport {
     r.inputs.forEach((i) => checkItem(i.itemId, w));
     checkItem(r.output.itemId, `${w} output`);
     if (r.tool) checkItem(r.tool, `${w} tool`);
+    if (r.class && !has(content.classes, r.class)) err(`${w}: class '${r.class}' unknown`);
+    if (r.class && r.requiresBlueprint)
+      err(`${w}: class gadgets are known from the start, not from blueprints`);
   }
+
+  // ---- classes ----
+  const skillIds = new Set(Object.keys(content.skills));
+  for (const c of content.lists.classes) {
+    const w = `class ${c.id}`;
+    for (const k of c.kit) {
+      checkItem(k.itemId, `${w} kit`);
+      const def = content.items[k.itemId];
+      if (def?.blueprint && !has(content.recipes, def.blueprint.recipeId))
+        err(`${w} kit: blueprint recipe '${def.blueprint.recipeId}' missing`);
+      if (k.mag !== undefined && def?.weapon?.kind !== 'firearm')
+        err(`${w} kit: '${k.itemId}' has a mag but isn't a firearm`);
+    }
+    for (const sk of Object.keys(c.skills)) if (!skillIds.has(sk)) err(`${w}: unknown skill '${sk}'`);
+    for (const r of c.recipes) {
+      const rec = content.recipes[r];
+      if (!rec) err(`${w}: recipe '${r}' missing`);
+      else if (rec.class && rec.class !== c.id) err(`${w}: recipe '${r}' belongs to class '${rec.class}'`);
+    }
+    if (!content.lists.recipes.some((r) => r.class === c.id))
+      err(`${w}: needs at least one class-only gadget recipe`);
+    const ab = c.ability;
+    if (ab.kind === 'decoy' || ab.kind === 'flashbang') {
+      const t = ab.itemId ? content.items[ab.itemId]?.weapon?.throwable : undefined;
+      const want = ab.kind === 'decoy' ? 'decoy' : 'flash';
+      if (!t) err(`${w}: ability ${ab.kind} needs itemId of a throwable`);
+      else if (t.effect !== want)
+        err(`${w}: ability ${ab.kind} item '${ab.itemId}' has effect '${t.effect}', expected '${want}'`);
+    }
+    for (const key of Object.keys(c.names))
+      if (!Object.hasOwn(content.names, key)) err(`${w}: name token '${key}' has no default in names.json`);
+  }
+  if (!has(content.classes, 'mechanic')) err('classes.json: the default class (mechanic) is missing');
+
+  // ---- {tokens} in story text resolve ----
+  const checkTokens = (t: string | undefined, where: string) => {
+    for (const m of t?.matchAll(/\{(\w+)\}/g) ?? [])
+      if (m[1] !== 'day' && !Object.hasOwn(content.names, m[1]!))
+        err(`${where}: unknown name token {${m[1]}}`);
+  };
+  const tokenEffects = (effects: readonly EffectT[], where: string) => {
+    for (const e of effects) {
+      if (e.type === 'textCard') {
+        checkTokens(e.title, where);
+        checkTokens(e.body, where);
+      } else if (e.type === 'toast') checkTokens(e.text, where);
+    }
+  };
+  for (const d of Object.values(content.dialogues))
+    for (const [nid, n] of Object.entries(d.nodes)) {
+      checkTokens(n.text, `dialogue ${d.id}.${nid}`);
+      checkTokens(n.speaker, `dialogue ${d.id}.${nid}`);
+      tokenEffects(n.effects, `dialogue ${d.id}.${nid}`);
+      n.choices.forEach((ch, i) => {
+        checkTokens(ch.text, `dialogue ${d.id}.${nid} choice ${i}`);
+        tokenEffects(ch.effects, `dialogue ${d.id}.${nid} choice ${i}`);
+      });
+    }
+  for (const n of content.lists.notes) {
+    checkTokens(n.title, `note ${n.id}`);
+    checkTokens(n.body, `note ${n.id}`);
+  }
+  for (const b of content.broadcasts) checkTokens(b.text, `broadcast ${b.id}`);
+  for (const q of content.lists.quests) {
+    checkTokens(q.description, `quest ${q.id}`);
+    tokenEffects(q.rewards, `quest ${q.id}`);
+    for (const st of q.stages) {
+      checkTokens(st.text, `quest ${q.id} stage ${st.id}`);
+      tokenEffects(st.onEnter, `quest ${q.id} stage ${st.id}`);
+    }
+  }
+  for (const z of content.lists.zones)
+    for (const o of z.objects) tokenEffects(o.effects, `zone ${z.id} object ${o.id}`);
 
   // ---- loot ----
   for (const t of Object.values(content.lootTables))
@@ -310,9 +389,12 @@ export function validateContent(content: Content): ValidationReport {
   for (const name of Object.keys(content.names))
     if (!/^\w+$/.test(name)) err(`names.json: key '${name}' must be a word`);
 
-  // ---- quests ----
-  const obtainable = obtainableItems(content);
-  const knownRecipes = obtainableRecipes(content);
+  // ---- quests (must be completable whatever class Sam is) ----
+  const perClass = content.lists.classes.map((c) => ({
+    id: c.id,
+    obtainable: obtainableItems(content, startingItems(content, c.id), c.id),
+    recipes: obtainableRecipes(content, c.id),
+  }));
   const placedNpcs = new Set(
     content.lists.zones.flatMap((z) => z.objects.filter((o) => o.type === 'npc').map((o) => o.npcId!)),
   );
@@ -343,8 +425,10 @@ export function validateContent(content: Content): ValidationReport {
           case 'use': {
             const ids = matcherItems(content, ob.target);
             if (ids.length === 0) err(`${ow}: item matcher '${ob.target}' matches nothing`);
-            else if (!ids.some((id) => obtainable.has(id)))
-              err(`${ow}: no item matching '${ob.target}' is obtainable`);
+            else
+              for (const pc of perClass)
+                if (!ids.some((id) => pc.obtainable.has(id)))
+                  err(`${ow}: no item matching '${ob.target}' is obtainable as a ${pc.id}`);
             if (ob.type === 'deliver' && ob.npcId && !placedNpcs.has(ob.npcId))
               err(`${ow}: deliver npc '${ob.npcId}' not placed`);
             if (ob.type === 'deliver' && !ob.npcId) err(`${ow}: deliver objective needs npcId`);
@@ -370,11 +454,15 @@ export function validateContent(content: Content): ValidationReport {
             break;
           case 'craft': {
             const ids = matcherItems(content, ob.target);
-            const craftable = content.lists.recipes.some(
-              (r) => ids.includes(r.output.itemId) && knownRecipes.has(r.id),
-            );
-            if (!craftable)
-              err(`${ow}: nothing matching '${ob.target}' is craftable from obtainable recipes`);
+            for (const pc of perClass) {
+              const craftable = content.lists.recipes.some(
+                (r) => ids.includes(r.output.itemId) && pc.recipes.has(r.id),
+              );
+              if (!craftable)
+                err(
+                  `${ow}: nothing matching '${ob.target}' is craftable from obtainable recipes as a ${pc.id}`,
+                );
+            }
             break;
           }
           case 'flag':
@@ -384,8 +472,9 @@ export function validateContent(content: Content): ValidationReport {
     });
   }
 
+  const anyClass = new Set(perClass.flatMap((pc) => [...pc.recipes]));
   for (const r of content.lists.recipes)
-    if (!knownRecipes.has(r.id)) warnings.push(`recipe ${r.id}: requires a blueprint that nothing grants`);
+    if (!anyClass.has(r.id)) warnings.push(`recipe ${r.id}: requires a blueprint that nothing grants`);
   return { errors, warnings };
 }
 
@@ -425,16 +514,28 @@ function allEffects(content: Content): EffectT[] {
   return out;
 }
 
-/** Recipes the player can come to know: no blueprint needed, or some blueprint item / effect grants it. */
-export function obtainableRecipes(content: Content): Set<string> {
+/**
+ * Recipes the player can come to know as a given class: no blueprint needed, or some blueprint item /
+ * effect grants it, or the class starts with it. Other classes' gadgets are never known.
+ */
+export function obtainableRecipes(content: Content, classId = 'mechanic'): Set<string> {
   const out = new Set<string>();
   const granted = new Set(
     allEffects(content).flatMap((e) => (e.type === 'unlockRecipe' ? [e.recipeId] : [])),
   );
+  const cls = content.classes[classId];
+  for (const r of cls?.recipes ?? []) granted.add(r);
   const bpItems = new Set(content.lists.items.flatMap((i) => (i.blueprint ? [i.blueprint.recipeId] : [])));
-  for (const r of content.lists.recipes)
+  for (const r of content.lists.recipes) {
+    if (r.class && r.class !== classId) continue;
     if (!r.requiresBlueprint || granted.has(r.id) || bpItems.has(r.id)) out.add(r.id);
+  }
   return out;
+}
+
+/** The common starting kit plus a class's own kit. */
+export function startingItems(content: Content, classId = 'mechanic'): string[] {
+  return [...STARTING_ITEM_IDS, ...(content.classes[classId]?.kit.map((k) => k.itemId) ?? [])];
 }
 
 /**
@@ -442,8 +543,12 @@ export function obtainableRecipes(content: Content): Set<string> {
  * container contents, giveItem effects, the starting kit, and recipe outputs whose inputs are obtainable
  * (iterated to a fixpoint). Blueprint items for unknown recipes still count as obtainable items.
  */
-export function obtainableItems(content: Content, startingItems: string[] = STARTING_ITEM_IDS): Set<string> {
-  const have = new Set<string>(startingItems);
+export function obtainableItems(
+  content: Content,
+  start: string[] = STARTING_ITEM_IDS,
+  classId = 'mechanic',
+): Set<string> {
+  const have = new Set<string>(start);
   const usedTables = new Set<string>();
   for (const z of content.lists.zones) {
     const legend = zoneLegend(content, z);
@@ -466,9 +571,12 @@ export function obtainableItems(content: Content, startingItems: string[] = STAR
   for (const t of usedTables) content.lootTables[t]?.entries.forEach((e) => have.add(e.itemId));
   for (const t of content.lists.traders) t.stock.forEach((s) => have.add(s.itemId));
   for (const e of allEffects(content)) if (e.type === 'giveItem') have.add(e.itemId);
-  const recipes = obtainableRecipes(content);
+  const recipes = obtainableRecipes(content, classId);
   for (const it of content.lists.items)
-    if (it.blueprint && have.has(it.id)) recipes.add(it.blueprint.recipeId);
+    if (it.blueprint && have.has(it.id)) {
+      const r = content.recipes[it.blueprint.recipeId];
+      if (r && (!r.class || r.class === classId)) recipes.add(r.id);
+    }
   let changed = true;
   while (changed) {
     changed = false;

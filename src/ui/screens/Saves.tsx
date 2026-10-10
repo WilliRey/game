@@ -97,8 +97,8 @@ export function Saves({ entry }: { entry: { props?: Record<string, unknown> } })
                 Day {meta.day} · {meta.clock} · {meta.location}
               </div>
               <div class="muted small">
-                Level {meta.level} · {DIFFICULTY_PRESETS[meta.difficulty]?.label ?? meta.difficulty} ·{' '}
-                {played(meta.playSeconds)}
+                {store.content.classes[meta.classId ?? 'mechanic']?.name ?? 'Mechanic'} · Level {meta.level} ·{' '}
+                {DIFFICULTY_PRESETS[meta.difficulty]?.label ?? meta.difficulty} · {played(meta.playSeconds)}
                 {meta.quest ? ` · ${meta.quest}` : ''}
               </div>
             </>

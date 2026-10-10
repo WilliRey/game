@@ -48,8 +48,14 @@ export function unlockNode(ctx: GameContext, nodeId: string): boolean {
   return true;
 }
 
+/** Fill `{tokens}` from names.json, Sam's class (`classes.json` names: {sam_job}, {jo_nickname}...) and the day. */
 export function text(ctx: GameContext, s: string): string {
-  return fillNames(s, { ...ctx.content.names, day: String(dayOf(ctx.state.time.minutes)) });
+  const cls = ctx.state ? ctx.content.classes[ctx.state.player.classId] : undefined;
+  return fillNames(s, {
+    ...ctx.content.names,
+    ...cls?.names,
+    day: ctx.state ? String(dayOf(ctx.state.time.minutes)) : '',
+  });
 }
 
 /** Read a note: show it as a text card the first time, run its effects once, keep it in the journal. */

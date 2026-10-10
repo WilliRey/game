@@ -1,0 +1,196 @@
+[
+  {
+    "id": "mechanic",
+    "name": "Mechanic",
+    "tagline": "Twelve years keeping Harrow Transit's buses alive.",
+    "description": "Twelve years on the night shift at Depot 3. Good with tools, better with engines, and never throws a part away.",
+    "kit": [
+      {
+        "itemId": "wrench"
+      },
+      {
+        "itemId": "toolbox"
+      },
+      {
+        "itemId": "duct_tape",
+        "qty": 3
+      },
+      {
+        "itemId": "bp_pipe_pistol"
+      }
+    ],
+    "skills": {
+      "crafting": 2,
+      "melee": 1
+    },
+    "perk": {
+      "name": "Grease Monkey",
+      "description": "Repairs cost half the materials and wear the item half as much. Crafting takes 40% less time, and you get the ambulance running three times faster.",
+      "mods": {
+        "repairCost": 0.5,
+        "repairWear": 0.5,
+        "craftTime": 0.6,
+        "vehicleRepairTime": 0.33
+      }
+    },
+    "ability": {
+      "kind": "decoy",
+      "name": "Noise-maker",
+      "description": "Throw a rattling, beeping decoy at the cursor. It pulls every walker in earshot for ten seconds.",
+      "cooldownSec": 60,
+      "itemId": "noisemaker"
+    },
+    "recipes": ["noisemaker"],
+    "names": {
+      "sam_job": "a city bus mechanic",
+      "jo_nickname": "grease monkey",
+      "pike_greeting": "My favorite mechanic.",
+      "ruth_deal_intro": "Teodor says you fix buses for a living. Then I have a deal for you.",
+      "ambulance_quip": "Twelve years of buses, and this is the engine that matters."
+    }
+  },
+  {
+    "id": "paramedic",
+    "name": "Paramedic",
+    "tagline": "Six years on a county ambulance, lights and sirens.",
+    "description": "You rode with a partner named Dee until the dispatch radio went quiet. You know a wound, you know a pharmacy, and you keep your head.",
+    "kit": [
+      {
+        "itemId": "scalpel"
+      },
+      {
+        "itemId": "first_aid_kit",
+        "qty": 2
+      },
+      {
+        "itemId": "bandage",
+        "qty": 3
+      },
+      {
+        "itemId": "antibiotics"
+      }
+    ],
+    "skills": {
+      "survival": 2,
+      "stealth": 1
+    },
+    "perk": {
+      "name": "First Responder",
+      "description": "Healing items restore 50% more health, and infections progress 40% slower.",
+      "mods": {
+        "healing": 1.5,
+        "infectionRate": 0.6
+      }
+    },
+    "ability": {
+      "kind": "adrenaline",
+      "name": "Adrenaline Shot",
+      "description": "Restores 30 health, refills stamina, and for eight seconds sprinting, swinging and shoving cost nothing.",
+      "cooldownSec": 120,
+      "heal": 30,
+      "durationSec": 8
+    },
+    "recipes": ["trauma_kit"],
+    "names": {
+      "sam_job": "a county paramedic",
+      "jo_nickname": "lights-and-sirens",
+      "pike_greeting": "My favorite medic.",
+      "ruth_deal_intro": "Teodor says you drove an ambulance for the county. Then I have a deal you'll like.",
+      "ambulance_quip": "Same model you drove for the county. The jump seat even has the same coffee stain."
+    }
+  },
+  {
+    "id": "excop",
+    "name": "Ex-cop",
+    "tagline": "Nine years in a Harrow PD patrol car.",
+    "description": "You walked away from the force the spring before the outbreak. You still keep the service pistol clean and the safety on.",
+    "kit": [
+      {
+        "itemId": "pistol_9mm",
+        "mag": 12
+      },
+      {
+        "itemId": "ammo_9mm",
+        "qty": 12
+      },
+      {
+        "itemId": "police_baton"
+      }
+    ],
+    "skills": {
+      "firearms": 2,
+      "melee": 1
+    },
+    "perk": {
+      "name": "Range Time",
+      "description": "Firearms do 15% more damage, reload 25% faster and spread 20% less.",
+      "mods": {
+        "firearmDamage": 1.15,
+        "reloadSpeed": 1.25,
+        "firearmSpread": 0.8
+      }
+    },
+    "ability": {
+      "kind": "flashbang",
+      "name": "Flashbang",
+      "description": "Throw a stun grenade at the cursor. Zombies near the blast are dazed for three seconds. Loud.",
+      "cooldownSec": 60,
+      "itemId": "flashbang"
+    },
+    "recipes": ["flashbang"],
+    "names": {
+      "sam_job": "a Harrow PD patrol officer until last spring",
+      "jo_nickname": "officer",
+      "pike_greeting": "My favorite cop. Never thought I'd say that.",
+      "ruth_deal_intro": "Teodor says you were a cop. I won't hold it against you. I have a deal for you.",
+      "ambulance_quip": "You check the mirrors out of habit. Nobody's following. Nobody's left to."
+    }
+  },
+  {
+    "id": "scavenger",
+    "name": "Scavenger",
+    "tagline": "Paid the rent selling what the city threw away.",
+    "description": "Estate sales, dumpsters, foreclosed houses. You know where people hide things, and how to get in quietly.",
+    "kit": [
+      {
+        "itemId": "crowbar"
+      },
+      {
+        "itemId": "lockpick",
+        "qty": 4
+      },
+      {
+        "itemId": "hiking_pack"
+      }
+    ],
+    "skills": {
+      "scavenging": 2,
+      "stealth": 1
+    },
+    "perk": {
+      "name": "Light Fingers",
+      "description": "Searching takes 35% less time, your footsteps are 25% quieter, and containers hold an extra find more often.",
+      "mods": {
+        "searchTime": 0.65,
+        "footstepNoise": 0.75,
+        "bonusFind": 0.15
+      }
+    },
+    "ability": {
+      "kind": "scout",
+      "name": "Scout",
+      "description": "For eight seconds, see unsearched containers and zombies within 20 tiles, even through walls.",
+      "cooldownSec": 45,
+      "durationSec": 8,
+      "radius": 20
+    },
+    "recipes": ["smoke_bomb"],
+    "names": {
+      "sam_job": "a picker who made rent selling what the city threw away",
+      "jo_nickname": "magpie",
+      "pike_greeting": "My favorite magpie.",
+      "ruth_deal_intro": "Teodor says you can find anything in this city. Then find me two things.",
+      "ambulance_quip": "Not bad for a pile of parts out of other people's cars."
+    }
+  }
+]

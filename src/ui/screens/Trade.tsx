@@ -138,13 +138,17 @@ export function Trade({ entry }: { entry: { props?: Record<string, unknown> } })
             <span>
               You take <b class="num">{q.requestValue}</b>
             </span>
-            <span class={q.ok ? 'good' : 'bad'}>
-              {q.ok
-                ? q.creditAfter > q.credit || q.creditAfter > 0
-                  ? `Credit after: ${q.creditAfter}`
-                  : 'Fair deal'
-                : `Short by ${q.requestValue - q.offerValue - q.credit}`}
-            </span>
+            {q.requestValue === 0 && q.offerValue === 0 ? (
+              <span class="muted">Click their goods to ask, yours to offer</span>
+            ) : (
+              <span class={q.ok ? 'good' : 'bad'}>
+                {q.ok
+                  ? q.creditAfter > q.credit || q.creditAfter > 0
+                    ? `Credit after: ${q.creditAfter}`
+                    : 'Fair deal'
+                  : `Short by ${q.requestValue - q.offerValue - q.credit}`}
+              </span>
+            )}
             <span class="muted small">Camp reputation {store.state.reputation}</span>
           </div>
           <button

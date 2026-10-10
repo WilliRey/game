@@ -1,42 +1,42 @@
 /**
- * Every texture the game draws is referenced through these keys. At boot, `placeholders.ts` generates a
- * procedural texture for each key that isn't already loaded, so dropping in a real sprite is a matter of
- * loading an image under the same key in `BootScene.preload` (see docs/CONTENT_GUIDE.md).
+ * Every model and texture the renderer draws is referenced through these keys. `assets.ts` returns a
+ * loaded real asset for a key when one is listed in its overrides, otherwise the procedural placeholder
+ * from `models.ts` / `textures.ts` (see docs/CONTENT_GUIDE.md, "Replacing placeholder art").
  */
-import type { TileKind } from '@/content/schemas';
+import type { BodyStyle } from './models';
 
-export const TILE_SIZE = 32;
-export const TILE_VARIANTS = 4;
-
-export const ART = {
-  tile: (kind: TileKind, variant: number) => `tile.${kind}.${variant % TILE_VARIANTS}`,
-  player: 'actor.player',
-  zombie: (type: string) => `actor.zombie.${type}`,
-  npc: 'actor.npc',
-  corpse: (type: string) => `decal.corpse.${type}`,
+export const MODELS = {
+  /** Character part sets: player and NPCs use 'survivor'; zombies use their type. */
+  body: (style: BodyStyle | string) => `model.body.${style}`,
+  weapon: (itemId: string) => `model.weapon.${itemId}`,
+  flashlight: 'model.flashlight',
   container: (type: string) => `container.${type}`,
   station: (kind: string) => `station.${kind}`,
-  door: (state: 'closed' | 'open' | 'broken' | 'locked') => `door.${state}`,
-  item: (category: string) => `item.${category}`,
-  thrown: (itemId: string) => `thrown.${itemId}`,
-  blood: (variant: number) => `decal.blood.${variant % 4}`,
-  glassDecal: 'decal.glass',
-  scorch: 'decal.scorch',
-  light: 'fx.light',
-  muzzle: 'fx.muzzle',
-  gas: 'fx.gas',
-  fire: 'fx.fire',
-  spark: 'fx.spark',
-  ping: 'fx.ping',
-  marker: 'fx.marker',
-  ring: 'fx.ring',
-  vehicle: 'prop.ambulance',
-  blocker: 'prop.chain_door',
-  siphon: 'prop.fuel_cap',
-  exit: 'prop.exit',
-  lamp: 'prop.lamp',
+  door: 'model.door',
+  doorLocked: 'model.door.locked',
+  doorBroken: 'model.door.broken',
+  vehicle: 'prop.vehicle',
+  blocker: 'prop.blocker',
+  siphon: 'prop.siphon',
+  board: 'prop.board',
   interact: 'prop.interact',
-  skyline: 'title.skyline',
+  lampPost: 'prop.lampPost',
+  lampHanging: 'prop.lampHanging',
+  exit: 'prop.exit',
+  item: (category: string) => `model.item.${category}`,
+  corpse: (type: string) => `model.corpse.${type}`,
+  thrown: (itemId: string) => `model.thrown.${itemId}`,
+} as const;
+
+export const TEXTURES = {
+  tileAtlas: 'tex.tiles',
+  wall: 'tex.wall',
+  fence: 'tex.fence',
+  decal: (kind: string) => `tex.decal.${kind}`,
+  dot: 'tex.dot',
+  muzzle: 'tex.muzzle',
+  skyline: 'tex.skyline',
+  label: (text: string) => `tex.label.${text}`,
 } as const;
 
 export const ZOMBIE_TYPES = ['walker', 'runner', 'bloater', 'bloater_boss', 'screamer'];
@@ -69,22 +69,33 @@ export const STATION_KINDS = [
   'campfire',
   'radio',
 ];
-export const ITEM_ICON_CATEGORIES = [
-  'food',
-  'drink',
-  'medical',
-  'material',
-  'tool',
-  'ammo',
-  'weapon',
-  'mod',
-  'armor',
-  'backpack',
-  'blueprint',
-  'note',
-  'quest',
-  'throwable',
-  'fuel',
-  'junk',
-];
-export const THROWN_ITEMS = ['glass_bottle', 'molotov', 'pipe_bomb'];
+
+/** Item category colours for dropped items (and the 2D fallback). */
+export const ITEM_COLORS: Record<string, string> = {
+  food: '#8a7a5a',
+  drink: '#3a6a8a',
+  medical: '#a04040',
+  material: '#6a6a62',
+  tool: '#7a6a3a',
+  ammo: '#9a8a3a',
+  weapon: '#5a5f68',
+  mod: '#4a6a4a',
+  armor: '#4a4a72',
+  backpack: '#6a5a3a',
+  blueprint: '#3f5a8a',
+  note: '#b8b0a0',
+  quest: '#c0902a',
+  throwable: '#4a7a3a',
+  fuel: '#8a2a20',
+  junk: '#5a564e',
+};
+
+/**
+ * Containers whose models are vehicles or other big things: the model's height scales with its footprint
+ * so a three-tile car isn't a flat slab.
+ */
+export const TALL_FOOTPRINT: Record<string, number> = {
+  'container.car_trunk': 1.45,
+  'container.bus': 1.7,
+  'prop.vehicle': 1.55,
+};

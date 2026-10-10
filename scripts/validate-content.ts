@@ -21,7 +21,7 @@ function main(): number {
     `content: ${c.items.length} items, ${c.recipes.length} recipes, ${c.enemies.length} enemies, ${c.npcs.length} npcs, ` +
       `${Object.keys(content.dialogues).length} dialogues, ${c.quests.length} quests, ${c.traders.length} traders, ` +
       `${c.zones.length} zones, ${c.worldNodes.length} world nodes, ${content.travelEvents.length} travel events, ` +
-      `${c.notes.length} notes`,
+      `${c.notes.length} notes, ${c.classes.length} classes`,
   );
   if (errors.length) {
     console.error(`✗ ${errors.length} error(s)`);

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "HOLDOUT: a top-down zombie survival RPG for desktop browsers.",
+  "description": "HOLDOUT: a zombie survival RPG for desktop browsers, seen from a 3D angled camera.",
   "scripts": {
     "dev": "vite",
     "build": "tsc -p tsconfig.json --noEmit && vite build",
@@ -18,13 +18,14 @@
     "check": "npm run typecheck && npm run lint && npm run test && npm run validate:content"
   },
   "dependencies": {
-    "phaser": "4.2.1",
     "preact": "10.29.8",
+    "three": "0.186.1",
     "zod": "4.6.5"
   },
   "devDependencies": {
     "@playwright/test": "1.56.1",
     "@types/node": "22.20.5",
+    "@types/three": "0.186.0",
     "eslint": "9.39.5",
     "eslint-config-prettier": "10.1.8",
     "prettier": "3.9.9",

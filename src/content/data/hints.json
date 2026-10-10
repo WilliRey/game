@@ -7,7 +7,7 @@
   {
     "id": "search",
     "title": "Searching",
-    "text": "Hold E at a container to search it. It takes a few seconds and makes a little noise. Moving or getting hit stops you."
+    "text": "Press E at a container to search it. It takes a moment and makes a little noise; moving or getting hit stops you. The loot window opens as soon as you're done."
   },
   {
     "id": "hungry",

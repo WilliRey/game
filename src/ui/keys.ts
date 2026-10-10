@@ -1,4 +1,4 @@
-/** Global UI keys: Esc, Tab, J, M, K, ` (console) and F3 (debug overlay). Gameplay keys live in Phaser. */
+/** Global UI keys: Esc, Tab, J, M, K, ` (console) and F3 (debug overlay). Gameplay keys live in `game/input.ts`. */
 import type { GameStore, ScreenId } from '@/core/store';
 import { devTools } from '@/dev/devtools';
 

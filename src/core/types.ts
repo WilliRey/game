@@ -89,6 +89,10 @@ export interface PlayerState {
   noclip: boolean;
   /** Set when the player dies; the death screen reloads the last save. */
   dead?: boolean;
+  /** Sam's background (classes.json). */
+  classId: string;
+  /** Seconds until the class ability (Q) can be used again. */
+  abilityCooldown: number;
 }
 
 // ---------- time ----------

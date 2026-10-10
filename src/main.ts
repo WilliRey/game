@@ -2,6 +2,7 @@ import './ui/styles.css';
 import { ContentError, loadContent } from './content';
 import { GameStore } from './core/store';
 import { AudioManager } from './game/audio/AudioManager';
+import { loadOverrides } from './game/art/assets';
 import { createGame } from './game/createGame';
 import { mountUI } from './ui/mount';
 import { runCommand } from './dev/console';
@@ -17,7 +18,7 @@ function fatal(message: string): void {
   el.appendChild(box);
 }
 
-function boot(): void {
+async function boot(): Promise<void> {
   let content;
   try {
     content = loadContent();
@@ -27,9 +28,14 @@ function boot(): void {
   }
   const store = new GameStore(content);
   installSaveBridge(store);
-  const game = createGame(store, document.getElementById('game')!);
-  game.registry.set('audio', new AudioManager(store));
+  const audio = new AudioManager(store);
+  // Real models/textures listed in the asset overrides (none ship) load before anything is drawn.
+  await loadOverrides();
+  const game = createGame(store, document.getElementById('game')!, audio);
   mountUI(store, document.getElementById('ui')!, game);
+  game.show('title');
+  store.setPhase('menu');
+  store.open('mainMenu');
   // Exposed for the Playwright tests and the browser console; `cmd` runs debug-console commands.
   (window as unknown as { holdout: unknown }).holdout = {
     store,
@@ -38,4 +44,4 @@ function boot(): void {
   };
 }
 
-boot();
+void boot();

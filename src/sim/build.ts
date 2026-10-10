@@ -62,6 +62,8 @@ export function newPlayerEntity(x: number, y: number, facing = 0): PlayerEntity 
     noise: 0,
     damagedAt: -100,
     hurtFlash: 0,
+    adrenaline: 0,
+    scout: 0,
   };
 }
 

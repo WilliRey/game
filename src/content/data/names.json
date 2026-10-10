@@ -26,5 +26,10 @@
   "northgate_bridge": "Northgate Bridge",
   "northgate": "Northgate Rail Yard",
   "river": "the Harrow River",
-  "depot": "the transit depot"
+  "depot": "the transit depot",
+  "sam_job": "a city bus mechanic",
+  "jo_nickname": "grease monkey",
+  "pike_greeting": "My favorite mechanic.",
+  "ruth_deal_intro": "Teodor says you fix buses for a living. Then I have a deal for you.",
+  "ambulance_quip": "Twelve years of buses, and this is the engine that matters."
 }

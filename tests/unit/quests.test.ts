@@ -89,7 +89,11 @@ describe('main quest chain', () => {
     zone.player.x = 20.5;
     zone.player.y = 10.5;
     zone.player.facing = 0;
-    updateInteraction(ctx, zone, rt, { ...emptyInput(), interactPressed: true, aimX: 22, aimY: 10.5 }, 0.016);
+    // Getting it running is a hold-E job (about 2 s for a mechanic, 6 s for anyone else).
+    const hold = { ...emptyInput(), interactHeld: true, aimX: 22, aimY: 10.5 };
+    updateInteraction(ctx, zone, rt, { ...hold, interactPressed: true }, 0.016);
+    expect(ctx.state.vehicle.owned).toBe(false);
+    for (let t = 0; t < 2.2; t += 0.05) updateInteraction(ctx, zone, rt, hold, 0.05);
     expect(ctx.state.vehicle.owned).toBe(true);
     expect(ctx.state.vehicle.fuel).toBeGreaterThan(0);
     expect(countItem(ctx, 'car_battery')).toBe(0);

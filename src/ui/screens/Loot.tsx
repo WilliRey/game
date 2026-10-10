@@ -22,6 +22,8 @@ export function Loot({ entry }: { entry: { props?: Record<string, unknown> } }) 
   const [hover, setHover] = useState<string | null>(null);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      // Key repeat from an E still held since the search must not close the window it just opened.
+      if (e.repeat) return;
       if (e.code === 'KeyE' || e.code === 'KeyF') {
         e.preventDefault();
         if (e.code === 'KeyF' && c) takeAll(ctx, containerId);

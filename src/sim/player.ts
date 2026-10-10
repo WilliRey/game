@@ -2,6 +2,7 @@
 import { BALANCE } from '@/config/balance';
 import type { GameContext } from '@/core/store';
 import type { WeaponSlot } from '@/core/types';
+import { perk } from '@/systems/classes';
 import { SKILL, rank } from '@/systems/progression';
 import { armorReduction, maxStamina, updateEncumbrance } from '@/systems/survival';
 import { moveCircle } from './collision';
@@ -29,6 +30,8 @@ export interface PlayerInput {
   throwPressed: boolean;
   crouchToggle: boolean;
   flashlightToggle: boolean;
+  /** Q: the class ability. */
+  abilityPressed: boolean;
   slot: WeaponSlot | null;
   wheel: number;
   quick: number | null;
@@ -52,6 +55,7 @@ export function emptyInput(): PlayerInput {
     throwPressed: false,
     crouchToggle: false,
     flashlightToggle: false,
+    abilityPressed: false,
     slot: null,
     wheel: 0,
     quick: null,
@@ -97,7 +101,7 @@ export function updatePlayerMovement(
   // Stamina: sprinting drains, regen waits for a short delay and slows when hungry or thirsty.
   const maxSt = maxStamina(ctx);
   if (p.sprinting) {
-    ps.stamina = Math.max(0, ps.stamina - H.sprintStaminaPerSecond * dt);
+    if (p.adrenaline <= 0) ps.stamina = Math.max(0, ps.stamina - H.sprintStaminaPerSecond * dt);
     p.staminaIdle = 0;
   } else {
     p.staminaIdle += dt;
@@ -140,7 +144,12 @@ export function updatePlayerMovement(
       p.footstepIn = p.sprinting ? 0.3 : p.crouched ? 0.55 : N.footstepIntervalSeconds;
       const base = p.sprinting ? N.sprint : p.crouched || p.aiming ? N.crouch : N.walk;
       const tile = rt.noiseMul[Math.floor(p.y) * rt.w + Math.floor(p.x)] ?? 1;
-      const radius = base * tile * (1 + armorReduction(ctx).noise) * SKILL.noise(rank(ctx, 'stealth'));
+      const radius =
+        base *
+        tile *
+        (1 + armorReduction(ctx).noise) *
+        SKILL.noise(rank(ctx, 'stealth')) *
+        perk(ctx).footstepNoise;
       emitNoise(ctx, zone, p.x, p.y, radius, tile > 1.5 ? 'glass' : 'footstep', true);
       ctx.bus.emit('sfx:play', {
         key: tile > 1.5 ? 'step_glass' : 'step',

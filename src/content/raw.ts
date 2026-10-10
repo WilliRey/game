@@ -17,6 +17,7 @@ import broadcasts from './data/broadcasts.json';
 import hints from './data/hints.json';
 import stationUpgrades from './data/stationUpgrades.json';
 import skills from './data/skills.json';
+import classes from './data/classes.json';
 import zoneMapleCourt from './data/zones/maple_court.json';
 import zoneFirehouse from './data/zones/firehouse9.json';
 import zoneKessler from './data/zones/kessler_auto.json';
@@ -44,6 +45,7 @@ export const RAW_CONTENT = {
   hints,
   stationUpgrades,
   skills,
+  classes,
   zones: [
     zoneMapleCourt,
     zoneFirehouse,

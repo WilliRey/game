@@ -41,9 +41,25 @@ export function zombieSightRange(ctx: GameContext, zone: ZoneState, rt: ZoneRunt
   return r * SKILL.spotted(rank(ctx, 'stealth'));
 }
 
+/** True when a smoke cloud lies on the segment between two points (or either end is inside one). */
+export function smokeBetween(zone: ZoneState, x0: number, y0: number, x1: number, y1: number): boolean {
+  for (const h of zone.hazards) {
+    if (h.kind !== 'smoke') continue;
+    // The cloud thins out over its last two seconds.
+    const r = h.radius * Math.min(1, h.ttl / 2);
+    const dx = x1 - x0;
+    const dy = y1 - y0;
+    const len2 = dx * dx + dy * dy || 1;
+    const t = Math.max(0, Math.min(1, ((h.x - x0) * dx + (h.y - y0) * dy) / len2));
+    if (Math.hypot(x0 + dx * t - h.x, y0 + dy * t - h.y) < r) return true;
+  }
+  return false;
+}
+
 export function canSeePlayer(ctx: GameContext, zone: ZoneState, rt: ZoneRuntime, z: Zombie): boolean {
   const p = zone.player;
   const d = Math.hypot(p.x - z.x, p.y - z.y);
+  if (d > 0.9 && smokeBetween(zone, z.x, z.y, p.x, p.y)) return false;
   const hunting = z.mode === 'chase' || z.mode === 'attack';
   if (d < 1.3) return lineOfSight(rt, z.x, z.y, p.x, p.y);
   const range = zombieSightRange(ctx, zone, rt, enemyDef(ctx, z));
@@ -225,9 +241,21 @@ function onSpotted(ctx: GameContext, zone: ZoneState, z: Zombie): void {
   }
 }
 
+/** Reach of a zombie's swing, centre to centre (tiles). */
+export function zombieReach(def: EnemyDef): number {
+  return (def.reach ?? BALANCE.zombies.attackReach) + def.radius;
+}
+
+/** Length of a zombie's telegraphed wind-up (seconds). */
+export function zombieWindup(def: EnemyDef): number {
+  return def.windupSec ?? BALANCE.zombies.windupSeconds;
+}
+
 function attackPlayer(ctx: GameContext, zone: ZoneState, z: Zombie): void {
   const def = enemyDef(ctx, z);
   const p = zone.player;
+  // A short invulnerability window after each hit, so a crowd can't land three swings in one instant.
+  if (zone.time - p.damagedAt < BALANCE.health.hitInvulnerabilitySeconds) return;
   const dmg = ctx.rng.int(def.damage[0], def.damage[1]);
   const taken = damagePlayer(ctx, dmg, z.type, {
     infectionChance: def.infectionChance ?? BALANCE.health.infectionChancePerHit,
@@ -311,7 +339,7 @@ export function updateZombies(ctx: GameContext, zone: ZoneState, rt: ZoneRuntime
           Math.max(baseSpeed, BALANCE.speed.sprint - 0.25),
         )
       : baseSpeed;
-    const attackRange = BALANCE.zombies.attackRange + def.radius;
+    const attackRange = zombieReach(def);
 
     switch (z.mode) {
       case 'idle':
@@ -360,13 +388,14 @@ export function updateZombies(ctx: GameContext, zone: ZoneState, rt: ZoneRuntime
           z.windup -= dt;
           if (z.windup <= 0) {
             z.attackCooldown = def.attackCooldown;
-            if (!dead && d <= attackRange + 0.35 && lineOfSight(rt, z.x, z.y, p.x, p.y))
+            const slack = BALANCE.zombies.attackLandSlack;
+            if (!dead && d <= attackRange + slack && lineOfSight(rt, z.x, z.y, p.x, p.y))
               attackPlayer(ctx, zone, z);
           }
-        } else if (dead || d > attackRange + 0.3) {
+        } else if (dead || d > attackRange + BALANCE.zombies.attackLandSlack) {
           setMode(z, 'chase');
         } else if (z.attackCooldown <= 0) {
-          z.windup = 0.38;
+          z.windup = zombieWindup(def);
           ctx.bus.emit('sfx:play', { key: 'zombie_attack', x: z.x, y: z.y, volume: 0.7 });
         }
         break;

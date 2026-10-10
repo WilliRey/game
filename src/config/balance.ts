@@ -5,10 +5,9 @@
 export type Difficulty = 'story' | 'survivor' | 'hardcore';
 
 export const BALANCE = {
-  /** Sam's kit on a new game. Equipped automatically where it fits a slot. */
+  /** Sam's kit on a new game, for every class (classes.json adds each class's own kit). */
   start: {
     items: [
-      { itemId: 'wrench', qty: 1 },
       { itemId: 'flashlight', qty: 1 },
       { itemId: 'glass_bottle', qty: 2 },
       { itemId: 'bandage', qty: 1 },
@@ -61,10 +60,13 @@ export const BALANCE = {
     infectionChancePerHit: 0.05,
     infectionHoursToDeath: 72,
     antibioticsReduction: 40,
-    bleedChancePerHit: 0.2,
-    bleedHpPerMinute: 0.5,
+    /** v2: was 0.2 at 0.5 HP/min for 40 min — a scratch cost up to 20 HP after a fight (DESIGN decision 56). */
+    bleedChancePerHit: 0.12,
+    bleedHpPerMinute: 0.4,
     /** An untreated bleed clots on its own after this many game minutes (a bandage stops it at once). */
-    bleedMinutes: 40,
+    bleedMinutes: 30,
+    /** After a zombie hit lands, further zombie hits are ignored for this long (seconds). */
+    hitInvulnerabilitySeconds: 0.5,
     foodPoisoningHpPerMinute: 0.3,
     foodPoisoningMinutes: 120,
     sleepHealPerHour: 6,
@@ -87,10 +89,15 @@ export const BALANCE = {
     lockedHp: 110,
   },
   zombies: {
-    hitDamageMin: 8,
-    hitDamageMax: 12,
-    attackCooldown: 1.1,
-    attackRange: 1.1,
+    /**
+     * How far past its own body a zombie reaches (tiles, to the player's centre); enemies can override it.
+     * Every melee weapon reaches clearly further (DESIGN decision 54).
+     */
+    attackReach: 0.75,
+    /** A wind-up that started in reach still lands if the player is within reach + this when it ends. */
+    attackLandSlack: 0.3,
+    /** Default telegraphed wind-up before a zombie's swing lands (seconds); enemies can override it. */
+    windupSeconds: 0.45,
     hearingBase: 1,
     investigateGiveUpSeconds: 12,
     searchSeconds: 8,
@@ -107,13 +114,17 @@ export const BALANCE = {
   },
   combat: {
     sneakMultiplier: 3,
-    staggerKnockback: 1.5,
+    /** Every melee hit interrupts a zombie's wind-up and stuns it this long (× 1 − stagger resist). */
+    meleeHitStunSeconds: 0.3,
+    /** A stagger roll (weapon stagger chance) stuns for this long instead. */
+    staggerSeconds: 0.6,
     shoveStamina: 15,
     shoveRange: 1.6,
     shoveArcDeg: 110,
     shoveKnockback: 2.2,
-    hitStopMs: 60,
-    meleeFlashMs: 90,
+    /** Hit-stop on a melee hit (presentation only: the renderer pauses the sim this long). */
+    hitStopMs: 45,
+    hitStopHeavyMs: 75,
     bloodDecalCap: 120,
     bloomMovePerSecond: 6,
     bloomPerShot: 4,
@@ -150,10 +161,11 @@ export const BALANCE = {
     siphonLitersPerCan: 5,
     alarmChance: 0.35,
   },
+  /** Seconds to search an unlocked container (v2: was 2 / 3.5 / 5 s and needed E held throughout). */
   search: {
-    small: 2,
-    medium: 3.5,
-    large: 5,
+    small: 0.4,
+    medium: 0.7,
+    large: 1,
     scavengingRankReduction: 0.08,
   },
   carry: {

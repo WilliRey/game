@@ -13,6 +13,7 @@ export function TextCard() {
   };
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (e.repeat) return; // a held key must not skip a whole stack of cards
       if (e.code === 'Enter' || e.code === 'Space' || e.code === 'KeyE') {
         e.preventDefault();
         next();

@@ -11,7 +11,7 @@ import type { Difficulty } from '@/config/balance';
 import type { Content } from '@/content';
 import { dayOf, formatClock } from '@/core/time';
 import type { GameState } from '@/core/types';
-import { decodeRle, encodeRle } from '@/sim/build';
+import { decodeRle, encodeRle, newPlayerEntity } from '@/sim/build';
 import { getLayout } from '@/sim/layout';
 import type { ZoneState } from '@/sim/types';
 import { SAVE_VERSION, newGameState } from './session';
@@ -32,6 +32,8 @@ export interface SaveMeta {
   difficulty: Difficulty;
   playSeconds: number;
   quest?: string;
+  /** Sam's class (v2 saves). */
+  classId?: string;
 }
 
 export interface SaveFile {
@@ -106,7 +108,13 @@ function restoreZone(content: Content, snap: ZoneSnapshot): ZoneState | null {
   if (!content.zones[snap.zoneId]) return null;
   const layout = getLayout(content, snap.zoneId);
   if (layout.w !== snap.w || layout.h !== snap.h) return null;
-  return { ...snap, tiles: [...layout.tiles], explored: decodeRle(snap.explored, snap.w * snap.h) };
+  return {
+    ...snap,
+    // Fields added to the player entity since the save was made start at their defaults.
+    player: { ...newPlayerEntity(snap.player.x, snap.player.y), ...snap.player },
+    tiles: [...layout.tiles],
+    explored: decodeRle(snap.explored, snap.w * snap.h),
+  };
 }
 
 /** A JSON-ready copy of the state. */
@@ -157,7 +165,15 @@ export type Migration = (file: SaveFile) => SaveFile;
  * Example for a future v2 that renames `reputation` to `campStanding`:
  *   1: (f) => { const { reputation, ...rest } = f.state; return { ...f, version: 2, state: { ...rest, campStanding: reputation } }; }
  */
-export const MIGRATIONS: Record<number, Migration> = {};
+export const MIGRATIONS: Record<number, Migration> = {
+  // v2 (BRIEF_V2 §4): Sam has a class. Everyone who played v1 was the bus mechanic.
+  1: (f) => {
+    const player = { ...(f.state.player as Record<string, unknown>) };
+    player.classId ??= 'mechanic';
+    player.abilityCooldown ??= 0;
+    return { ...f, version: 2, state: { ...f.state, player } };
+  },
+};
 
 export function migrate(
   file: SaveFile,
@@ -209,6 +225,7 @@ export function describeState(content: Content, state: GameState, slot: SlotId, 
     difficulty: state.difficulty,
     playSeconds: Math.round(state.stats.playSeconds),
     quest: tracked,
+    classId: state.player.classId,
   };
 }
 

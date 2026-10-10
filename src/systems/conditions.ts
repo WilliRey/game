@@ -8,6 +8,7 @@ import { countItem } from './inventory';
 export function knowsRecipe(ctx: GameContext, recipeId: string): boolean {
   const r = ctx.content.recipes[recipeId];
   if (!r) return false;
+  if (r.class && r.class !== ctx.state.player.classId) return false; // another class's gadget
   return !r.requiresBlueprint || ctx.state.unlockedRecipes.includes(recipeId);
 }
 
@@ -48,6 +49,8 @@ export function checkCondition(ctx: GameContext, c: ConditionT): boolean {
       const t = s.flags[c.key];
       return typeof t !== 'number' || s.time.minutes - t >= c.minutes;
     }
+    case 'class':
+      return s.player.classId === c.classId;
     case 'not':
       return !checkCondition(ctx, c.cond);
     case 'any':

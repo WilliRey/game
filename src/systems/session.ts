@@ -11,12 +11,14 @@ import type { GameState, TraderState } from '@/core/types';
 import { SKILL_IDS } from '@/core/types';
 import { refreshNpcs } from '@/sim/build';
 import { installBaseListeners } from './base';
-import { addItem, equip } from './inventory';
+import { DEFAULT_CLASS, applyClassStart } from './classes';
+import { addItem } from './inventory';
 import { installQuestListeners, startQuest } from './quests';
 import { showHint } from './story';
 import { enterZone } from './zones';
 
-export const SAVE_VERSION = 1;
+/** v2 saves store Sam's class (BRIEF_V2 §4); v1 saves migrate to the Mechanic. */
+export const SAVE_VERSION = 2;
 
 /** Session hooks registered by other modules (autosave, hints...) so this file stays small. */
 const sessionInstallers: ((store: GameStore) => (() => void) | void)[] = [];
@@ -28,7 +30,12 @@ export function newTraderState(startUnlocked: boolean): TraderState {
   return { stock: [], credit: 0, lastRestockMinutes: -1e9, restocks: 0, unlocked: startUnlocked };
 }
 
-export function newGameState(content: Content, difficulty: Difficulty, seed = randomSeed()): GameState {
+export function newGameState(
+  content: Content,
+  difficulty: Difficulty,
+  seed = randomSeed(),
+  classId = DEFAULT_CLASS,
+): GameState {
   const rng = Rng.fromSeed(seed);
   const traders: Record<string, TraderState> = {};
   for (const t of content.lists.traders) traders[t.id] = newTraderState(t.startUnlocked);
@@ -59,6 +66,8 @@ export function newGameState(content: Content, difficulty: Difficulty, seed = ra
       lastCombatAt: -1e9,
       godMode: false,
       noclip: false,
+      classId,
+      abilityCooldown: 0,
     },
     zone: null,
     zones: {},
@@ -94,12 +103,10 @@ export function randomSeed(): string {
   return Math.floor(Math.random() * 0xffffffff).toString(36);
 }
 
-/** Starting kit, opening quest and the first zone. */
+/** Starting kit (common + class), opening quest and the first zone. */
 export function setupNewGame(ctx: GameContext): void {
   for (const { itemId, qty } of BALANCE.start.items) addItem(ctx, itemId, qty, 'start');
-  const wrench = ctx.state.player.inventory.find((s) => s.itemId === 'wrench');
-  if (wrench) equip(ctx, wrench.uid, 'melee');
-  ctx.state.player.activeSlot = 'melee';
+  applyClassStart(ctx);
   enterZone(ctx, BALANCE.start.zone);
   startQuest(ctx, BALANCE.start.quest);
   showHint(ctx, 'move');
@@ -146,9 +153,14 @@ export function installSession(store: GameStore): void {
   }
 }
 
-export function startNewGame(store: GameStore, difficulty: Difficulty, seed?: string): void {
+export function startNewGame(
+  store: GameStore,
+  difficulty: Difficulty,
+  seed?: string,
+  classId = DEFAULT_CLASS,
+): void {
   store.endSession();
-  store.setState(newGameState(store.content, difficulty, seed));
+  store.setState(newGameState(store.content, difficulty, seed, classId));
   installSession(store);
   setupNewGame(store.ctx);
   store.closeAll();

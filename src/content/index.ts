@@ -2,6 +2,7 @@ import type { z } from 'zod';
 import {
   ContentFiles,
   type BroadcastDef,
+  type ClassDef,
   type ContainerTypeDef,
   type DialogueDef,
   type EnemyDef,
@@ -42,6 +43,8 @@ export interface Content {
   hints: Record<string, HintDef>;
   stationUpgrades: StationUpgradeDef[];
   skills: Record<string, SkillDefT>;
+  /** Sam's backgrounds (BRIEF_V2 §4). */
+  classes: Record<string, ClassDef>;
   /** Ordered lists kept for deterministic iteration. */
   lists: {
     items: ItemDef[];
@@ -55,6 +58,7 @@ export interface Content {
     notes: NoteDef[];
     hints: HintDef[];
     skills: SkillDefT[];
+    classes: ClassDef[];
   };
 }
 
@@ -102,6 +106,7 @@ export function loadContent(raw: typeof RAW_CONTENT = RAW_CONTENT): Content {
   const hints = parse(ContentFiles.hints, raw.hints, 'hints.json');
   const stationUpgrades = parse(ContentFiles.stationUpgrades, raw.stationUpgrades, 'stationUpgrades.json');
   const skills = parse(ContentFiles.skills, raw.skills, 'skills.json');
+  const classes = parse(ContentFiles.classes, raw.classes, 'classes.json');
 
   // Names from names.json fill in display names for npcs/zones/nodes when not set inline.
   for (const n of npcs) n.name ??= names[n.id] ?? n.id;
@@ -128,7 +133,21 @@ export function loadContent(raw: typeof RAW_CONTENT = RAW_CONTENT): Content {
     hints: byId(hints, 'hint'),
     stationUpgrades,
     skills: byId(skills, 'skill'),
-    lists: { items, recipes, quests, zones, worldNodes, enemies, traders, npcs, notes, hints, skills },
+    classes: byId(classes, 'class'),
+    lists: {
+      items,
+      recipes,
+      quests,
+      zones,
+      worldNodes,
+      enemies,
+      traders,
+      npcs,
+      notes,
+      hints,
+      skills,
+      classes,
+    },
   };
 }
 
